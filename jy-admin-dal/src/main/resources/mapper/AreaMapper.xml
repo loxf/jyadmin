@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.AreaMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.Area" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="areaid" property="areaid" jdbcType="VARCHAR" />
+    <result column="area" property="area" jdbcType="VARCHAR" />
+    <result column="cityid" property="cityid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, areaid, area, cityid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from area
+    where 1=1
+    <if test="areaid!=null and areaid!=''">
+      and areaid = #{areaid}
+    </if>
+    <if test="area!=null and area!=''">
+      and area like concat('%', #{area}, '%')
+    </if>
+    <if test="cityid!=null and cityid!=''">
+      and cityid = #{cityid}
+    </if>
+  </select>
+</mapper>

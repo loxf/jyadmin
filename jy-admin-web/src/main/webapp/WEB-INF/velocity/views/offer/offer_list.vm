@@ -1,0 +1,150 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">商品名称</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="offerName" placeholder="商品名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="catalogId" lay-search="">
+                <option value="">商品分类</option>
+                #foreach($item in $catalogDtos)
+                    <option value="$!{item.catalogId}">$!{item.catalogName}</option>
+                #end
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="offerType">
+                <option value="">商品类型</option>
+                <option value="VIP">服务</option>
+                <option value="CLASS">课程</option>
+                <option value="OFFER">套餐</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="buyPrivi">
+                <option value="">购买权限</option>
+                <option value="NONE">普通</option>
+                <option value="VIP">VIP</option>
+                <option value="SVIP">SVIP</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">元数据</label>
+            <div class="layui-input-inline">
+                <input type="text" name="metaData" placeholder="讲师/INDEX/HOT" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <div class="layui-input-inline">
+                <input type="text" name="rangDate" placeholder="创建时间" id="createdAt" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="status">
+                <option value="">是否上架</option>
+                <option value="1">上架</option>
+                <option value="0">下架</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
+            <input type="button" class="layui-btn" onclick="addOffer()" value="新增商品"/>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+<script type="text/html" id="barTable">
+    {{# if(d.offerType!=='VIP') { }}
+    {{#  if(d.status===0){ }}
+    <a class="layui-btn layui-btn-mini" lay-event="onOffer">上架</a>
+    {{#  } else { }}
+    <a class="layui-btn layui-btn-mini" lay-event="offOffer">下架</a>
+    {{#  } }}
+    <a class="layui-btn layui-btn-mini" lay-event="editOffer">编辑</a>
+    <a class="layui-btn layui-btn-mini" lay-event="deleteOffer">删除</a>
+    <a class="layui-btn layui-btn-mini" lay-event="copyHref">复制链接</a>
+    <a class="layui-btn layui-btn-mini" lay-event="sendWeiXin">微信推送</a>
+    {{#  } }}
+</script>
+
+<script type="text/html" id="offerTypeTpl">
+    {{#  if(d.offerType==='VIP'){ }}
+    服务
+    {{#  } else if(d.offerType==='CLASS'){ }}
+    课程类型
+    {{#  } else { }}
+    <a class="layui-btn layui-btn-mini" onclick="showOffer('{{ d.offerId }}')">套餐</a>
+    {{#  } }}
+</script>
+
+<script type="text/html" id="offerPicTpl">
+    {{#  if(d.offerPic){ }}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.offerPic }}', 'PIC')">查看</a>
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+
+<script type="text/html" id="buyPriviTpl">
+    {{#  if(d.buyPrivi){ }}
+    {{#  var result = "", json = eval("("+d.buyPrivi+")"); result += (json.NONE?" 普通：" + json.NONE:""); result += (json.VIP?" VIP：" + json.VIP:""); result += (json.SVIP?" SVIP：" + json.SVIP:"");}}
+        {{#  if(result){ }}
+            {{#  return result; }}
+        {{#  } else { }}
+            不允许直接购买
+        {{#  } }}
+    {{#  } else { }}
+    不允许直接购买
+    {{#  } }}
+</script>
+
+<script type="text/html" id="metaDataTpl">
+    {{#  if(d.metaData){ }}
+    {{#  var json = eval("("+d.metaData+")");}}
+        {{# if(json.TEACHER){ }}
+            {{# for(var idx in json.TEACHER){ }}
+            <span style="padding-left: 3px"> {{ json.TEACHER[idx].name }} </span>
+            {{# } }}
+        {{#  } else { }}
+        无
+        {{# } }}
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+
+<script type="text/html" id="statusTpl">
+    {{#  if(d.status===0){ }}
+    下架
+    {{#  } else { }}
+    上架
+    {{#  } }}
+</script>
+
+<script type="text/html" id="mainMediaTpl">
+    {{#  if(d.mainMedia){ }}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.mainMedia }}', 'MP4')">
+        <i class="layui-icon" style="font-size: 15px;">&#xe652;</i> </a>
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+
+<script type="text/html" id="htmlIdTpl">
+    {{#  if(d.htmlId){ }}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.htmlId }}', 'HTML')">查看</a>
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+<script src="${rc.contextPath}/static/jingyi/common.js"></script>
+<script src="${rc.contextPath}/static/jingyi/offer/offer.js"></script>

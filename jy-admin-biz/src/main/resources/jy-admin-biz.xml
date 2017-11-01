@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <context:component-scan base-package="org.loxf.jyadmin.biz"/>
+    <import resource="jy-admin-dal.xml"/>
+
+    <bean id="jedisUtil" class="org.loxf.jyadmin.biz.util.JedisUtil" >
+        <constructor-arg index="0" ref="jedisPool"/>
+        <constructor-arg index="1" value="${env}"/>
+    </bean>
+
+    <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.maxIdle}"/>
+        <property name="maxTotal" value="${redis.maxTotal}"/>
+        <property name="testOnBorrow" value="true"/>
+    </bean>
+
+    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+        <constructor-arg index="0" ref="jedisPoolConfig"/>
+        <constructor-arg index="1" value="${redis.host}"/>
+        <constructor-arg index="2" value="${redis.port}" type="int"/>
+        <constructor-arg index="3" value="${redis.timeout}" type="int"/>
+        <constructor-arg index="4" value="${redis.passwd}"/>
+    </bean>
+
+    <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <map>
+                <entry key="LOGIN.SSL.URL" value="${LOGIN.SSL.URL}"></entry>
+                <entry key="IMAGE.SERVER" value="${IMAGE.SERVER}"></entry>
+                <entry key="IMAGE.SERVER.PATH" value="${IMAGE.SERVER.PATH}"></entry>
+            </map>
+        </property>
+    </bean>
+    <tx:annotation-driven/>
+</beans>

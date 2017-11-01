@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.VideoConfigMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.VideoConfig" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="video_id" property="videoId" jdbcType="VARCHAR" />
+    <result column="video_name" property="videoName" jdbcType="VARCHAR" />
+    <result column="video_url" property="videoUrl" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="video_out_id" property="videoOutId" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, video_id, video_name, video_url, status, video_out_id, created_at, updated_at
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_video_config
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_video_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.VideoConfig" >
+    insert into tb_video_config (id, video_id, video_name, 
+      video_url, status, video_out_id, 
+      created_at, updated_at)
+    values (#{id,jdbcType=BIGINT}, #{videoId,jdbcType=VARCHAR}, #{videoName,jdbcType=VARCHAR}, 
+      #{videoUrl,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{videoOutId,jdbcType=VARCHAR}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.VideoConfig" >
+    insert into tb_video_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="videoId != null" >
+        video_id,
+      </if>
+      <if test="videoName != null" >
+        video_name,
+      </if>
+      <if test="videoUrl != null" >
+        video_url,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="videoOutId != null" >
+        video_out_id,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="videoId != null" >
+        #{videoId,jdbcType=VARCHAR},
+      </if>
+      <if test="videoName != null" >
+        #{videoName,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null" >
+        #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="videoOutId != null" >
+        #{videoOutId,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.VideoConfig" >
+    update tb_video_config
+    <set >
+      <if test="videoId != null" >
+        video_id = #{videoId,jdbcType=VARCHAR},
+      </if>
+      <if test="videoName != null" >
+        video_name = #{videoName,jdbcType=VARCHAR},
+      </if>
+      <if test="videoUrl != null" >
+        video_url = #{videoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="videoOutId != null" >
+        video_out_id = #{videoOutId,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.VideoConfig" >
+    update tb_video_config
+    set video_id = #{videoId,jdbcType=VARCHAR},
+      video_name = #{videoName,jdbcType=VARCHAR},
+      video_url = #{videoUrl,jdbcType=VARCHAR},
+      status = #{status,jdbcType=VARCHAR},
+      video_out_id = #{videoOutId,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

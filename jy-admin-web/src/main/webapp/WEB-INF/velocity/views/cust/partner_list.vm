@@ -1,0 +1,109 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label"></label>
+            <div class="layui-input-inline" >
+                <input type="text" name="realName" placeholder="客户姓名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <div class="layui-input-inline" >
+                <input type="text" name="phone" placeholder="客户手机/邮箱" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="isAgent">
+                <option value="">代理等级</option>
+                <option value="0">无</option>
+                <option value="1">代理商</option>
+                <option value="2">合伙人</option>
+                <option value="3">分公司</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <div class="layui-input-inline">
+                <input type="text" name="rangDate" placeholder="成为代理时间" id="createdAt" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <button class="layui-btn layui-btn" lay-submit lay-filter="searchForm">查询</button>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+<script type="text/html" id="barTable">
+    <a class="layui-btn layui-btn-mini" lay-event="editVipNbr">赠送名额</a>
+    <a class="layui-btn layui-btn-mini" lay-event="editAgent">修改身份</a>
+    <a class="layui-btn layui-btn-mini" lay-event="cancelAgent">取消代理</a>
+</script>
+
+<!-- 联系方式 -->
+<script type="text/html" id="phoneOrEmailTpl">
+    {{#  if(d.isChinese===1){ }}
+    {{ d.phone }}
+    {{#  } else { }}
+    {{ d.email }}
+    {{#  } }}
+</script>
+<script type="text/html" id="vipTpl">
+    {{#  if(d.userLevel==='NONE'){ }}
+        普通
+    {{#  } else { }}
+        {{ d.userLevel }}
+    {{#  } }}
+</script>
+<script type="text/html" id="isChineseTpl">
+    {{#  if(d.isChinese===1){ }}
+    国内用户
+    {{#  } else { }}
+    海外用户
+    {{#  } }}
+</script>
+<script type="text/html" id="agentTpl">
+    {{#  if(d.isAgent===0){ }}
+    无
+    {{#  } else if(d.isAgent===1){ }}
+    代理商
+    {{#  } else if(d.isAgent===2){ }}
+    合伙人
+    {{#  } else if(d.isAgent===3){ }}
+    分公司
+    {{#  } }}
+</script>
+<script type="text/html" id="totalVipNbrTpl">
+    {{#  if(d.metaData){ }}
+    {{#  var json = eval("("+d.metaData+")"); }}
+    {{#  return "VIP：" + json.totalVIP + ", SVIP：" + json.totalSVIP }}
+    {{#  } else { }}
+        无
+    {{#  } }}
+</script>
+<script type="text/html" id="useVipNbrTpl">
+    {{#  if(d.metaData){ }}
+    {{#  var json = eval("("+d.metaData+")"); }}
+    {{#  return "VIP：" + json.useVIP + ", SVIP：" + json.useSVIP }}
+    {{#  } else { }}
+        无
+    {{#  } }}
+</script>
+<script type="text/html" id="firstLvNbrTpl">
+    {{#  if(d.firstLvNbr>0){ }}
+    <a style="font-weight: bold; color: darkred" onclick="openChildCustList('1', '{{ d.custId }} ')">{{ d.firstLvNbr }}位</a>
+    {{#  } else { }}
+    {{ d.firstLvNbr }}位
+    {{#  } }}
+</script>
+<script type="text/html" id="secondLvNbrTpl">
+    {{#  if(d.secondLvNbr>0){ }}
+    <a style="font-weight: bold; color: darkred" onclick="openChildCustList('2', '{{ d.custId }} ')">{{ d.secondLvNbr }}位</a>
+    {{#  } else { }}
+    {{ d.secondLvNbr }}位
+    {{#  } }}
+</script>
+
+<script src="${rc.contextPath}/static/jingyi/cust/partner.js"></script>

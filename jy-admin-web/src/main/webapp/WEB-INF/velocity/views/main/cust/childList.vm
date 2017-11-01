@@ -1,0 +1,106 @@
+
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+
+<script type="text/html" id="vipTpl">
+    {{#  if(d.userLevel==='NONE'){ }}
+    普通
+    {{#  } else { }}
+    {{ d.userLevel }}
+    {{#  } }}
+</script>
+<script type="text/html" id="isChineseTpl">
+    {{#  if(d.isChinese===1){ }}
+    国内用户
+    {{#  } else if(d.isChinese===2){ }}
+    海外用户
+    {{#  } else { }}
+    未知
+    {{#  } }}
+</script>
+<script type="text/html" id="agentTpl">
+    {{#  if(d.isAgent===0){ }}
+    无
+    {{#  } else if(d.isAgent===1){ }}
+    代理商
+    {{#  } else if(d.isAgent===2){ }}
+    合伙人
+    {{#  } else if(d.isAgent===3){ }}
+    分公司
+    {{#  } }}
+</script>
+<!-- 联系方式 -->
+<script type="text/html" id="phoneOrEmailTpl">
+    {{#  if(d.isChinese===1){ }}
+    {{ d.phone }}
+    {{#  } else if(d.isChinese===2){ }}
+    {{ d.email }}
+    {{#  } else { }}
+    未知
+    {{#  } }}
+</script>
+<script type="text/javascript">
+    var table = layui.table;
+    table.render({ //其它参数在此省略
+        url: 'childList.html',
+        method: 'POST',
+        elem: '#dataTable', //指定原始表格元素选择器（推荐id选择器）
+        height: 400, //容器高度
+        page: true,
+        where : {
+            type:'${type}',
+            custId: '${custId}'
+        },
+        cols: [[
+            {
+                field: 'nickName',
+                title: '用户昵称',
+                width: 120
+            },
+            {
+                field: 'isChinese',
+                title: '国内/海外',
+                width: 120
+                ,templet : '#isChineseTpl'
+            },
+            {
+                field: 'phone',
+                title: '电话号码/邮箱',
+                width: 120
+                ,templet : '#phoneOrEmailTpl'
+            },
+            {
+                field: 'realName',
+                title: '真实姓名',
+                width: 120
+            },
+            {
+                field: 'userLevel',
+                title: '会员等级',
+                width: 100
+                ,templet : '#vipTpl'
+            },
+            {
+                field: 'isAgent',
+                title: '代理级别',
+                width: 100
+                ,templet : '#agentTpl'
+            }
+        ]],
+        request: {
+            pageName: 'page', //页码的参数名称，默认：page
+            limitName: 'size' //每页数据量的参数名，默认：limit
+        },
+        response: {
+            statusName: 'code', //数据状态的字段名称，默认：code
+            statusCode: 1, //成功的状态码，默认：0
+            msgName: 'msg', //状态信息的字段名称，默认：msg
+            countName: 'total', //数据总数的字段名称，默认：count
+            dataName: 'data' //数据列表的字段名称，默认：data
+        },
+        limits: [30, 50, 100, 150, 300],
+        limit: 30, //默认采用30
+        even: true
+    });
+</script>

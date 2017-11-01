@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="renderer" content="webkit">
+    <title>静怡雅学馆管理系统</title>
+    #parse("/layout/fragments/css.vm")
+    #parse("/layout/fragments/js.vm")
+
+</head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <!-- 系统名称 -->
+        <div class="layui-logo">静怡雅学馆</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item"><a href="javascript:getLeftMenu('VIP')">会员管理</a></li>
+            <li class="layui-nav-item"><a href="javascript:getLeftMenu('ORDER')">订单/财务</a></li>
+            <li class="layui-nav-item"><a href="javascript:getLeftMenu('OFFER')">商品/活动</a></li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">其它</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="javascript:getLeftMenu('CONFIG')">系统配置</a></dd>
+                    <dd><a href="javascript:getLeftMenu('PRIVI')">授权管理</a></dd>
+                </dl>
+            </li>
+        </ul>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <!-- 用户头像 信息 -->
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    贤心
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">修改密码</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="">安全退出</a></li>
+        </ul>
+    </div>
+    <div class="layui-side layui-bg-black layui-side-div">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" id="div_left_menu" lay-filter="test">
+                <!-- 左侧菜单 -->
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" style="bottom:0px">
+        <!-- 内容主体区域 -->
+        $!{screen_content}
+    </div>
+
+    #*<div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © 静怡雅院 - 专业定制
+        <label>点击联系管理员</label>
+    </div>*#
+</div>
+<!-- 菜单模板 -->
+<script id="left_menu" type="text/html">
+    {{#  layui.each(d, function(index, item){ }}
+    <li class="layui-nav-item {{#  if(item.classInfo){ }}  {{ item.classInfo }} {{#  } }}">
+        <a href="{{ item.menuHref }}">{{ item.menuName }}</a>
+        {{#  if(item.child && item.child.length > 0){ }}
+        <dl class="layui-nav-child">
+            {{#  layui.each(item.child, function(index, childMenu){ }}
+            <dd {{#  if(childMenu.classInfo){ }} class="{{ childMenu.classInfo }}" {{#  } }}>
+                <a href="{{ childMenu.menuHref }}">{{ childMenu.menuName }}</a></dd>
+            {{#  }); }}
+        </dl>
+        {{#  } }}
+    </li>
+    {{#  }); }}
+</script>
+<script type="text/javascript">
+    var contextPath = '${rc.contextPath}';
+    var basePic = "http://127.0.0.1:8080";
+    var baseVideo = "";
+</script>
+<script src="${rc.contextPath}/static/jingyi/menu/menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.CustBpDetailMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CustBpDetail" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="detail_name" property="detailName" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="bp_balance" property="bpBalance" jdbcType="DECIMAL" />
+    <result column="change_balance" property="changeBalance" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cust_id, detail_name, type, bp_balance, change_balance, created_at, updated_at
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_cust_bp_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_cust_bp_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
+    insert into tb_cust_bp_detail (id, cust_id, detail_name, 
+      type, bp_balance, change_balance, 
+      created_at, updated_at)
+    values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{detailName,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{bpBalance,jdbcType=DECIMAL}, #{changeBalance,jdbcType=INTEGER}, 
+      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
+    insert into tb_cust_bp_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="custId != null" >
+        cust_id,
+      </if>
+      <if test="detailName != null" >
+        detail_name,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="bpBalance != null" >
+        bp_balance,
+      </if>
+      <if test="changeBalance != null" >
+        change_balance,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="custId != null" >
+        #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="detailName != null" >
+        #{detailName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="bpBalance != null" >
+        #{bpBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="changeBalance != null" >
+        #{changeBalance,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
+    update tb_cust_bp_detail
+    <set >
+      <if test="custId != null" >
+        cust_id = #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="detailName != null" >
+        detail_name = #{detailName,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="bpBalance != null" >
+        bp_balance = #{bpBalance,jdbcType=DECIMAL},
+      </if>
+      <if test="changeBalance != null" >
+        change_balance = #{changeBalance,jdbcType=INTEGER},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
+    update tb_cust_bp_detail
+    set cust_id = #{custId,jdbcType=VARCHAR},
+      detail_name = #{detailName,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER},
+      bp_balance = #{bpBalance,jdbcType=DECIMAL},
+      change_balance = #{changeBalance,jdbcType=INTEGER},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,122 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">活动名称</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="activeName" placeholder="活动名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="activePrivi">
+                <option value="">购买权限</option>
+                <option value="NONE">普通</option>
+                <option value="VIP">VIP</option>
+                <option value="SVIP">SVIP</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="status">
+                <option value="">是否发布</option>
+                <option value="1">发布</option>
+                <option value="0">未发布</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <div class="layui-input-inline">
+                <input type="text" name="rangDate" placeholder="活动开始时间" id="createdAt" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">活动地点</label>
+            <div class="layui-input-inline" >
+                <select name="province" lay-search="" lay-filter="province">
+                    <option value="">选择省份</option>
+                    #foreach($item in $provinceList)
+                        <option value="$!{item.provinceid}">$!{item.province}</option>
+                    #end
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="city" id="city" lay-search="">
+                <option value="">选择城市</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg4">
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
+            <input type="button" class="layui-btn" onclick="addActive()" value="新增活动"/>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+<script type="text/html" id="barTable">
+    {{#  if(d.status===0){ }}
+    <a class="layui-btn layui-btn-mini" lay-event="onActive">发布</a>
+    {{#  } else { }}
+    <a class="layui-btn layui-btn-mini" lay-event="offActive">取消</a>
+    {{#  } }}
+    <a class="layui-btn layui-btn-mini" lay-event="editActive">编辑</a>
+    <a class="layui-btn layui-btn-mini" lay-event="deleteActive">删除</a>
+</script>
+
+<script type="text/html" id="studentsTpl">
+    {{#  if(d.studentsNbr>0){ }}
+    <a style="font-weight: bold; color: darkred" onclick="openCustListOfActive('{{ d.activeId }}')">{{ d.studentsNbr }}位</a>
+    {{#  } else { }}
+    0位
+    {{#  } }}
+</script>
+<script type="text/html" id="metaDataTpl">
+    {{#  if(d.metaData){ }}
+        {{#  var json = eval('('+d.metaData+')'); }}
+        {{#  if(json.LIMIT){  }}
+            {{ json.LIMIT }}
+        {{#  } else {  }}
+            无限制
+        {{#  } }}
+    {{#  } else {  }}
+        无限制
+    {{#  } }}
+</script>
+<script type="text/html" id="activeTimeTpl">
+    {{ d.activeStartTime }} ~ {{ d.activeEndTime }}
+</script>
+<script type="text/html" id="picTpl">
+    {{#  if(d.pic){ }}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.pic }}', 'PIC')">查看</a>
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+<script type="text/html" id="activePriviTpl">
+    {{#  if(d.activePrivi){ }}
+    {{#  var json = eval("("+d.activePrivi+")"); }}
+    {{#  return "普通：" + json.NONE + ", VIP：" + json.NONE + ", SVIP：" + json.SVIP }}
+    {{#  } else { }}
+    不允许直接购买
+    {{#  } }}
+</script>
+<script type="text/html" id="statusTpl">
+    {{#  if(d.status===0){ }}
+    未发布
+    {{#  } else { }}
+    已发布
+    {{#  } }}
+</script>
+<script type="text/html" id="htmlIdTpl">
+    {{#  if(d.htmlId){ }}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.htmlId }}', 'HTML')">查看</a>
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+
+<script src="${rc.contextPath}/static/jingyi/common.js"></script>
+<script src="${rc.contextPath}/static/jingyi/active/active.js"></script>

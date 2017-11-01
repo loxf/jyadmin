@@ -1,0 +1,93 @@
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>新增分类</legend>
+</fieldset>
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">分类名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="catalogName" lay-verify="catalogName" autocomplete="off" placeholder="请输入分类名称（建议20字以内）"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">分类图片</label>
+        <a class="layui-btn uploadImg" id="picBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=CATALOG'}">
+            <i class="layui-icon">&#xe62f;</i>上传分类图片（宽300*高180）</a>
+        <input type="hidden" name="pic" id="pic">
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">图片预览</label>
+        <div class="layui-upload-list">
+            <img class="layui-upload-img" style="width: 300px; height: 180px" id="picImg">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="offerCatalogData">立即提交</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    var form = layui.form
+            ,layer = layui.layer
+            ,upload = layui.upload;
+
+    upload.render({
+        elem: '.uploadImg'
+        ,size : 3072
+        ,accept: 'images'
+        ,before: function(obj){
+            var name = this.item.attr("id");
+            name = name.replace('Btn', 'Img')
+            obj.preview(function(index, file, result){
+                $('#'+name).attr('src', result); //图片链接（base64）
+            });
+        }
+        ,done: function(res, index, upload){
+            if(res.code===1){
+                var name = this.item.attr("id");
+                name = name.replace('Btn', '');
+                $('#'+name).val(res.data.src);
+            } else {
+                layer.tips(res.msg);
+            }
+        }
+    });
+
+    //自定义验证规则
+    form.verify({
+        catalogName: function(value){
+            if(value.length < 2){
+                return '分类名称至少2个字';
+            } else if(value.length >20){
+                return '分类名称超过20个字';
+            }
+        }
+    });
+
+    //监听提交
+    form.on('submit(offerCatalogData)', function(data){
+        $.ajax({
+            type: "POST",
+            url:"newOfferCatalog.html",
+            data : {
+                catalogName:data.field.catalogName,
+                pic:data.field.pic
+            },
+            dataType:"json",
+            success: function(data) {
+                if(data.code == 1){
+                    parent.searchList();
+                    parent.layer.closeAll();
+                } else {
+                    layer.msg(data.msg);
+                }
+            }
+        });
+        return false;
+    });
+    form.render();
+</script>

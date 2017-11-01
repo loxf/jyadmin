@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.OfferRelMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.OfferRel" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="offer_id" property="offerId" jdbcType="VARCHAR" />
+    <result column="rel_id" property="relId" jdbcType="VARCHAR" />
+    <result column="offer_type" property="offerType" jdbcType="VARCHAR" />
+    <result column="rel_type" property="relType" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, offer_id, rel_id, offer_type, rel_type, sort, created_at, updated_at
+  </sql>
+
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.OfferRel" >
+    insert into tb_offer_rel (offer_id, rel_id, offer_type,
+      rel_type, sort, created_at, 
+      updated_at)
+    values (#{offerId,jdbcType=VARCHAR}, #{relId,jdbcType=VARCHAR}, #{offerType,jdbcType=VARCHAR},
+      #{relType,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, now(), now())
+  </insert>
+
+  <delete id="deleteByOfferIdAndRelType">
+    DELETE FROM tb_offer_rel where offer_id = #{offerId} and rel_type = #{relType}
+  </delete>
+</mapper>

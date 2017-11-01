@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.ActiveMapper">
+    <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.Active">
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="active_id" property="activeId" jdbcType="VARCHAR"/>
+        <result column="active_name" property="activeName" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+        <result column="active_privi" property="activePrivi" jdbcType="VARCHAR"/>
+        <result column="pic" property="pic" jdbcType="VARCHAR"/>
+        <result column="province" property="province" jdbcType="VARCHAR"/>
+        <result column="city" property="city" jdbcType="VARCHAR"/>
+        <result column="addr" property="addr" jdbcType="VARCHAR"/>
+        <result column="active_start_time" property="activeStartTime" jdbcType="TIMESTAMP"/>
+        <result column="active_end_time" property="activeEndTime" jdbcType="TIMESTAMP"/>
+        <result column="html_id" property="htmlId" jdbcType="VARCHAR"/>
+        <result column="meta_data" property="metaData" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="INTEGER"/>
+        <result column="is_deleted" property="isDeleted" jdbcType="INTEGER"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, active_id, active_name, price, active_privi, pic, province, city, addr, active_start_time, active_end_time,
+        html_id, status, meta_data, is_deleted, created_at, updated_at
+    </sql>
+
+    <select id="selectByActiveId" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_active
+        where active_id = #{activeId}
+    </select>
+
+    <select id="pager" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Active">
+        select
+        <include refid="Base_Column_List"/>
+        from tb_active
+        where is_deleted = 0
+        <include refid="WHERE_SQL"/>
+        order by active_start_time
+        limit #{pager.start}, #{pager.size}
+    </select>
+
+    <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.Active">
+        select count(1)
+        from tb_active
+        where is_deleted = 0
+        <include refid="WHERE_SQL"/>
+    </select>
+
+    <sql id="WHERE_SQL">
+        <if test="activeName != null and activeName != ''">
+            and active_name like concat('%', #{activeName}, '%')
+        </if>
+        <if test="province != null and province!=''">
+            and province = #{province}
+        </if>
+        <if test="city != null and city!=''">
+            and city = #{city}
+        </if>
+        <if test="status != null and status>=0">
+            and status = #{status}
+        </if>
+        <if test="activePrivi != null and activePrivi != ''">
+            and active_privi like concat('%', #{activePrivi,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="metaData != null and metaData != ''">
+            and meta_data like concat('%', #{metaData,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="startDate != null and startDate!=''">
+            and active_start_time >= #{startDate,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endDate != null and endDate!=''">
+            and active_start_time &lt; date_add(#{endDate}, INTERVAL 1 DAY)
+        </if>
+    </sql>
+
+    <update id="deleteByActiveId" parameterType="java.lang.String">
+        update tb_active set is_deleted = 1
+        where active_id = #{activeId}
+    </update>
+
+    <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Active">
+        insert into tb_active (active_id, active_name,
+          price, active_privi, pic, province, city, addr,
+          active_start_time, active_end_time, html_id, meta_data,
+          status, is_deleted, created_at, updated_at)
+        values (#{activeId,jdbcType=VARCHAR}, #{activeName,jdbcType=VARCHAR},
+          #{price,jdbcType=DECIMAL}, #{activePrivi,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR},
+          #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR},
+          #{activeStartTime,jdbcType=TIMESTAMP}, #{activeEndTime,jdbcType=TIMESTAMP}, #{htmlId,jdbcType=VARCHAR},
+           #{metaData,jdbcType=VARCHAR}, 0, 0, now(), now())
+    </insert>
+
+    <update id="updateByActiveId" parameterType="org.loxf.jyadmin.dal.po.Active">
+        update tb_active
+        <set>
+            <if test="activeName != null and activeName != ''">
+                active_name = #{activeName,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null and price != ''">
+                price = #{price,jdbcType=DECIMAL},
+            </if>
+            <if test="province != null and province!=''">
+                province = #{province},
+            </if>
+            <if test="city != null and city!=''">
+                city = #{city},
+            </if>
+            <if test="pic != null and pic!=''">
+                pic = #{pic},
+            </if>
+            <if test="activePrivi != null">
+                active_privi = #{activePrivi,jdbcType=VARCHAR},
+            </if>
+            <if test="metaData != null">
+                meta_data = #{metaData,jdbcType=VARCHAR},
+            </if>
+            <if test="addr != null and addr!=''">
+                addr = #{addr,jdbcType=VARCHAR},
+            </if>
+            <if test="activeStartTime != null and activeStartTime!=''">
+                active_start_time = #{activeStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="activeEndTime != null and activeEndTime!=''">
+                active_end_time = #{activeEndTime,jdbcType=TIMESTAMP},
+            </if>
+            updated_at = now()
+        </set>
+        where active_id = #{activeId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="onOrOffActive">
+        update tb_active set status = #{status} where active_id = #{activeId,jdbcType=VARCHAR}
+    </update>
+</mapper>

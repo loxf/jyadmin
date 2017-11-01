@@ -1,0 +1,2 @@
+开发环境使用这个目录
+正式环境请配置online.properties里面的IMAGE.SERVER.PATH

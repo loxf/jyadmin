@@ -1,0 +1,256 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>编辑活动</legend>
+</fieldset>
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">活动名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="activeName" lay-verify="activeName" value="$!{active.activeName}" autocomplete="off" placeholder="请输入活动名称（建议20字以内）"
+                   class="layui-input">
+            <input type="hidden" name="activeId" value="$!{active.activeId}" />
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">活动时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="startAndEnd" placeholder="活动开始-结束时间"
+                   value="$!date.format('yyyy-MM-dd HH:mm:ss ',$!{active.activeStartTime}) ~ $!date.format('yyyy-MM-dd HH:mm:ss ',$!{active.activeEndTime})"
+                   lay-verify="required" id="startAndEnd" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">省/市</label>
+            <div class="layui-input-inline">
+                <!-- lay-verify="required" 联动下拉框 -->
+                <select name="province" id="province"  lay-search="" lay-filter="province" lay-verify="required" >
+                    <option value="">选择省份</option>
+                    #foreach($item in $provinceList)
+                        <option value="$!{item.provinceid}" #if($!{active.province}==$!{item.provinceid}) selected #end>$!{item.province}</option>
+                    #end
+                </select>
+            </div>
+            <div class="layui-input-inline">
+                <select name="city" id="city" lay-search="" lay-verify="required" >
+                    <option value="">选择城市</option>
+                    #foreach($item in $cityList)
+                        <option value="$!{item.cityid}" #if($!{active.city}==$!{item.cityid}) selected #end>$!{item.city}</option>
+                    #end
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">详细地址</label>
+        <div class="layui-input-inline">
+            <input type="text" name="addr" style="width:400px;" value="$!{active.addr}" lay-verify="required" autocomplete="off" placeholder="请输入活动详细地址"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">活动价格</label>
+        <div class="layui-input-block">
+            <input type="text" name="price" style="width: 120px" value="$!{active.price}" lay-verify="required" placeholder="￥" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">购买权限</label>
+        <div class="layui-input-block">
+            <input type="checkbox" value="NONE" #if(${activePriviJson} && ${activePriviJson.NONE} ) checked #end title="普通">
+            <input type="checkbox" value="VIP" #if(${activePriviJson} && ${activePriviJson.VIP} ) checked #end title="VIP">
+            <input type="checkbox" value="SVIP" #if(${activePriviJson} && ${activePriviJson.SVIP} ) checked #end title="SVIP">
+        </div>
+    </div>
+    <div class="layui-form-item noneDiv" #if(${activePriviJson} && ${activePriviJson.NONE} )  style="display: block" #else  style="display: none" #end>
+        <label class="layui-form-label">普通价格</label>
+        <input type="text"  style="width: 120px" name="activePrivi_NONE" placeholder="￥"
+            #if(${activePriviJson} && ${activePriviJson.NONE} ) value="$!{activePriviJson.NONE}" #end autocomplete="off" class="layui-input">
+    </div>
+    <div class="layui-form-item vipDiv" #if(${activePriviJson} && ${activePriviJson.VIP}) style="display: block" #else  style="display: none" #end>
+        <label class="layui-form-label">VIP价格</label>
+        <input type="text"  style="width: 120px" name="activePrivi_VIP" placeholder="￥"
+            #if(${activePriviJson} && ${activePriviJson.VIP} ) value="$!{activePriviJson.VIP}" #end autocomplete="off" class="layui-input">
+    </div>
+    <div class="layui-form-item svipDiv" #if(${activePriviJson} && ${activePriviJson.SVIP} ) style="display: block" #else  style="display: none" #end>
+        <label class="layui-form-label">SVIP价格</label>
+        <input type="text"  style="width: 120px" name="activePrivi_SVIP" placeholder="￥"
+            #if(${activePriviJson} && ${activePriviJson.SVIP} ) value="$!{activePriviJson.SVIP}" #end  autocomplete="off" class="layui-input">
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">活动图片</label>
+        <a class="layui-btn uploadImg" id="activePicBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=ACTIVE'}">
+            <i class="layui-icon">&#xe62f;</i>上传活动图片（宽300*高180）</a>
+        <input type="hidden" name="pic" value="$!{active.pic}" id="activePic">
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">图片预览</label>
+        <div class="layui-upload-list">
+            <img class="layui-upload-img" style="width: 300px; height: 180px" id="activePicImg"
+                #if(${active.pic}) src="$!{basePic}$!{active.pic}" #end >
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">限制人数</label>
+        <div class="layui-input-block">
+            <input type="number" name="LIMIT" placeholder="限制人数" style="width:120px;" autocomplete="off"
+                #if(${metaDataJson} && ${metaDataJson.LIMIT} ) value="$!{metaDataJson.LIMIT}" #end class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">活动详情</label>
+        #parse("/views/common/editor.vm")
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="activeData">立即提交</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    var form = layui.form
+            ,layer = layui.layer
+            ,laydate = layui.laydate
+            ,upload = layui.upload;
+
+    laydate.render({
+        elem: '#startAndEnd', //指定元素
+        range: '~',
+        type:"datetime",
+        format: 'yyyy-MM-dd HH:mm:ss'
+    });
+
+    form.on('select(province)', function(data){
+        $.getJSON("${rc.contextPath}/admin/city.html?provinceid="+data.value, function(data){
+            $("#city").html('');
+            if(data.code===1) {
+                var optionString = "<option value=\"\" >选择城市</option>";
+                $.each(data.data, function (i, item) {
+                    optionString += "<option value=\"" + item.cityid + "\" >" + item.city + "</option>";
+                });
+                $("#city").html(optionString);
+                form.render('select'); //这个很重要
+            } else {
+                parent.layer.msg(data.msg);
+            }
+        });
+    });
+    //同时绑定多个元素，并将属性设定在元素上
+    upload.render({
+        elem: '.uploadImg'
+        ,size : 3072
+        ,accept: 'images'
+        ,before: function(obj){
+            var name = this.item.attr("id");
+            name = name.replace('Btn', 'Img')
+            obj.preview(function(index, file, result){
+                $('#'+name).attr('src', result); //图片链接（base64）
+            });
+        }
+        ,done: function(res, index, upload){
+            if(res.code===1){
+                var name = this.item.attr("id");
+                name = name.replace('Btn', '');
+                $('#'+name).val(res.data.src);
+            } else {
+                layer.tips(res.msg);
+            }
+        }
+    });
+
+    //自定义验证规则
+    form.verify({
+        activeName: function(value){
+            if(value.length < 4){
+                return '标题至少4个字';
+            } else if(value.length >20){
+                return '标题超过20个字';
+            }
+        }
+    });
+
+    //监听提交
+    form.on('submit(activeData)', function(data){
+        var htmlId = saveHtml(data.field.htmlId);
+        if(!htmlId){
+            return false;
+        }
+        var startAndEnd = data.field.startAndEnd;
+        var start = "";
+        var end = "";
+        if(startAndEnd){
+            var dateArr = startAndEnd.split("~");
+            start = dateArr[0].trim()
+            end = dateArr[1].trim()
+        }
+
+        var activePrivi = {};
+        if(data.field.activePrivi_NONE){
+            activePrivi.NONE = data.field.activePrivi_NONE;
+        }
+        if(data.field.activePrivi_VIP){
+            activePrivi.VIP = data.field.activePrivi_VIP;
+        }
+        if(data.field.activePrivi_SVIP){
+            activePrivi.SVIP = data.field.activePrivi_SVIP;
+        }
+        var metaData = {
+            LIMIT: data.field.LIMIT
+        };
+        $.ajax({
+            type: "POST",
+            url:"editActive.html",
+            data : {
+                activeId:data.field.activeId,
+                activeName:data.field.activeName,
+                pic:data.field.pic,
+                activePrivi:JSON.stringify(activePrivi),
+                metaData:JSON.stringify(metaData),
+                price:data.field.price,
+                province:data.field.province,
+                city:data.field.city,
+                addr:data.field.addr,
+                startDate: start,
+                endDate: end
+            },
+            dataType:"json",
+            success: function(data) {
+                if(data.code == 1){
+                    parent.searchList();
+                    parent.layer.closeAll();
+                } else {
+                    parent.layer.msg(data.msg);
+                }
+            }
+        });
+        return false;
+    });
+
+    //购买权限控制
+    form.on('checkbox', function(data){
+        if(data.value=='NONE'){
+            if(data.elem.checked){
+                $(".noneDiv").show();
+            } else {
+                $(".noneDiv").hide();
+            }
+        } else if(data.value=='VIP'){
+            if(data.elem.checked){
+                $(".vipDiv").show();
+            } else {
+                $(".vipDiv").hide();
+            }
+        } else if(data.value=='SVIP'){
+            if(data.elem.checked){
+                $(".svipDiv").show();
+            } else {
+                $(".svipDiv").hide();
+            }
+        }
+    });
+
+    form.render();
+</script>

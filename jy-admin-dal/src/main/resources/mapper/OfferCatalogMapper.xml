@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.OfferCatalogMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.OfferCatalog" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="catalog_id" property="catalogId" jdbcType="VARCHAR" />
+    <result column="catalog_name" property="catalogName" jdbcType="VARCHAR" />
+    <result column="pic" property="pic" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, catalog_id, `catalog_name`, pic, created_at, updated_at
+  </sql>
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_offer_catalog
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by id desc
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+  <select id="queryById" resultMap="BaseResultMap" parameterType="String">
+    select
+    <include refid="Base_Column_List" />
+    from tb_offer_catalog where
+    catalog_id = #{catalogId}
+  </select>
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
+    select count(1)
+    from tb_offer_catalog
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+  <sql id="WHERE_SQL">
+    <if test="catalogId!=null and catalogId!=''">
+      and `catalog_id` = #{catalogId}
+    </if>
+    <if test="catalogName!=null and catalogName!=''">
+      and `catalog_name` like CONCAT('%', #{catalogName},'%')
+    </if>
+    <if test="startDate!=null and startDate!=''">
+      and created_at >= #{startDate}
+    </if>
+    <if test="endDate!=null and endDate!='' ">
+      and created_at &lt; date_add(#{endDate}, INTERVAL 1 DAY)
+    </if>
+  </sql>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tb_offer_catalog
+    where catalog_id = #{catalogId}
+  </delete>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
+    insert into tb_offer_catalog (catalog_id, `catalog_name`,
+      pic, created_at, updated_at
+      )
+    values (#{catalogId,jdbcType=VARCHAR}, #{catalogName,jdbcType=VARCHAR},
+      #{pic,jdbcType=VARCHAR}, now(), now()
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
+    update tb_offer_catalog
+    set
+    <if test="catalogName!=null and catalogName!=''">
+      `catalog_name` = #{catalogName,jdbcType=VARCHAR},
+    </if>
+    <if test="pic!=null and pic!=''">
+      pic = #{pic,jdbcType=VARCHAR},
+    </if>
+      updated_at = now()
+    where catalog_id = #{catalogId,jdbcType=VARCHAR}
+  </update>
+</mapper>

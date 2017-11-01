@@ -1,0 +1,62 @@
+﻿<!--content start-->
+<link rel="stylesheet" href="${rc.contextPath}/static/jingyi/login.css" >
+
+<main class="left-wrap maui-login">
+    <section class="maui-login-form">
+        <div class="login">
+            <h1>Login</h1>
+            <form class="layui-form" style="margin-top: 15px">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="username" style="width: 180px" required  lay-verify="required" placeholder="请输入用户名"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-inline">
+                        <input type="password" name="password" style="width: 180px" required lay-verify="required" placeholder="请输入密码"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+<!--content end-->
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function(data){
+            var params = data.field;
+            login(params)
+            return false;
+        });
+    });
+
+    function login(params){
+        $.ajax({
+            type: "POST",
+            url:"${rc.contextPath}/admin/login/login.html",
+            dataType:"json",
+            async:false,
+            data: params,
+            success: function(data) {
+                if(data.code == 1){
+                    window.location.href=data.data;
+                }else{
+                    layer.msg(data.msg);
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.AgentInfoMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.AgentInfo" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="eff_date" property="effDate" jdbcType="VARCHAR" />
+    <result column="exp_date" property="expDate" jdbcType="VARCHAR" />
+    <result column="meta_data" property="metaData" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cust_id, real_name, phone, email, status, type, eff_date, exp_date, meta_data, remark, created_at, updated_at
+  </sql>
+  <sql id="Cust_Agent_List" >
+    a.cust_id as custId, a.status, a.type, a.eff_date as effDate, a.exp_date as expDate, a.meta_data as metaData, a.created_at as createdAt,
+    a.updated_at as updatedAt, b.nick_name as nickName, a.real_name as realName, b.province, b.city, b.first_lv_nbr as firstLvNbr,
+    b.second_lv_nbr as secondLvNbr, b.user_level as userLevel, a.phone, a.email, b.is_chinese as isChinese, b.recomend, b.is_agent as isAgent, b.address
+  </sql>
+
+  <select id="selectByCustId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_agent_info
+    where cust_id = #{custId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="pager" resultType="org.loxf.jyadmin.dal.po.AgentInfo" parameterType="org.loxf.jyadmin.dal.po.AgentInfo" >
+    select
+    <include refid="Cust_Agent_List" />
+    from tb_agent_info a, tb_cust b
+    where a.cust_id = b.cust_id
+    <include refid="CUST_WHERE_SQL"/>
+    order by a.created_at desc
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.AgentInfo" >
+    select count(1)
+    from tb_agent_info a, tb_cust b
+    where a.cust_id = b.cust_id
+    <include refid="CUST_WHERE_SQL"/>
+  </select>
+
+  <sql id="CUST_WHERE_SQL">
+    <if test="realName!=null and realName!=''">
+      and b.real_name like concat('%', #{realName}, '%')
+    </if>
+    <if test="phone!=null and phone!=''">
+      and b.phone = #{phone}
+    </if>
+    <if test="email!=null and email!=''">
+      and b.email = #{email}
+    </if>
+    <if test="isChinese!=null and isChinese!=0">
+      and b.is_chinese = #{isChinese}
+    </if>
+    <if test="isAgent!=null and isAgent!=0">
+      and b.is_agent = #{isAgent}
+    </if>
+    <if test="startDate!=null and startDate!=''">
+      and a.eff_date >= #{startDate}
+    </if>
+    <if test="endDate!=null and endDate!='' ">
+      and a.eff_date &lt; date_add(#{endDate}, INTERVAL 1 DAY)
+    </if>
+  </sql>
+
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.AgentInfo" >
+    insert into tb_agent_info (cust_id, status, real_name, phone, email,
+      type, eff_date, exp_date, meta_data,
+      total_free_nbr, use_nbr, created_at, 
+      updated_at)
+    values (#{custId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},#{realName,jdbcType=INTEGER},
+      #{phone,jdbcType=INTEGER},#{email,jdbcType=INTEGER},#{type,jdbcType=INTEGER}, #{effDate,jdbcType=VARCHAR},
+      #{expDate,jdbcType=VARCHAR}, #{metaData,jdbcType=VARCHAR}, now(), now())
+  </insert>
+  <update id="updateByCustId" parameterType="org.loxf.jyadmin.dal.po.AgentInfo" >
+    update tb_agent_info
+    set status = #{status,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      meta_data = #{metaData,jdbcType=VARCHAR},
+      eff_date = #{effDate,jdbcType=VARCHAR},
+      exp_date = #{expDate,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = now()
+    where cust_id = #{custId,jdbcType=VARCHAR}
+  </update>
+</mapper>

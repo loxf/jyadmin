@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.ProvinceMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.Province" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="provinceid" property="provinceid" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, provinceid, province
+  </sql>
+  <select id="selectList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from province
+    where 1=1
+    <if test="provinceid!=null and provinceid!=''">
+      and provinceid = #{provinceid}
+    </if>
+    <if test="province!=null and province!=''">
+      and province like concat('%', #{province}, '%')
+    </if>
+  </select>
+
+  <select id="selectProvince" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from province where provinceid = #{provinceid}
+  </select>
+</mapper>

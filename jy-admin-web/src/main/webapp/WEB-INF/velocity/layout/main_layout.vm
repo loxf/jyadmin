@@ -1,0 +1,10 @@
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+#parse("/layout/fragments/css.vm")
+#parse("/layout/fragments/js.vm")
+
+<script type="text/javascript">
+    var contextPath = '${rc.contextPath}';
+    var basePic = "";
+    var baseVideo = "";
+</script>
+$!{screen_content}
