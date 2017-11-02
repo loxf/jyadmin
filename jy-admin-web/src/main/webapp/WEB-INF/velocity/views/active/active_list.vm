@@ -90,7 +90,7 @@
 </script>
 <script type="text/html" id="picTpl">
     {{#  if(d.pic){ }}
-    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.pic }}', 'PIC')">查看</a>
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.pic }}', 'PIC')"><i class="layui-icon">&#xe64a;</i>查看</a>
     {{#  } else { }}
     无
     {{#  } }}

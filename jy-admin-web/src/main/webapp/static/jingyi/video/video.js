@@ -8,14 +8,6 @@ form.on('submit(searchForm)', function(data){
     return false;
 });
 form.render();
-/*
-var laydate = layui.laydate;
-//执行一个laydate实例
-laydate.render({
-    elem: '#createdAt', //指定元素
-    range: '~',
-    format: 'yyyy-MM-dd'
-});*/
 var table = layui.table;
 table.render({ //其它参数在此省略
     id: 'tableReload',
@@ -28,28 +20,33 @@ table.render({ //其它参数在此省略
         {
             field: 'videoName',
             title: '视频名称',
-            width: 280
+            width: 380
         },
         {
             field: 'videoOutId',
             title: '外部ID',
-            width: 180
+            width: 210
+        },
+        {
+            field: 'videoUnique',
+            title: '视频唯一码',
+            width: 210
         },
         {
             field: 'status',
             title: '状态',
-            width: 180 ,
+            width: 210 ,
             templet : '#statusTpl'
         },
-        {
+        /*{
             field: 'metaData',
             title: '参数',
-            width: 480
-        },
+            width: 300
+        },*/
         {
             field: 'videoId',
             title: '操作',
-            width: 200,
+            width: 310,
             fixed: 'right',
             align: 'center',
             toolbar: '#barTable'

@@ -11,7 +11,7 @@
         </div>
         <div class="layui-inline layui-col-lg3">
             <div class="layui-input-inline">
-                <input type="text" name="metaData" style="width: 300px" placeholder="视频参数" class="layui-input">
+                <input type="text" name="videoOutId" style="width: 300px" placeholder="乐视视频ID" class="layui-input">
             </div>
         </div>
         <div class="layui-inline layui-col-lg3">
@@ -44,7 +44,7 @@
     {{#  } else if(d.status==1){ }}
     上传中
     {{#  } else if(d.status==2){ }}
-    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.videoId }}', 'MP4')">查看</a>
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.videoId }}', 'MP4')"><i class="layui-icon">&#xe652;</i>播放</a>
     {{#  } else if(d.status==-2){ }}
     上传失败
     {{#  } else { }}
