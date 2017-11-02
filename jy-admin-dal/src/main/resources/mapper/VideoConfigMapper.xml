@@ -6,123 +6,89 @@
     <result column="video_id" property="videoId" jdbcType="VARCHAR" />
     <result column="video_name" property="videoName" jdbcType="VARCHAR" />
     <result column="video_url" property="videoUrl" jdbcType="VARCHAR" />
-    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
     <result column="video_out_id" property="videoOutId" jdbcType="VARCHAR" />
+    <result column="progress" property="progress" jdbcType="VARCHAR" />
+    <result column="video_unique" property="videoUnique" jdbcType="VARCHAR" />
+    <result column="meta_data" property="metaData" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, video_id, video_name, video_url, status, video_out_id, created_at, updated_at
+    id, video_id, video_name, video_url, status, progress, video_unique, video_out_id, meta_data, remark, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from tb_video_config
-    where id = #{id,jdbcType=BIGINT}
+    where video_id = #{videoId}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tb_video_config
-    where id = #{id,jdbcType=BIGINT}
+    where video_id = #{videoId}
   </delete>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.VideoConfig" >
-    insert into tb_video_config (id, video_id, video_name, 
-      video_url, status, video_out_id, 
+    insert into tb_video_config (id, video_id, video_name, progress, video_unique,
+      video_url, status, video_out_id, meta_data, remark,
       created_at, updated_at)
-    values (#{id,jdbcType=BIGINT}, #{videoId,jdbcType=VARCHAR}, #{videoName,jdbcType=VARCHAR}, 
-      #{videoUrl,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{videoOutId,jdbcType=VARCHAR}, 
-      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+    values (#{id,jdbcType=BIGINT}, #{videoId,jdbcType=VARCHAR}, #{videoName,jdbcType=VARCHAR}, '0', #{videoUnique},
+      #{videoUrl,jdbcType=VARCHAR}, 0, #{videoOutId,jdbcType=VARCHAR}, #{metaData,jdbcType=VARCHAR},
+       #{remark,jdbcType=VARCHAR}, now(), now())
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.VideoConfig" >
-    insert into tb_video_config
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="videoId != null" >
-        video_id,
-      </if>
-      <if test="videoName != null" >
-        video_name,
-      </if>
-      <if test="videoUrl != null" >
-        video_url,
-      </if>
-      <if test="status != null" >
-        status,
-      </if>
-      <if test="videoOutId != null" >
-        video_out_id,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="videoId != null" >
-        #{videoId,jdbcType=VARCHAR},
-      </if>
-      <if test="videoName != null" >
-        #{videoName,jdbcType=VARCHAR},
-      </if>
-      <if test="videoUrl != null" >
-        #{videoUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="videoOutId != null" >
-        #{videoOutId,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.VideoConfig" >
-    update tb_video_config
-    <set >
-      <if test="videoId != null" >
-        video_id = #{videoId,jdbcType=VARCHAR},
-      </if>
-      <if test="videoName != null" >
-        video_name = #{videoName,jdbcType=VARCHAR},
-      </if>
-      <if test="videoUrl != null" >
-        video_url = #{videoUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=VARCHAR},
-      </if>
-      <if test="videoOutId != null" >
-        video_out_id = #{videoOutId,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
   <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.VideoConfig" >
     update tb_video_config
-    set video_id = #{videoId,jdbcType=VARCHAR},
-      video_name = #{videoName,jdbcType=VARCHAR},
-      video_url = #{videoUrl,jdbcType=VARCHAR},
-      status = #{status,jdbcType=VARCHAR},
-      video_out_id = #{videoOutId,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+    set video_name = #{videoName,jdbcType=VARCHAR},
+      updated_at = now()
+    where video_id = #{videoId,jdbcType=VARCHAR}
   </update>
+
+  <update id="updateProgress" parameterType="org.loxf.jyadmin.dal.po.VideoConfig" >
+    update tb_video_config
+    set
+    <if test="status!=null and status!=''">
+      status = #{status},
+    </if>
+    <if test="remark!=null and remark!=''">
+      remark = #{remark},
+    </if>
+    <if test="progress!=null and progress!=''">
+      progress = #{progress},
+    </if>
+    updated_at = now()
+    where video_id = #{videoId,jdbcType=VARCHAR}
+  </update>
+
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.VideoConfig">
+    select count(1)
+    from tb_video_config
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.VideoConfig">
+    select
+    <include refid="Base_Column_List" />
+    from tb_video_config
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by id desc
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+
+  <sql id="WHERE_SQL">
+    <if test="videoName!=null and videoName!=''">
+      and video_name like CONCAT('%', #{videoName},'%')
+    </if>
+    <if test="status!=null and status!=''">
+      and status = #{status}
+    </if>
+    <if test="videoOutId!=null and videoOutId!=''">
+      and video_out_id = #{videoOutId}
+    </if>
+    <if test="metaData!=null and metaData!=''">
+      and meta_data like CONCAT('%',#{metaData},'%')
+    </if>
+  </sql>
 </mapper>

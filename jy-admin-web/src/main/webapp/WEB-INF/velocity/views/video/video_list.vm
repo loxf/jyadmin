@@ -1,0 +1,70 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">视频名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="videoName" placeholder="视频名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <div class="layui-input-inline">
+                <input type="text" name="metaData" style="width: 300px" placeholder="视频参数" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <div class="layui-input-inline">
+                <select name="status" lay-search="">
+                    <option value="">状态</option>
+                    <option value="0">等待上传</option>
+                    <option value="1">上传中</option>
+                    <option value="2">上传完成</option>
+                    <option value="-2">上传失败</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
+            <input type="button" class="layui-btn" onclick="addVideo()" value="新增视频"/>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+<script type="text/html" id="barTable">
+    <a class="layui-btn layui-btn-mini" lay-event="editVideo">编辑</a>
+    <a class="layui-btn layui-btn-mini" lay-event="deleteVideo">删除</a>
+</script>
+<script type="text/html" id="statusTpl">
+    {{#  if(d.status==0){ }}
+    等待上传
+    {{#  } else if(d.status==1){ }}
+    上传中
+    {{#  } else if(d.status==2){ }}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.videoId }}', 'MP4')">查看</a>
+    {{#  } else if(d.status==-2){ }}
+    上传失败
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+<script type="text/html" id="M_editVideo">
+    <div class="layui-form-item" style="margin-top: 10px">
+        <label class="layui-form-label">视频名称</label>
+        <div class="layui-input-inline">
+            <input type="text" id="J_videoName" value="{{d.videoName}}" style="width: 300px" placeholder="请输入视频名称" class="layui-input">
+            <input type="hidden" id="J_videoId" value="{{d.videoId}}" class="layui-input">
+            <input type="hidden" id="J_videoOutId" value="{{d.videoOutId}}" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <a class="layui-btn" onclick="updateVideo()">修改</a>
+        </div>
+    </div>
+</script>
+<script src="${rc.contextPath}/static/jingyi/common.js"></script>
+<script src="${rc.contextPath}/static/jingyi/video/video.js"></script>

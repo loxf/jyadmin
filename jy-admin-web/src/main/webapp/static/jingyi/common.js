@@ -3,6 +3,7 @@ function playMedia(media, type) {
         var imgPath = basePic + media;
         layer.open({
             type: 1
+            , title: "图片"
             , offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
             , id: 'playMediaLayer' //防止重复弹出
             , content: '<img src="' + imgPath + '" width="350px" height="180px" />'
@@ -10,27 +11,31 @@ function playMedia(media, type) {
         });
     } else if (type === 'MP4') {
         // 根据media 获取视频链接
-        /*$.ajax({
+        $.ajax({
             type: "POST",
-            url:"queryVideoPath.html",
+            url: contextPath + "/admin/video/getUrl.html",
             data : {
                 videoId : media
             },
             dataType:"json",
-            success: function(data) {*/
-        // TODO 获取视频链接
-        var videoPath = media;
-        layer.open({
-            type: 2
-            , offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-            , id: 'playMediaLayer' //防止重复弹出
-            , area: ['750px', '500px']
-            , content: videoPath
-            , maxmin: true
-            , shade: 0.3
-        });
-        /* }
-     });*/
+            success: function(data) {
+                if(data.code==1){
+                    var videoPath = data.data;
+                    layer.open({
+                        type: 2
+                        , title: "视频"
+                        , offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                        , id: 'playMediaLayer' //防止重复弹出
+                        , area: ['680px', '430px']
+                        , content: videoPath
+                        , maxmin: true
+                        , shade: 0.3
+                    });
+                } else {
+                    layer.msg(data.msg);
+                }
+         }
+     });
     } else if (type === 'HTML') {
         // 根据media 获取html_info
         $.ajax({
@@ -45,6 +50,7 @@ function playMedia(media, type) {
                     var videoPath = media;
                     layer.open({
                         type: 1
+                        , title: "详情"
                         , offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
                         , id: 'playMediaLayer' //防止重复弹出
                         , area: ['750px', '500px']

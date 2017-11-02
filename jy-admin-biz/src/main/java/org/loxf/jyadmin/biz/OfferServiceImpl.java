@@ -105,7 +105,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public BaseResult<List<OfferDto>> showOffer(String offerId, String relType){
+    public BaseResult<List<OfferDto>> showOfferRel(String offerId, String relType){
         List<Offer> list = offerMapper.showOfferByOfferIdAndRelType(offerId, relType);
         List<OfferDto> result = new ArrayList<>();
         if(CollectionUtils.isNotEmpty(list)){

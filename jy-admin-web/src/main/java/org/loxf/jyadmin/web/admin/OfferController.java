@@ -14,15 +14,12 @@ import org.loxf.jyadmin.client.dto.OfferRelDto;
 import org.loxf.jyadmin.client.service.HtmlInfoService;
 import org.loxf.jyadmin.client.service.OfferCatalogService;
 import org.loxf.jyadmin.client.service.OfferService;
-import org.loxf.jyadmin.dal.po.OfferCatalog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,6 +51,8 @@ public class OfferController extends BaseControl<OfferDto> {
         if("CLASS".equals(type)) {
             return "main/offer/addClass";
         } else if("OFFER".equals(type)) {
+            BaseResult<List<OfferDto>> baseResult = offerService.pagerOfferAndActive(null);
+            model.addAttribute("offerAndActiveList", baseResult.getData());
             return "main/offer/addOffer";
         } else {
             return "main/offer/addClass";
@@ -83,6 +82,8 @@ public class OfferController extends BaseControl<OfferDto> {
             }
             // 套餐与课程的区别
             if("OFFER".equals(offerDto.getOfferType())) {
+                BaseResult<List<OfferDto>> baseResult = offerService.pagerOfferAndActive(null);
+                model.addAttribute("offerAndActiveList", baseResult.getData());
                 return "main/offer/editOffer";
             } else {
                 return "main/offer/editClass";
@@ -161,7 +162,7 @@ public class OfferController extends BaseControl<OfferDto> {
     @RequestMapping("/showOffer")
     @ResponseBody
     public BaseResult<List<OfferDto>> showOffer(String offerId, String relType){
-        return offerService.showOffer(offerId, relType);
+        return offerService.showOfferRel(offerId, relType);
     }
     private List<OfferCatalogDto> initOfferCatalog(){
         OfferCatalogDto offerCatalogDto = new OfferCatalogDto();

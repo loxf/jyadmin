@@ -14,7 +14,7 @@
         <div class="layui-inline">
             <label class="layui-form-label">商品分类</label>
             <div class="layui-input-inline">
-                <select name="catalogId" id="catalogId" lay-search=""><!-- lay-verify="required" -->
+                <select name="catalogId" id="catalogId" lay-search="">
                     <option value="">选择商品分类</option>
                     #foreach($item in $catalogDtos)
                         <option value="$!{item.catalogId}">$!{item.catalogName}</option>
@@ -54,7 +54,7 @@
         <label class="layui-form-label">套餐图片</label>
         <a class="layui-btn uploadImg" id="offerPicBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=OFFER'}">
             <i class="layui-icon">&#xe62f;</i>上传套餐图片（宽300*高180）</a>
-        <input type="hidden" name="offerPic" id="offerPic">
+        <input type="hidden" name="offerPic" id="offerPic" lay-verify="required">
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">图片预览</label>
@@ -64,11 +64,8 @@
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">
-            <a class="layui-icon" style="font-size: 22px; color: #009688;" onclick="addOfferDiv()">&#xe608;</a> 套餐内容
+            <a class="layui-icon" style="font-size: 18px; color: #009688;" onclick="addOfferDiv()">&#xe608;商品</a>
         </label>
-        <div class="layui-input-block">
-            #*<table class="layui-table" id="offerList" lay-filter="offerListFilter"></table>*#
-        </div>
     </div>
     <div class="layui-form-item" id="J_offerDiv">
     </div>
@@ -95,35 +92,23 @@
         </div>
     </div>
 </form>
+<!-- 套餐内容选择模板 -->
 <script type="text/html" id="M_offerList">
     <div class="layui-inline" id="OFFER_DIV{{d.count}}">
         <label class="layui-form-label">
             <a class="layui-icon" onclick="delOfferDiv({{d.count}})" style="font-size: 22px; color: #009688;">&#xe640;</a>商品{{d.count}}
         </label>
-        <div class="layui-input-inline" style="width: 150px;">
-            <select name="offerRel" id="catalogId" lay-search="">
+        <div class="layui-input-inline" style="width: 280px;z-index: {{d.zIndex}}" >
+            <select name="offerRel{{d.count}}" id="relOfferId{{d.count}}" lay-search="" lay-verify="require">
                 <option value="">选择商品/活动</option>
                 #foreach($item in $offerAndActiveList)
-                    <option value="$!{item.catalogId}">[$!{item.offerType}]-[$!{item.saleMoney}]-[$!{item.offerName}]</option>
+                    <option value="$!{item.offerId}-$!{item.offerType}">
+                        [#if($!{item.offerType}=='VIP')服务#elseif($!{item.offerType}=='CLASS')课程#elseif($!{item.offerType}=='ACTIVE')活动#elseif($!{item.offerType}=='OFFER')套餐#end]
+                        -[¥$!{item.saleMoney}]-[$!{item.offerName}]</option>
                 #end
             </select>
+            <input type="hidden" name="offerSort{{d.count}}" value="{{d.count}}"/>
         </div>
-        <div class="layui-input-inline" style="width: 150px;">
-            <input type="number" name="sort{{d.count}}" placeholder="顺序" min="1" max="100" autocomplete="off" class="layui-input">
-        </div>
-        #*<div class="layui-input-inline" style="width: 150px;">
-            <label>
-            {{#  if(d.buyPrivi){ }}
-            {{#  var result = "", json = eval("("+d.buyPrivi+")");
-                result += (json.NONE?" 普通：" + json.NONE:"");
-                result += (json.VIP?" VIP：" + json.VIP:"");
-                result += (json.SVIP?" SVIP：" + json.SVIP:"");}}
-            {{ result }}
-            {{#  } else { }}
-            不允许直接购买
-            {{#  } }}
-            </label>
-        </div>*#
         <br>
     </div>
 </script>
@@ -144,64 +129,9 @@
     var form = layui.form
             ,layer = layui.layer
             ,upload = layui.upload
-            ,table = layui.table
+            ,laytpl = layui.laytpl
             ,offerNbr = 0;
 
-    //监听表格复选框选择
-    /*table.on('checkbox(offerListFilter)', function(obj){
-        //
-    });
-    table.render({ //其它参数在此省略
-        url: 'simpleOfferList.html',
-        id:'offerList',
-        method: 'POST',
-        elem: '#offerList', //指定原始表格元素选择器（推荐id选择器）
-        height: 280, //容器高度
-        cols: [[
-            {checkbox:true, fixed: true},
-            {
-                field: 'sort',
-                title: '顺序',
-                edit:'text',
-                style:'background-color: #009688; color: #fff;',
-                width: 80
-            },
-            {
-                field: 'offerName',
-                title: '商品/活动',
-                width: 280
-            },
-            {
-                field: 'offerType',
-                title: '类型',
-                width: 100,
-                templet:'#offerTypeTpl'
-            },
-            {
-                field: 'saleMoney',
-                title: '价格',
-                width: 80
-            },
-            {
-                field: 'buyPrivi',
-                title: '售价',
-                width: 260,
-                templet:'#buyPriviTpl'
-            }
-        ]],
-        request: {
-            pageName: 'page', //页码的参数名称，默认：page
-            limitName: 'size' //每页数据量的参数名，默认：limit
-        },
-        response: {
-            statusName: 'code', //数据状态的字段名称，默认：code
-            statusCode: 1, //成功的状态码，默认：0
-            msgName: 'msg', //状态信息的字段名称，默认：msg
-            countName: 'total', //数据总数的字段名称，默认：count
-            dataName: 'data' //数据列表的字段名称，默认：data
-        },
-        even: true
-    });*/
     //同时绑定多个元素，并将属性设定在元素上
     upload.render({
         elem: '.uploadImg'
@@ -238,20 +168,20 @@
 
     //监听提交
     form.on('submit(offerData)', function(data){
-        var checkStatus = table.checkStatus('offerList')
-                ,relData = checkStatus.data;
+        if(offerNbr==0){
+            parent.layer.msg("套餐至少包含一个商品/活动");
+            return false;
+        }
         var childOffer = [];
-        if(relData && relData.length){
-            for(var idx in relData){
-                childOffer.push({
-                    relId: relData[idx].offerId,
-                    offerType: relData[idx].offerType,
-                    relType: 'OFFER',
-                    sort: relData[idx].sort==undefined?50:relData[idx].sort
-                });
-            }
-        } else {
-            parent.layer.msg("请选择套餐内容");
+        for(var i=1;i<=offerNbr;i++){
+            var value = eval("data.field.offerRel"+i);
+            var tmp = value.split("-");
+            childOffer.push({
+                relId: tmp[0],
+                offerType: tmp[1],
+                relType: 'OFFER',
+                sort: eval("data.field.offerSort"+i)
+            });
         }
         var htmlId = saveHtml(data.field.htmlId);
         if(!htmlId){
@@ -322,15 +252,15 @@
         }
     });
 
-    form.render();
-
     function addOfferDiv(){
         var data = { //数据
-            count : ++offerNbr
+            count : ++offerNbr,
+            zIndex:100000-offerNbr
         }
         var getTpl = $("#M_offerList").html()
         laytpl(getTpl).render(data, function(html){
             $("#J_offerDiv").append(html);
+            form.render();
         });
     }
 
@@ -339,7 +269,8 @@
             parent.layer.msg("请先删除商品" + offerNbr);
             return false;
         }
-        $("#TEARCHE_DIV"+index).remove();
-        --teacherNbr;
+        $("#OFFER_DIV"+index).remove();
+        --offerNbr;
     }
+    addOfferDiv();
 </script>

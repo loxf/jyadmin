@@ -2,16 +2,20 @@ package org.loxf.jyadmin.dal.dao;
 
 import org.loxf.jyadmin.dal.po.VideoConfig;
 
+import java.util.List;
+
 public interface VideoConfigMapper {
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(String id);
 
     int insert(VideoConfig record);
 
-    int insertSelective(VideoConfig record);
-
-    VideoConfig selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(VideoConfig record);
+    VideoConfig selectByPrimaryKey(String id);
 
     int updateByPrimaryKey(VideoConfig record);
+
+    int count(VideoConfig record);
+
+    List<VideoConfig> list(VideoConfig record);
+
+    int updateProgress(VideoConfig record);
 }

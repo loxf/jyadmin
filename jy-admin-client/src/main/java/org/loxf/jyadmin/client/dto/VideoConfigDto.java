@@ -9,9 +9,17 @@ public class VideoConfigDto extends BaseModel {
 
     private String videoUrl;
 
-    private String status;
+    private Integer status;
+
+    private String progress;
+
+    private String videoUnique;
+
+    private String remark;
 
     private String videoOutId;
+
+    private String metaData;
 
     public String getVideoId() {
         return videoId;
@@ -37,12 +45,36 @@ public class VideoConfigDto extends BaseModel {
         this.videoUrl = videoUrl == null ? null : videoUrl.trim();
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
-        this.status = status == null ? null : status.trim();
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getProgress() {
+        return progress;
+    }
+
+    public void setProgress(String progress) {
+        this.progress = progress;
+    }
+
+    public String getVideoUnique() {
+        return videoUnique;
+    }
+
+    public void setVideoUnique(String videoUnique) {
+        this.videoUnique = videoUnique;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public String getVideoOutId() {
@@ -53,4 +85,11 @@ public class VideoConfigDto extends BaseModel {
         this.videoOutId = videoOutId == null ? null : videoOutId.trim();
     }
 
+    public String getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
+    }
 }

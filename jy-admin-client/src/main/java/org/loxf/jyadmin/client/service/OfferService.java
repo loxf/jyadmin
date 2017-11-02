@@ -14,6 +14,6 @@ public interface OfferService {
     BaseResult updateOffer(OfferDto offerDto, List<OfferRelDto> offerRelDtos);
     BaseResult deleteOffer(String offerId);
     BaseResult onOrOffOffer(String offerId, Integer status);
-    BaseResult<List<OfferDto>> showOffer(String offerId, String relType);
+    BaseResult<List<OfferDto>> showOfferRel(String offerId, String relType);
     BaseResult<List<OfferDto>> pagerOfferAndActive(String name);
 }

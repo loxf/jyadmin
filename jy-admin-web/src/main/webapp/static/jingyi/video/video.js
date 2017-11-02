@@ -1,5 +1,6 @@
 
-var form = layui.form;
+var form = layui.form
+    ,laytpl = layui.laytpl;
 //监听提交
 form.on('submit(searchForm)', function(data){
     table.reload('tableReload',
@@ -7,14 +8,14 @@ form.on('submit(searchForm)', function(data){
     return false;
 });
 form.render();
-
+/*
 var laydate = layui.laydate;
 //执行一个laydate实例
 laydate.render({
     elem: '#createdAt', //指定元素
     range: '~',
     format: 'yyyy-MM-dd'
-});
+});*/
 var table = layui.table;
 table.render({ //其它参数在此省略
     id: 'tableReload',
@@ -25,25 +26,31 @@ table.render({ //其它参数在此省略
     page: true,
     cols: [[
         {
-            field: 'catalogName',
-            title: '分类名称',
-            width: 200
+            field: 'videoName',
+            title: '视频名称',
+            width: 280
         },
         {
-            field: 'pic',
-            title: '分类图片',
-            width: 100 ,
-            templet : '#picTpl'
-        },
-        {
-            field: 'createdAt',
-            title: '创建时间',
+            field: 'videoOutId',
+            title: '外部ID',
             width: 180
         },
         {
-            field: 'offerId',
+            field: 'status',
+            title: '状态',
+            width: 180 ,
+            templet : '#statusTpl'
+        },
+        {
+            field: 'metaData',
+            title: '参数',
+            width: 480
+        },
+        {
+            field: 'videoId',
             title: '操作',
             width: 200,
+            fixed: 'right',
             align: 'center',
             toolbar: '#barTable'
         }
@@ -69,43 +76,68 @@ table.on('tool(userDataTable)', function (obj) { //注：tool是工具条事件�
     var layEvent = obj.event; //获得 lay-event 对应的值
     var tr = obj.tr; //获得当前行 tr 的DOM对象
 
-    if (layEvent === 'editOfferCatalog') { //编辑分类
-        editOfferCatalog(data, layEvent, obj);
-    } else if (layEvent === 'deleteOfferCatalog') {// 删除分类
-        deleteOfferCatalog(data, layEvent, obj);
+    if (layEvent === 'editVideo') { //编辑视频
+        editVideo(data, layEvent, obj);
+    } else if (layEvent === 'deleteVideo') {// 删除视频
+        deleteVideo(data, layEvent, obj);
     }
 });
 
-function addOfferCatalog() {
+function addVideo() {
     var addLayer = layer.open({
         type: 2
         ,offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-        ,id: 'addOfferCatalog' //防止重复弹出
+        ,id: 'addVideo' //防止重复弹出
         ,area: ['1000px', '600px']
-        ,content: 'toAddOfferCatalog.html'
+        ,content: 'toAddVideo.html'
         ,shade: 0.3
     });
 }
 
-function editOfferCatalog(data, layEvent, obj) {
-    var editLayer = layer.open({
-        type: 2
-        //,offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
-        ,id: layEvent //防止重复弹出
-        ,area: ['1000px', '600px']
-        ,content: 'toEditOfferCatalog.html?catalogId=' + data.catalogId
-        ,maxmin:true
-        ,shade: 0.3
+function updateVideo() {
+    $.ajax({
+        type: "POST",
+        url:"editVideo.html",
+        data : {
+            videoId : $("#J_videoId").val(),
+            videoOutId : $("#J_videoOutId").val(),
+            videoName : $("#J_videoName").val()
+        },
+        dataType:"json",
+        success: function(data) {
+            layer.msg(data.msg, {
+                time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
+            }, function(){
+                parent.searchList();
+               parent.layer.closeAll();
+            });
+        }
     });
 }
 
-function deleteOfferCatalog(data, layEvent, obj) {
-    layer.confirm('确认删除分类？', {icon: 3, title:'警告'}, function(index){
+function editVideo(data, layEvent, obj) {
+    var getTpl = $("#M_editVideo").html()
+    laytpl(getTpl).render(data, function(html){
+        var editLayer = layer.open({
+            type: 1
+            //,offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+            ,id: layEvent //防止重复弹出
+            ,title: '修改视频名称'
+            ,area: ['500px', '300px']
+            ,content: html
+            ,maxmin:true
+            ,shade: 0.3
+        });
+    });
+}
+
+function deleteVideo(data, layEvent, obj) {
+    layer.confirm('确认删除视频？', {icon: 3, title:'警告'}, function(index){
         $.ajax({
             type: "POST",
-            url:"delOfferCatalog.html",
+            url:"delVideo.html",
             data : {
-                catalogId : data.catalogId
+                videoId : data.videoId
             },
             dataType:"json",
             success: function(data) {

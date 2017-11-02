@@ -1,0 +1,83 @@
+<div class="layui-row">
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th>视频名称</th>
+            <th>上传进度</th>
+            <th>上传速度</th>
+            <th>上传状态</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><label id="videoId"></label></td>
+            <td><label id="videoProgress"></label></td>
+            <td><label id="videoSpeed"></label></td>
+            <td><label id="videoStatus"></label></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div class="layui-row" style="text-align: center">
+    <input type="button" class="layui-btn uploadBtn" id="uploadBtn" value="开始上传" />
+    <input type="button" class="layui-btn uploadBtn" id='fileSelecter' value="添加视频" />
+</div>
+<!--使用例子-->
+<script type="text/javascript" src="${rc.contextPath}/static/jingyi/video/html5Upload.js"></script>
+<script type="text/javascript">
+    var jyVideoId ;
+    $(function () {
+        //添加视频
+        $("#fileSelecter").addFile({
+            addFile: function (data) { //添加文件时的回调
+                $("#videoId").html(data.data.fileName);
+                $("#videoProgress").html("0");
+                $("#videoSpeed").html("0");
+                $("#videoStatus").html("等待上传");
+            },
+            addFileError: function (data) { //添加文件时发生错误的回调
+                alert("错误码：" + data.code + ";错误消息：" + data.msg);
+            }
+        });
+
+        //开始上传
+        $("#uploadBtn").upload({
+            uploadInitUrl: "/admin/video/addVideo.html",//初始化上传地址
+            uploadProgress: function (data) { //进度回调
+                updateProgress(jyVideoId, 1, data.progress, null);
+                $("#videoProgress").html(data.progress);
+                $("#videoSpeed").html(data.speed);
+                $("#videoStatus").html("上传中");
+            },
+            uploadFinish: function (data) { //上传完成回调
+                updateProgress(jyVideoId, 2, "100%", "已上传");
+                $("#videoProgress").html("100%");
+                $("#videoSpeed").html("0");
+                $("#videoStatus").html("已上传");
+            },
+            uploadError: function (data) { //上传错误回调
+                updateProgress(jyVideoId, -2, null, "上传错误！错误码：" + data.code + ";错误消息：" + data.msg);
+                $("#videoStatus").html("上传错误！错误码：" + data.code + ";错误消息：" + data.msg);
+            },
+            uploadAbort:function(data){ //中断
+                updateProgress(jyVideoId, -2, null, "上传中断");
+            }
+        });
+    });
+    function updateProgress(jyVideoId, status, progress, remark) {
+        //记录进度
+        $.ajax({
+            type: "POST",
+            url:"updateProgress.html",
+            data : {
+                videoId : jyVideoId,
+                status : status,
+                progress : progress,
+                remark : remark
+            },
+            dataType:"json",
+            success: function(data) {
+            }
+        });
+    }
+</script>
