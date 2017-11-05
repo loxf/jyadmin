@@ -14,6 +14,7 @@ import org.loxf.jyadmin.dal.po.OfferCatalog;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class OfferCatalogServiceImpl implements OfferCatalogService {
     private OfferMapper offerMapper;
 
     @Override
+    @Transactional
     public BaseResult<String> addCatalog(String catalogName, String picUrl) {
         OfferCatalog offerCatalog = new OfferCatalog();
         offerCatalog.setCatalogName(catalogName);
@@ -40,6 +42,7 @@ public class OfferCatalogServiceImpl implements OfferCatalogService {
     }
 
     @Override
+    @Transactional
     public BaseResult<String> updateCatalog(OfferCatalogDto catalogDto){
         if(StringUtils.isNotBlank(catalogDto.getCatalogId())) {
             OfferCatalog offerCatalog = new OfferCatalog();
@@ -52,6 +55,7 @@ public class OfferCatalogServiceImpl implements OfferCatalogService {
     }
 
     @Override
+    @Transactional
     public BaseResult<String> rmCatalog(String catalogId) {
         // 判断分类是否包含商品。包含不能删除
         Offer offer = new Offer();

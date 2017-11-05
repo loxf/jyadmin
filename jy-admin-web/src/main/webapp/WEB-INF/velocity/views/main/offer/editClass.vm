@@ -62,15 +62,14 @@
 
     <div class="layui-form-item">
         <label class="layui-form-label">商品图片</label>
-        <a class="layui-btn uploadImg" id="offerPicBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=OFFER'}">
-            <i class="layui-icon">&#xe62f;</i>上传商品图片（宽300*高180）</a>
-        <input type="hidden" name="offerPic" value="$!{offer.offerPic}" id="offerPic">
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">图片预览</label>
-        <div class="layui-upload-list">
-            <img class="layui-upload-img" style="width: 300px; height: 180px" id="offerPicImg"
-                #if(${offer.offerPic}) src="$!{basePic}$!{offer.offerPic}" #end >
+        <div class="layui-input-inline">
+            <a class="layui-btn uploadImg" id="offerPicBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=OFFER'}">
+                <i class="layui-icon">&#xe62f;</i>上传商品图片（宽300*高180）</a>
+            <div class="layui-upload-list">
+                <img class="layui-upload-img" style="max-width: 350px" id="offerPicImg"
+                    #if(${offer.offerPic}) src="$!{basePic}$!{offer.offerPic}" #end >
+            </div>
+            <input type="hidden" name="offerPic" value="$!{offer.offerPic}" id="offerPic">
         </div>
     </div>
     <div class="layui-form-item">

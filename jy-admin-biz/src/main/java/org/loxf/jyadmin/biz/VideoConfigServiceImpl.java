@@ -12,6 +12,7 @@ import org.loxf.jyadmin.dal.po.VideoConfig;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ public class VideoConfigServiceImpl implements VideoConfigService {
     private VideoConfigMapper videoConfigMapper ;
 
     @Override
+    @Transactional
     public BaseResult<String> addVideo(VideoConfigDto dto) {
         if(StringUtils.isBlank(dto.getVideoName())||StringUtils.isBlank(dto.getVideoOutId())){
             return new BaseResult<>(BaseConstant.FAILED, "参数不全");
@@ -39,12 +41,14 @@ public class VideoConfigServiceImpl implements VideoConfigService {
     }
 
     @Override
+    @Transactional
     public BaseResult<String> delVideo(String videoId) {
         videoConfigMapper.deleteByPrimaryKey(videoId);
         return new BaseResult<>(videoId);
     }
 
     @Override
+    @Transactional
     public BaseResult<String> editVideo(VideoConfigDto dto) {
         if(StringUtils.isBlank(dto.getVideoId())){
             return new BaseResult<>(BaseConstant.FAILED, "主键为空");
@@ -86,6 +90,7 @@ public class VideoConfigServiceImpl implements VideoConfigService {
     }
 
     @Override
+    @Transactional
     public BaseResult updateProgress(VideoConfigDto dto) {
         if(StringUtils.isBlank(dto.getVideoId())){
             return new BaseResult(BaseConstant.FAILED, "主键为空");

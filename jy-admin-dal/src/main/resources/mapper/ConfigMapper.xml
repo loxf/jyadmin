@@ -3,115 +3,96 @@
 <mapper namespace="org.loxf.jyadmin.dal.dao.ConfigMapper" >
   <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.Config" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="catalog" property="catalog" jdbcType="VARCHAR" />
     <result column="config_code" property="configCode" jdbcType="VARCHAR" />
     <result column="config_name" property="configName" jdbcType="VARCHAR" />
     <result column="config_value" property="configValue" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, config_code, config_name, config_value, type, created_at, updated_at
+    id, `catalog`, config_code, config_name, config_value, type, status, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+
+  <select id="selectById" resultMap="BaseResultMap">
+    select
     <include refid="Base_Column_List" />
     from tb_config
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+
+  <select id="selectConfig" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_config
+    where config_code = #{configCode} and `catalog` = #{catalog}
+  </select>
+
+  <delete id="deleteConfig" >
     delete from tb_config
-    where id = #{id,jdbcType=BIGINT}
+    where config_code = #{configCode} and `catalog` = #{catalog}
   </delete>
+
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Config" >
-    insert into tb_config (id, config_code, config_name, 
-      config_value, type, created_at, 
+    insert into tb_config (`catalog`, config_code, config_name,
+      config_value, `type`, status, created_at,
       updated_at)
-    values (#{id,jdbcType=BIGINT}, #{configCode,jdbcType=VARCHAR}, #{configName,jdbcType=VARCHAR}, 
-      #{configValue,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
-      #{updatedAt,jdbcType=TIMESTAMP})
+    values (#{catalog,jdbcType=VARCHAR}, #{configCode,jdbcType=VARCHAR}, #{configName,jdbcType=VARCHAR},
+      #{configValue,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 1, now(), now())
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.Config" >
-    insert into tb_config
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="configCode != null" >
-        config_code,
-      </if>
-      <if test="configName != null" >
-        config_name,
-      </if>
-      <if test="configValue != null" >
-        config_value,
-      </if>
-      <if test="type != null" >
-        type,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="configCode != null" >
-        #{configCode,jdbcType=VARCHAR},
-      </if>
-      <if test="configName != null" >
-        #{configName,jdbcType=VARCHAR},
-      </if>
-      <if test="configValue != null" >
-        #{configValue,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.Config" >
-    update tb_config
-    <set >
-      <if test="configCode != null" >
-        config_code = #{configCode,jdbcType=VARCHAR},
-      </if>
-      <if test="configName != null" >
-        config_name = #{configName,jdbcType=VARCHAR},
-      </if>
-      <if test="configValue != null" >
-        config_value = #{configValue,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        type = #{type,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
   <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.Config" >
     update tb_config
     set config_code = #{configCode,jdbcType=VARCHAR},
       config_name = #{configName,jdbcType=VARCHAR},
       config_value = #{configValue,jdbcType=VARCHAR},
       type = #{type,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+      updated_at = now()
+    where id = #{id}
+  </update>
+
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.Config">
+    select count(1)
+    from tb_config
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by id DESC
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Config">
+    select <include refid="Base_Column_List"/>
+    from tb_config
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+
+  <sql id="WHERE_SQL">
+    <if test="catalog!=null and catalog!=''">
+      and `catalog` = #{catalog}
+    </if>
+    <if test="configCode!=null and configCode!=''">
+      and config_code = #{configCode}
+    </if>
+    <if test="configName!=null and configName!=''">
+      and `config_name` like concat('%', #{configName} ,'%')
+    </if>
+    <if test="type!=null and type!=''">
+      and `type` = #{type}
+    </if>
+    <if test="status!=null and status!=''">
+      and `status` = #{status}
+    </if>
+  </sql>
+
+  <update id="onOrOffConfig" parameterType="org.loxf.jyadmin.dal.po.Config" >
+    update tb_config
+    set status = #{status},
+    updated_at = now()
+    where id = #{id}
   </update>
 </mapper>

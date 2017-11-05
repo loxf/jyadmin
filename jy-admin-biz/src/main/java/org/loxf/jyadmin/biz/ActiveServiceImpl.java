@@ -16,6 +16,7 @@ import org.loxf.jyadmin.dal.po.Province;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,7 @@ public class ActiveServiceImpl implements ActiveService {
     }
 
     @Override
+    @Transactional
     public BaseResult newActive(ActiveDto activeDto) {
         Active active = new Active();
         BeanUtils.copyProperties(activeDto, active);
@@ -100,6 +102,7 @@ public class ActiveServiceImpl implements ActiveService {
     }
 
     @Override
+    @Transactional
     public BaseResult updateActive(ActiveDto activeDto){
         Active againPO = activeMapper.selectByActiveId(activeDto.getActiveId());
         if(againPO.getStatus()==1){
@@ -112,6 +115,7 @@ public class ActiveServiceImpl implements ActiveService {
     }
 
     @Override
+    @Transactional
     public BaseResult deleteActive(String activeId){
         Active active = activeMapper.selectByActiveId(activeId);
         if(active==null){
@@ -128,6 +132,7 @@ public class ActiveServiceImpl implements ActiveService {
     }
 
     @Override
+    @Transactional
     public BaseResult onOrOffActive(String activeId, Integer status){
         if(status==0){
             // 查询当前活动的参与人数

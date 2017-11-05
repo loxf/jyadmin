@@ -18,38 +18,38 @@ var menu = {
                 menuHref: contextPath + '/admin/partner/index.html'
             }, {
                 menuName: '合伙人审核',
-                menuHref: ''
+                menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
             }]
         },
         {
             menuName: '积分管理',
-            menuHref: ''
+            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
         },
         {
             menuName: '余额管理',
-            menuHref: ''
+            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
         },
         {
             menuName: '银行卡管理',
-            menuHref: ''
+            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
         }
     ],
     ORDER: [
         {
             menuName: '全部订单',
-            menuHref: ''
+            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
         },
         {
             menuName: '提现管理',
-            menuHref: ''
+            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
         },
         {
             menuName: '公司收入',
-            menuHref: ''
+            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
         },
         {
             menuName: '用户收入',
-            menuHref: ''
+            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
         }
     ],
     OFFER: [
@@ -72,20 +72,20 @@ var menu = {
     ],
     CONFIG: [
         {
-            menuName: '运行配置',
-            menuHref: ''
-        },
-        {
             menuName: '支付设置',
-            menuHref: ''
+            menuHref: contextPath + '/admin/config/index.html?catalog=PAY'
         },
         {
             menuName: '积分规则',
-            menuHref: ''
+            menuHref: contextPath + '/admin/config/index.html?catalog=BP'
         },
         {
             menuName: '公司信息',
-            menuHref: ''
+            menuHref: contextPath + '/admin/config/index.html?catalog=COM'
+        },
+        {
+            menuName: '运行配置',
+            menuHref: contextPath + '/admin/config/index.html?catalog=RUNTIME'
         }
     ]
 }

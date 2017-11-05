@@ -105,9 +105,9 @@
     </if>
   </sql>
 
-  <delete id="deleteOldCust" parameterType="java.lang.Long" >
+  <delete id="deleteCust" parameterType="java.lang.String" >
     delete from tb_cust
-    where id = #{id,jdbcType=BIGINT}
+    where cust_id = #{custId}
   </delete>
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Cust" >

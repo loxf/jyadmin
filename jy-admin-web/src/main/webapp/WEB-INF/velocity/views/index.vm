@@ -1,3 +1,61 @@
-<div>
-    欢迎使用静怡雅院后台管理系统
+<div class="layui-layout-body" style="widows:1000; height: 600">
+    <div>
+        <div class="layui-inline" style="widows:400; height: 200" id="incomeChart"></div>
+        <div class="layui-inline" style="widows:400; height: 200" id="custChart"></div>
+        <div class="layui-inline"></div>
+    </div>
 </div>
+<script src="${rc.contextPath}/static/echarts/echarts.min.js"></script>
+
+<script type="text/javascript">
+    // 基于准备好的dom，初始化echarts实例
+    function income() {
+        var incomeChart = echarts.init(document.getElementById('incomeChart'));
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '收入统计'
+            },
+            tooltip: {},
+            legend: {
+                data:['收入']
+            },
+            xAxis: {
+                data: ["公司净收入","奖学金","今日收入","最近一周收入","最近一个月收入"]
+            },
+            yAxis: {},
+            series: [{
+                name: '收入',
+                type: 'bar',
+                data: [54424.87, 43954.63, 1119.50, 2952.20, 1894.30]
+            }]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        incomeChart.setOption(option);
+    }
+    function cust() {
+        var custChart = echarts.init(document.getElementById('custChart'));
+        // 指定图表的配置项和数据
+        var option = {
+            series : [
+                {
+                    name: '会员分布',
+                    type: 'pie',
+                    radius: '55%',
+                    data:[
+                        {value:810, name:'普通会员'},
+                        {value:103, name:'VIP'},
+                        {value:12, name:'SVIP'},
+                        {value:24, name:'代理商'},
+                        {value:8, name:'合伙人'},
+                        {value:1, name:'分公司'}
+                    ]
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        custChart.setOption(option);
+    }
+    income();
+    cust();
+</script>

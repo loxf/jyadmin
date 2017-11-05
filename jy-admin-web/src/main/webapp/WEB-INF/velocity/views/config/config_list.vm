@@ -1,0 +1,83 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">配置名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="configName" placeholder="配置名称" class="layui-input">
+                <input type="hidden" name="catalog" id="J_catalog" value="$!{catalog}">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <div class="layui-input-inline">
+                <select name="type" lay-search="">
+                    <option value="">配置类型</option>
+                    <option value="TEXT">文本</option>
+                    <option value="NUMBER">数字</option>
+                    <option value="PIC">图片</option>
+                    <option value="MP4">视频</option>
+                    <option value="URL">链接</option>
+                    <option value="HTML">富文本</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <div class="layui-input-inline">
+                <select name="status">
+                    <option value="">是否启用</option>
+                    <option value="0">未启用</option>
+                    <option value="1">启用</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
+            <input type="button" class="layui-btn" onclick="addConfig()" value="新增配置"/>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+<script type="text/html" id="barTable">
+    {{#  if(d.status===0){ }}
+    <a class="layui-btn layui-btn-mini" lay-event="onConfig">启用</a>
+    {{#  } else { }}
+    <a class="layui-btn layui-btn-mini" lay-event="offConfig">禁用</a>
+    {{#  } }}
+    <a class="layui-btn layui-btn-mini" lay-event="editConfig">编辑</a>
+    <a class="layui-btn layui-btn-mini" lay-event="deleteConfig">删除</a>
+</script>
+<script type="text/html" id="statusTpl">
+    {{#  if(d.status==0){ }}
+    未启用
+    {{#  } else if(d.status==1){ }}
+    启用
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+<script type="text/html" id="typeTpl">
+    {{#  if(d.type=='TEXT'){ }}
+    文本
+    {{#  } else if(d.type=='NUMBER'){ }}
+    数字
+    {{#  } else if(d.type=='PIC'){ }}
+    图片
+    {{#  } else if(d.type=='MP4'){ }}
+    视频
+    {{#  } else if(d.type=='链接'){ }}
+    URL
+    {{#  } else if(d.type=='HTML'){ }}
+    富文本
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+<script type="text/html" id="valueOptTpl">
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.configValue }}', '{{ d.type }}')"><i class="layui-icon">&#xe60e;</i>查看</a>
+</script>
+<script src="${rc.contextPath}/static/jingyi/common.js"></script>
+<script src="${rc.contextPath}/static/jingyi/config/config.js"></script>

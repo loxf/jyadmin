@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="${rc.contextPath}/static/layui-v2.1.5/layui/css/layui.css">
     <script src="${rc.contextPath}/static/layui-v2.1.5/layui/layui.js"></script>
     <script src="${rc.contextPath}/static/jquery/jquery.min.js"></script>
+    <script src="${rc.contextPath}/static/jquery/jquery.md5.js"></script>
 
 </head>
 <body class="layui-layout-body">

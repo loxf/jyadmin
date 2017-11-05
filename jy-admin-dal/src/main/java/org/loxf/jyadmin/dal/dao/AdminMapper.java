@@ -1,17 +1,10 @@
 package org.loxf.jyadmin.dal.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.Admin;
 
 public interface AdminMapper {
-    int deleteByPrimaryKey(Long id);
+    Admin login(@Param("username") String username, @Param("password")String password);
 
-    int insert(Admin record);
-
-    int insertSelective(Admin record);
-
-    Admin selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(Admin record);
-
-    int updateByPrimaryKey(Admin record);
+    int modifyPassword(@Param("username")String username, @Param("password")String password);
 }

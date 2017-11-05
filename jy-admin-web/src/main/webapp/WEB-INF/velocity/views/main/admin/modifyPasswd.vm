@@ -1,0 +1,76 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>修改密码</legend>
+</fieldset>
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">原密码</label>
+        <div class="layui-input-inline">
+            <input type="password" name="oldPassword" lay-verify="password" autocomplete="off" placeholder="请输入原密码"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">新密码</label>
+        <div class="layui-input-inline">
+            <input type="password" id="password" name="password" lay-verify="password" autocomplete="off" placeholder="请输入新密码"
+                   class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请填写6到12位密码</div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">再次输入</label>
+        <div class="layui-input-inline">
+            <input type="password" id="againPassword" name="againPassword" lay-verify="password" autocomplete="off" placeholder="请再次输入新密码"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="modifyPw">修改密码</button>
+        </div>
+    </div>
+</form>
+<script src="${rc.contextPath}/static/jquery/jquery.md5.js"></script>
+<script>
+    var form = layui.form;
+
+    //自定义验证规则
+    form.verify({
+        password: function(value){
+            if(value.length < 6){
+                return '密码长度至少6位';
+            } else if(value.length >15){
+                return '密码长度最多15位';
+            }
+        }
+    });
+
+    //监听提交
+    form.on('submit(modifyPw)', function(data){
+        if(data.field.password==data.field.againPassword){
+            $.ajax({
+                type: "POST",
+                url: contextPath + "/admin/modifyPassword.html",
+                data : {
+                    oldPassword : $.md5(data.field.oldPassword),
+                    password : $.md5(data.field.password)
+                },
+                dataType:"json",
+                success: function(data) {
+                    parent.layer.msg(data.msg, {
+                        time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        if(data.code == 1){
+                            parent.layer.closeAll();
+                        }
+                    });
+                }
+            });
+            return false;
+        } else{
+            parent.layer.msg("两次密码不一致");
+        }
+    });
+    form.render();
+</script>

@@ -9,7 +9,7 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">用户名</label>
                     <div class="layui-input-block">
-                        <input type="text" name="username" style="width: 180px" required  lay-verify="required" placeholder="请输入用户名"
+                        <input type="text" name="userName" style="width: 180px" required  lay-verify="required" placeholder="请输入用户名"
                                autocomplete="off" class="layui-input">
                     </div>
                 </div>
@@ -22,7 +22,7 @@
                 </div>
                 <div class="layui-form-item">
                     <div class="layui-input-block">
-                        <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                        <button class="layui-btn" lay-submit lay-filter="loginFormData">立即提交</button>
                         <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                     </div>
                 </div>
@@ -32,13 +32,15 @@
 </main>
 <!--content end-->
 <script>
-    layui.use('form', function(){
+    layui.use(['form', 'layer'], function(){
         var form = layui.form;
 
         //监听提交
-        form.on('submit(formDemo)', function(data){
-            var params = data.field;
-            login(params)
+        form.on('submit(loginFormData)', function(data){
+            login({
+                userName:data.field.userName,
+                password: $.md5(data.field.password)
+            });
             return false;
         });
     });
@@ -46,14 +48,13 @@
     function login(params){
         $.ajax({
             type: "POST",
-            url:"${rc.contextPath}/admin/login/login.html",
+            url:"${rc.contextPath}/admin/login.html",
             dataType:"json",
-            async:false,
             data: params,
             success: function(data) {
                 if(data.code == 1){
                     window.location.href=data.data;
-                }else{
+                } else {
                     layer.msg(data.msg);
                 }
             }

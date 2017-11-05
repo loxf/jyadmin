@@ -1,8 +1,10 @@
 package org.loxf.jyadmin.interceptor;
 
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.client.constant.BaseConstant;
+import org.loxf.jyadmin.util.CookieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
@@ -14,8 +16,15 @@ import java.io.PrintWriter;
 
 public class BaseInterceptor extends HandlerInterceptorAdapter {
     private static Logger logger = LoggerFactory.getLogger(BaseInterceptor.class);
+    private static String [] excludeUrl = {"/static/*", "/admin/login.html", "/"};
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if(needFilter(request.getRequestURI())){
+            if(!hasLogin(request, response)){
+                response.sendRedirect("/");
+                return false;
+            }
+        }
         return super.preHandle(request, response, handler);
     }
 
@@ -46,5 +55,46 @@ public class BaseInterceptor extends HandlerInterceptorAdapter {
                 writer.close();
             }
         }
+    }
+
+    private boolean needFilter(String url){
+        boolean needFilter = true;
+        for(String u : excludeUrl){
+            if(u.endsWith("*")){
+                // 模糊匹配
+                u = u.replaceAll("\\*", "");
+                needFilter = !url.startsWith(u);
+            } else {
+                // 精确匹配
+                needFilter = !url.equals(u);
+            }
+            if(!needFilter){
+                break;
+            }
+        }
+        return needFilter;
+    }
+
+    private boolean hasLogin(HttpServletRequest request, HttpServletResponse response){
+        String token = CookieUtil.getAdminToken(request);
+        if(StringUtils.isBlank(token)){
+            return false;
+        }
+        try {
+            String tmp = CookieUtil.decrypt(token);
+            String tokenARR[] = tmp.split(CookieUtil.TOKEN_SPLIT);
+            if(tokenARR.length!=3 || !tokenARR[0].equals(CookieUtil.TOKEN_PREFIX)){
+                return false;
+            } else {
+                long startTime = Long.parseLong(tokenARR[2]);
+                if(System.currentTimeMillis()-startTime>24*60*60*1000){
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            logger.error("BaseInterceptor exception ", e);
+            return false;
+        }
+        return true;
     }
 }

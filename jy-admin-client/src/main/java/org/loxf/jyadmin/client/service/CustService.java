@@ -9,4 +9,5 @@ public interface CustService {
     public BaseResult<CustDto> queryCust(int type, String phoneOrEmail);
     public BaseResult updateCust(CustDto custDto);
     public PageResult<CustDto> queryChildList(int type, String custId, int page, int size);
+    public BaseResult delCust(String custId);
 }

@@ -111,4 +111,9 @@ public class CustServiceImpl implements CustService {
         int tatalPage = total/size + (total%size==0?0:1);
         return new PageResult<>(tatalPage, page, total, resultList);
     }
+
+    @Override
+    public BaseResult delCust(String custId) {
+        return new BaseResult(custMapper.deleteCust(custId));
+    }
 }

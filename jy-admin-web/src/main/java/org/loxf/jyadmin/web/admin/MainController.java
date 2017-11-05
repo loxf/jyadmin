@@ -19,16 +19,22 @@ public class MainController {
     @Autowired
     private ProvinceAndCityService provinceAndCityService;
 
-    @RequestMapping("/admin/index")
-    public String index(Model model, HttpServletRequest request, HttpServletResponse response){
-        model.addAttribute("isIndex", true);
-        return "index";
-    }
     @RequestMapping("/")
     public String welcome(Model model, HttpServletRequest request, HttpServletResponse response){
         return "login";
     }
 
+    @RequestMapping("/admin/index")
+    public String index(Model model, HttpServletRequest request, HttpServletResponse response){
+        model.addAttribute("isIndex", true);
+        return "index";
+    }
+
+    @RequestMapping("/admin/error")
+    public String error(Model model, String errorMsg, HttpServletRequest request, HttpServletResponse response){
+        model.addAttribute("errorMsg", errorMsg);
+        return "layout_error";
+    }
 
     @RequestMapping("/admin/province")
     @ResponseBody

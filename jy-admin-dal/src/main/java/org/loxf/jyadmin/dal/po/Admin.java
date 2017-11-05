@@ -11,6 +11,8 @@ public class Admin extends BaseModel {
 
     private String realName;
 
+    private String pic;
+
     public String getUserName() {
         return userName;
     }
@@ -35,4 +37,11 @@ public class Admin extends BaseModel {
         this.realName = realName == null ? null : realName.trim();
     }
 
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
 }

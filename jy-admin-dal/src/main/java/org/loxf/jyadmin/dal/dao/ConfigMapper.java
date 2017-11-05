@@ -1,17 +1,24 @@
 package org.loxf.jyadmin.dal.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.Config;
 
-public interface ConfigMapper {
-    int deleteByPrimaryKey(Long id);
+import java.util.List;
 
+public interface ConfigMapper {
     int insert(Config record);
 
-    int insertSelective(Config record);
+    int deleteConfig(@Param("catalog") String catalog, @Param("configCode")String configCode);
 
-    Config selectByPrimaryKey(Long id);
+    Config selectConfig(@Param("catalog") String catalog, @Param("configCode")String configCode);
 
-    int updateByPrimaryKeySelective(Config record);
+    Config selectById(long id);
 
     int updateByPrimaryKey(Config record);
+
+    int count(Config record);
+
+    List<Config> list(Config record);
+
+    int onOrOffConfig(@Param("id") long id, @Param("status")int status);
 }

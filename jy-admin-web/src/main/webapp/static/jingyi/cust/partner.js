@@ -184,7 +184,6 @@ function editVipNbr(data, layEvent, obj){
     });
 }
 
-
 function editAgent(data, layEvent, obj){
     //do something
     layer.open({

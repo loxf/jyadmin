@@ -6,7 +6,7 @@ function playMedia(media, type) {
             , title: "图片"
             , offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
             , id: 'playMediaLayer' //防止重复弹出
-            , content: '<img src="' + imgPath + '" width="350px" height="180px" />'
+            , content: '<img src="' + imgPath + '" style="max-width: 350px; min-width: 200px; min-height: 100px" />'
             , shade: 0.3
         });
     } else if (type === 'MP4') {
@@ -63,6 +63,23 @@ function playMedia(media, type) {
                 }
             }
         });
+    } else if (type === 'URL') {
+        if(media.startWith("http")){
+            window.open(media, "_blank");
+        } else {
+            window.open("http://" + media, "_blank");
+        }
+    } else {
+        layer.msg(media);
     }
 }
 
+String.prototype.startWith=function(str){
+    var reg=new RegExp("^"+str);
+    return reg.test(this);
+}
+
+String.prototype.endWith=function(str){
+    var reg=new RegExp(str+"$");
+    return reg.test(this);
+}

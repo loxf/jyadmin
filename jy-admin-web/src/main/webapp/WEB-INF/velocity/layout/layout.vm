@@ -13,7 +13,7 @@
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
         <!-- 系统名称 -->
-        <div class="layui-logo">静怡雅学馆</div>
+        <div><a href="${rc.contextPath}/admin/index.html" class="layui-logo">静怡雅学馆</a></div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item"><a href="javascript:getLeftMenu('VIP')">会员管理</a></li>
@@ -35,10 +35,10 @@
                     贤心
                 </a>
                 <dl class="layui-nav-child">
-                    <dd><a href="">修改密码</a></dd>
+                    <dd><a onclick="modifyPw()">修改密码</a></dd>
                 </dl>
             </li>
-            <li class="layui-nav-item"><a href="">安全退出</a></li>
+            <li class="layui-nav-item"><a onclick="logout()">安全退出</a></li>
         </ul>
     </div>
     <div class="layui-side layui-bg-black layui-side-div">
@@ -81,6 +81,35 @@
     var contextPath = '${rc.contextPath}';
     var basePic = "http://127.0.0.1:8080";
     var baseVideo = "";
+
+    function modifyPw() {
+        var layer = layui.layer
+        layer.open({
+            type: 2
+            ,id: 'modifyPw' //防止重复弹出
+            ,title : '修改密码'
+            ,area: ['550px', '400px']
+            ,content: 'toModifyPassword.html'
+            ,maxmin:false
+            ,shade: 0.3
+        });
+    }
+
+    function logout() {
+        var layer = layui.layer
+        $.ajax({
+            type: "POST",
+            url:"${rc.contextPath}/admin/logout.html",
+            dataType:"json",
+            success: function(data) {
+                if(data.code == 1){
+                    window.location.href= "/";
+                } else {
+                    layer.msg(data.msg);
+                }
+            }
+        });
+    }
 </script>
 <script src="${rc.contextPath}/static/jingyi/menu/menu.js"></script>
 </body>

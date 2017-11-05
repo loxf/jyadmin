@@ -81,4 +81,10 @@ public class CustController extends BaseControl<CustDto> {
     public PageResult<CustDto> queryChildList(int type, String custId, int page, int size){
         return custService.queryChildList(type, custId, page, size);
     }
+
+    @RequestMapping("/delCust")
+    @ResponseBody
+    public BaseResult queryChildList(String custId){
+        return custService.delCust(custId);
+    }
 }

@@ -9,7 +9,7 @@
 
     <dubbo:application name="ai-admin"/>
     <dubbo:registry address="${dubbo.server.registry}" file="${app.tmpDir}/output/${app.name}.cache"/>
-    <dubbo:protocol name="dubbo" port="${dubbo.server.port}"/>
+    <dubbo:protocol name="dubbo" port="${dubbo.server.port}" payload="11557050"/>
     <dubbo:consumer check="false"/>
 
     <import resource="dubbo-server.xml"/>

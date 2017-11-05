@@ -230,6 +230,18 @@ public class JedisUtil {
         }
     }
 
+    public Boolean delFromMap(String type, String key) throws Exception {
+        Jedis jedis = getJedis();
+        try {
+            jedis.hdel(type.getBytes(), getRuleKey(key).getBytes());
+            return true;
+        } finally {
+            if (jedis != null) {
+                jedis.close();//返回连接池
+            }
+        }
+    }
+
     private static byte[] serialize(Object value) {
         if (value == null) {
             return null;

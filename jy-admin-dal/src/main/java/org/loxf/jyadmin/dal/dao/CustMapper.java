@@ -6,7 +6,7 @@ import org.loxf.jyadmin.dal.po.Cust;
 import java.util.List;
 
 public interface CustMapper {
-    int deleteOldCust(Long id);
+    int deleteCust(String id);
 
     int insert(Cust record);
 

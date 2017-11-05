@@ -72,6 +72,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
+    @Transactional
     public BaseResult updateOffer(OfferDto offerDto, List<OfferRelDto> offerRelDtos){
         Offer again = offerMapper.selectByOfferId(offerDto.getOfferId());
         if("OFFER".equals(again.getOfferType())){
@@ -95,11 +96,13 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
+    @Transactional
     public BaseResult deleteOffer(String offerId){
         return new BaseResult(offerMapper.deleteByOfferId(offerId));
     }
 
     @Override
+    @Transactional
     public BaseResult onOrOffOffer(String offerId, Integer status){
         return new BaseResult(offerMapper.onOrOffOffer(offerId, status));
     }

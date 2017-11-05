@@ -1,0 +1,170 @@
+
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+    <legend>新增配置</legend>
+</fieldset>
+
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">配置名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="configName" lay-verify="configName" autocomplete="off" placeholder="请输入配置名称（建议20字以内）"
+                   class="layui-input">
+            <input type="hidden" value="$!{catalog}" name="catalog"/>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">配置编码</label>
+        <div class="layui-input-block">
+            <input type="text" name="configCode" lay-verify="configCode" autocomplete="off" placeholder="配置编码是配置的唯一码，见文思意即可"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">配置类型</label>
+            <div class="layui-input-inline">
+                <select name="type" lay-search="" lay-verify="type" id="J_configType" lay-filter="configType"
+                        style="width: 280px;z-index: 100000">
+                    <option value="">配置类型</option>
+                    <option value="TEXT" selected>文本</option>
+                    <option value="NUMBER">数字</option>
+                    <option value="PIC">图片</option>
+                    <option value="MP4">视频</option>
+                    <option value="URL">链接</option>
+                    <option value="HTML">富文本</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">值</label>
+        <div class="layui-input-inline value_type value_type_text" style="display: none">
+            <input type="text" name="configValue" placeholder="请输入文本"
+                   class="layui-input value_type_value value_type_value_text">
+        </div>
+        <div class="layui-input-inline value_type value_type_number" style="display: none">
+            <input type="number" name="configValue" placeholder="请输入数字"
+                   class="layui-input value_type_value value_type_value_number">
+        </div>
+        <div class="layui-input-inline value_type value_type_pic" style="display: none">
+            <a class="layui-btn uploadImg" id="configPicBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=CONFIG'}">
+                <i class="layui-icon">&#xe62f;</i>上传图片</a>
+            <div class="layui-upload-list">
+                <img class="layui-upload-img" style="max-width: 350px;"  id="configPicImg">
+            </div>
+            <input type="hidden" name="configValue" class="value_type_value value_type_value_pic" id="configPic">
+        </div>
+        <div class="layui-input-inline value_type value_type_mp4" style="display: none">
+            <input type="text" name="configValue" placeholder="请选择视频"
+                   class="layui-input value_type_value value_type_value_mp4">
+        </div>
+        <div class="layui-input-inline value_type value_type_url" style="display: none">
+            <input type="text" name="configValue" placeholder="请输入网址"
+                   class="layui-input value_type_value value_type_value_url">
+        </div>
+        <div class="layui-input-inline value_type value_type_html" style="display: none">
+            #parse("/views/common/editor.vm")
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="configData">创建配置</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    var form = layui.form
+            ,layer = layui.layer
+            ,upload = layui.upload;
+
+    upload.render({
+        elem: '.uploadImg'
+        ,size : 3072
+        ,accept: 'images'
+        ,before: function(obj){
+            var name = this.item.attr("id");
+            name = name.replace('Btn', 'Img')
+            obj.preview(function(index, file, result){
+                $('#'+name).attr('src', result); //图片链接（base64）
+            });
+        }
+        ,done: function(res, index, upload){
+            if(res.code===1){
+                var name = this.item.attr("id");
+                name = name.replace('Btn', '');
+                $('#'+name).val(res.data.src);
+            } else {
+                layer.tips(res.msg);
+            }
+        }
+    });
+
+    //自定义验证规则
+    form.verify({
+        configName: function(value){
+            if(value.length < 4){
+                return '名称至少4个字';
+            } else if(value.length >20){
+                return '名称超过20个字';
+            }
+        },
+        configCode: function(value){
+            if(value.length < 1){
+                return '配置CODE不能为空';
+            } else if(value.length >40){
+                return '配置CODE超过40个字';
+            }
+        },
+        type : function (value) {
+            if(value==''){
+                return '请选择配置类型';
+            }
+        }
+    });
+
+    form.on('select(configType)', function(data){
+        changeType(data.value);
+    });
+
+    //监听提交
+    form.on('submit(configData)', function(data){
+        if(data.field.type=='HTML') {
+            var htmlId = saveHtml(data.field.htmlId);
+            if (!htmlId) {
+                return false;
+            } else {
+                data.field.configValue=htmlId;
+            }
+        } else {
+            data.field.configValue = $(".value_type_value_" + data.field.type.toLowerCase()).val();
+        }
+        $.ajax({
+            type: "POST",
+            url:"addConfig.html",
+            data : data.field,
+            dataType:"json",
+            success: function(data) {
+                if(data.code == 1){
+                    parent.searchList();
+                    parent.layer.closeAll();
+                } else {
+                    parent.layer.msg(data.msg);
+                }
+            }
+        });
+        return false;
+    });
+
+    form.render();
+
+    function changeType(type) {
+        $(".value_type").hide();
+        $(".value_type_" + type.toLowerCase()).show();
+        $(".value_type_value").attr("disabled", true);
+        $(".value_type_value_" + type.toLowerCase()).attr("disabled", false);
+    }
+
+    changeType($('#J_configType').val());
+
+</script>
