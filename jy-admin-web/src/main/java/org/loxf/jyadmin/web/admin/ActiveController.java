@@ -4,16 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
-import org.loxf.jyadmin.biz.util.ConfigProperties;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.ActiveCustListDto;
 import org.loxf.jyadmin.client.dto.ActiveDto;
 import org.loxf.jyadmin.client.dto.CityDto;
 import org.loxf.jyadmin.client.dto.ProvinceDto;
-import org.loxf.jyadmin.client.service.ActiveCustListService;
-import org.loxf.jyadmin.client.service.ActiveService;
-import org.loxf.jyadmin.client.service.HtmlInfoService;
-import org.loxf.jyadmin.client.service.ProvinceAndCityService;
-import org.loxf.jyadmin.dal.po.Province;
+import org.loxf.jyadmin.client.service.*;
+import org.loxf.jyadmin.util.ConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -38,8 +34,6 @@ public class ActiveController extends BaseControl<ActiveDto> {
     private ActiveCustListService activeCustListService;
     @Autowired
     private HtmlInfoService htmlInfoService;
-    @Autowired
-    private ConfigProperties configProperties;
     @Autowired
     private ProvinceAndCityService provinceAndCityService;
 
@@ -85,7 +79,7 @@ public class ActiveController extends BaseControl<ActiveDto> {
             String htmlInfo = htmlInfoService.getHtml(htmlId).getData();
             model.addAttribute("htmlId", htmlId);
             model.addAttribute("htmlInfo", htmlInfo);
-            model.addAttribute("basePic", configProperties.getIMG_SERVER());
+            model.addAttribute("basePic", ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL").getConfigValue());
             return "main/active/editActive";
         } else {
             model.addAttribute("errorMsg", "活动不存在或活动已发布");

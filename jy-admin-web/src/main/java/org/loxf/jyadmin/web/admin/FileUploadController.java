@@ -2,9 +2,12 @@ package org.loxf.jyadmin.web.admin;
 
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
-import org.loxf.jyadmin.client.constant.BaseConstant;
+import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.client.dto.ConfigDto;
+import org.loxf.jyadmin.client.service.ConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,9 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -26,10 +27,8 @@ import java.util.UUID;
 public class FileUploadController {
     private static Logger logger = LoggerFactory.getLogger(FileUploadController.class);
 
-    @Value("#{configProperties['IMAGE.SERVER']}")
-    private String IMG_SERVER;
-    @Value("#{configProperties['IMAGE.SERVER.PATH']}")
-    private String IMG_SERVER_PATH;
+    @Autowired
+    private ConfigService configService;
 
     @RequestMapping("/img")
     @ResponseBody
@@ -50,7 +49,11 @@ public class FileUploadController {
         if (imageName.equalsIgnoreCase("jpg") || imageName.equalsIgnoreCase("jpeg") ||
                 imageName.equalsIgnoreCase("png") ||
                 imageName.equalsIgnoreCase("icon") || imageName.equalsIgnoreCase("bmp")) {
-            String pathRoot = IMG_SERVER_PATH;// 绝对路径
+            String pathRoot = null;// 绝对路径
+            BaseResult<ConfigDto> picBaseResult = configService.queryConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL");
+            if(picBaseResult.getCode()==BaseConstant.SUCCESS && picBaseResult.getData()!=null){
+                pathRoot = picBaseResult.getData().getConfigValue();
+            }
             return deal(pathRoot, type, uuid + "." + imageName, file, request);
         } else {
             return new BaseResult(BaseConstant.FAILED, "上传格式非图片");
@@ -104,11 +107,4 @@ public class FileUploadController {
         return path + File.separator + fileName;
     }
 
-    public String getIMG_SERVER() {
-        return IMG_SERVER;
-    }
-
-    public String getIMG_SERVER_PATH() {
-        return IMG_SERVER_PATH;
-    }
 }

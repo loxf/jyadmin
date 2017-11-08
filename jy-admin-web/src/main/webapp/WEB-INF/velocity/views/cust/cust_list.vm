@@ -37,7 +37,7 @@
         <div class="layui-inline layui-col-lg3">
             <label class="layui-form-label">推荐人</label>
             <div class="layui-input-inline">
-                <input type="text" name="recomend" placeholder="推荐人手机号码/邮箱" class="layui-input">
+                <input type="text" name="recommend" placeholder="推荐人手机号码/邮箱" class="layui-input">
             </div>
         </div>
         <div class="layui-inline layui-col-lg3">
@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="layui-inline layui-col-lg2">
-            <button class="layui-btn layui-btn" lay-submit lay-filter="searchForm">查询</button>
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
         </div>
     </div>
 </form>
@@ -65,6 +65,13 @@
     <a class="layui-btn layui-btn-mini" lay-event="deleteCust">删除</a>
 </script>
 
+<script type="text/html" id="recommendLinkTpl">
+    {{#  if(d.recommendLink){ }}
+    {{ d.recommendLink }}
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
 <script type="text/html" id="vipTpl">
     {{#  if(d.userLevel==='NONE'){ }}
     普通
@@ -76,15 +83,23 @@
 <script type="text/html" id="phoneOrEmailTpl">
     {{#  if(d.isChinese===1){ }}
     {{ d.phone }}
-    {{#  } else { }}
+    {{#  } else if(d.isChinese===2) { }}
     {{ d.email }}
+    {{#  } else if(d.phone) { }}
+    {{ d.phone }}
+    {{#  } else if(d.email) { }}
+    {{ d.email }}
+    {{#  } else { }}
+    无
     {{#  } }}
 </script>
 <script type="text/html" id="isChineseTpl">
     {{#  if(d.isChinese===1){ }}
     国内用户
-    {{#  } else { }}
+    {{#  } else if(d.isChinese===2) { }}
     海外用户
+    {{#  } else { }}
+    未知
     {{#  } }}
 </script>
 <script type="text/html" id="agentTpl">

@@ -7,10 +7,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.bean.Pager;
-import org.loxf.jyadmin.biz.util.ConfigProperties;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.OfferCatalogDto;
 import org.loxf.jyadmin.client.dto.OfferDto;
 import org.loxf.jyadmin.client.dto.OfferRelDto;
+import org.loxf.jyadmin.client.service.ConfigService;
 import org.loxf.jyadmin.client.service.HtmlInfoService;
 import org.loxf.jyadmin.client.service.OfferCatalogService;
 import org.loxf.jyadmin.client.service.OfferService;
@@ -37,7 +38,7 @@ public class OfferController extends BaseControl<OfferDto> {
     @Autowired
     private HtmlInfoService htmlInfoService;
     @Autowired
-    private ConfigProperties configProperties;
+    private ConfigService configService;
 
     @RequestMapping("/index")
     public String index(Model model){
@@ -70,7 +71,7 @@ public class OfferController extends BaseControl<OfferDto> {
             String htmlInfo = htmlInfoService.getHtml(htmlId).getData();
             model.addAttribute("htmlInfo", htmlInfo);
             String buyPrivi = offerDto.getBuyPrivi();
-            model.addAttribute("basePic", configProperties.getIMG_SERVER());
+            model.addAttribute("basePic", configService.queryConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL"));
             if (StringUtils.isNotBlank(buyPrivi)) {
                 JSONObject buyJson = JSONObject.parseObject(buyPrivi);
                 model.addAttribute("buyJson", buyJson);

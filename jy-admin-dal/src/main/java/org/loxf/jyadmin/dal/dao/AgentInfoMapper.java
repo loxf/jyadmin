@@ -7,13 +7,14 @@ import java.util.List;
 public interface AgentInfoMapper {
     int insert(AgentInfo record);
 
-    AgentInfo selectByCustId(Long id);
+    int updateByCustId(AgentInfo record);
+
+    AgentInfo selectByCustId(String custId);
 
     List<AgentInfo> pager(AgentInfo record);
 
     int count(AgentInfo record);
 
-    int updateByPrimaryKeySelective(AgentInfo record);
+    int delete(String custId);
 
-    int updateByPrimaryKey(AgentInfo record);
 }

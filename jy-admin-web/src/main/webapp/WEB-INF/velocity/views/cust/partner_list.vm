@@ -4,9 +4,9 @@
 <form class="layui-form" action="">
     <div class="layui-row layui-form-item">
         <div class="layui-inline layui-col-lg3">
-            <label class="layui-form-label"></label>
+            <label class="layui-form-label">客户姓名</label>
             <div class="layui-input-inline" >
-                <input type="text" name="realName" placeholder="客户姓名" class="layui-input">
+                <input type="text" name="realName" placeholder="客户真实姓名" class="layui-input">
             </div>
         </div>
         <div class="layui-inline layui-col-lg2">
@@ -23,13 +23,26 @@
                 <option value="3">分公司</option>
             </select>
         </div>
+    </div>
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">代理省份</label>
+            <div class="layui-input-inline" >
+                <select name="province" lay-search="" lay-filter="province">
+                    <option value="">选择省份</option>
+                    #foreach($item in $provinceList)
+                        <option value="$!{item.provinceid}">$!{item.province}</option>
+                    #end
+                </select>
+            </div>
+        </div>
         <div class="layui-inline layui-col-lg2">
             <div class="layui-input-inline">
                 <input type="text" name="rangDate" placeholder="成为代理时间" id="createdAt" class="layui-input">
             </div>
         </div>
         <div class="layui-inline layui-col-lg2">
-            <button class="layui-btn layui-btn" lay-submit lay-filter="searchForm">查询</button>
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
         </div>
     </div>
 </form>
@@ -78,7 +91,8 @@
 <script type="text/html" id="totalVipNbrTpl">
     {{#  if(d.metaData){ }}
     {{#  var json = eval("("+d.metaData+")"); }}
-    {{#  return "VIP：" + json.totalVIP + ", SVIP：" + json.totalSVIP }}
+    {{#  var str = (json.totalVIP?"VIP：" + json.totalVIP:"") + " " + (json.totalSVIP? "SVIP：" + json.totalSVIP  :"") }}
+    {{ str }}
     {{#  } else { }}
         无
     {{#  } }}
@@ -86,7 +100,8 @@
 <script type="text/html" id="useVipNbrTpl">
     {{#  if(d.metaData){ }}
     {{#  var json = eval("("+d.metaData+")"); }}
-    {{#  return "VIP：" + json.useVIP + ", SVIP：" + json.useSVIP }}
+    {{#  var str = (json.useVIP?"VIP：" + json.useVIP:"") + " " + (json.useSVIP? "SVIP：" + json.useSVIP  :"") }}
+    {{ str }}
     {{#  } else { }}
         无
     {{#  } }}

@@ -2,8 +2,8 @@ package org.loxf.jyadmin.biz;
 
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
-import org.loxf.jyadmin.biz.util.IdGenerator;
-import org.loxf.jyadmin.client.constant.BaseConstant;
+import org.loxf.jyadmin.base.util.IdGenerator;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.ActiveDto;
 import org.loxf.jyadmin.client.service.ActiveService;
 import org.loxf.jyadmin.dal.dao.ActiveCustListMapper;

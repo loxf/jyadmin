@@ -1,7 +1,7 @@
 package org.loxf.jyadmin.biz;
 
 import org.loxf.jyadmin.base.bean.BaseResult;
-import org.loxf.jyadmin.client.constant.BaseConstant;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.AdminDto;
 import org.loxf.jyadmin.client.service.AdminService;
 import org.loxf.jyadmin.dal.dao.AdminMapper;

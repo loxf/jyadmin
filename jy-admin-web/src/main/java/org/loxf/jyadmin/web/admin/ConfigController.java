@@ -3,8 +3,7 @@ package org.loxf.jyadmin.web.admin;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
-import org.loxf.jyadmin.biz.util.ConfigProperties;
-import org.loxf.jyadmin.client.constant.BaseConstant;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.ConfigDto;
 import org.loxf.jyadmin.client.service.ConfigService;
 import org.loxf.jyadmin.client.service.HtmlInfoService;
@@ -14,9 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @Controller
 @RequestMapping("/admin/config")
@@ -25,10 +22,9 @@ public class ConfigController {
     private ConfigService configService;
     @Autowired
     private HtmlInfoService htmlInfoService;
-    @Autowired
-    private ConfigProperties configProperties;
 
-    private static String[] catalogs = {"RUNTIME", "PAY" , "BP" , "COM"};
+    private static String[] catalogs = {BaseConstant.CONFIG_TYPE_RUNTIME, BaseConstant.CONFIG_TYPE_PAY ,
+            BaseConstant.CONFIG_TYPE_BP , BaseConstant.CONFIG_TYPE_COM};
 
     @RequestMapping("/index")
     public String index(Model model, String catalog){
@@ -52,7 +48,7 @@ public class ConfigController {
         BaseResult<ConfigDto> configDtoBaseResult = configService.queryConfig(catalog, configCode);
         if(configDtoBaseResult.getCode()== BaseConstant.SUCCESS && configDtoBaseResult.getData()!=null){
             model.addAttribute("configDto", configDtoBaseResult.getData());
-            model.addAttribute("basePic", configProperties.getIMG_SERVER());
+            model.addAttribute("basePic", configService.queryConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL"));
             if("HTML".equals(configDtoBaseResult.getData().getType())){
                 String htmlId = configDtoBaseResult.getData().getConfigValue();
                 String htmlInfo = htmlInfoService.getHtml(htmlId).getData();

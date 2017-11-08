@@ -30,6 +30,12 @@ table.render({ //其它参数在此省略
             width: 120
         },
         {
+            field: 'isAgent',
+            title: '代理级别',
+            width: 100
+            ,templet : '#agentTpl'
+        },
+        {
             field: 'isChinese',
             title: '国内/海外',
             width: 100,
@@ -50,12 +56,6 @@ table.render({ //其它参数在此省略
             field: 'city',
             title: '市',
             width: 70
-        },
-        {
-            field: 'isAgent',
-            title: '代理级别',
-            width: 100
-            ,templet : '#agentTpl'
         },
         {
             field: 'firstLvNbr',
@@ -139,27 +139,44 @@ function openChildCustList(type, custId) {
 
 
 function editVipNbr(data, layEvent, obj){
+    var custId = data.custId;
+    var metaDataJson = eval('(' + data.metaData + ')');
     layer.open({
         type: 1
         ,offset: '200px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
         ,title : '赠送VIP'
         ,id: layEvent //防止重复弹出
-        ,content: '<div style="padding: 20px 100px;"><input type="hidden" id="J_R_custId" value="' + data.custId + '">'
-        + '<input type="text" id="J_R_recommend" placeholder="推荐人手机号码/邮箱"></div>'
+        ,content: '<div style="padding: 20px 100px;">'
+        + '<input type="text" style="margin-top: 20px; padding: 10px 10px" id="J_R_vip" placeholder="输入VIP数量">'
+        + '<input type="text" style="margin-top: 20px; padding: 10px 10px" id="J_R_svip" placeholder="输入SVIP数量"></div>'
         ,btn: '提交'
         ,yes: function(index, layero){
             // 修改逻辑
-            var _recommend = $("#J_R_recommend").val();
-            if(_recommend==''){
-                layer.msg('请填写推荐人');
+            var vipNbr = $("#J_R_vip").val();
+            var svipNbr = $("#J_R_svip").val();
+            if(!vipNbr && !svipNbr){
+                layer.msg('请至少填写一项');
                 return false;
+            }
+            if(metaDataJson.useVIP && vipNbr){
+                if(parseInt(vipNbr) < parseInt(metaDataJson.useVIP)){
+                    layer.msg("VIP调整后数量不能小于已用数量");
+                    return false;
+                }
+            }
+            if(metaDataJson.useSVIP && svipNbr){
+                if(parseInt(svipNbr) < parseInt(metaDataJson.useSVIP)){
+                    layer.msg("SVIP调整后数量不能小于已用数量");
+                    return false;
+                }
             }
             $.ajax({
                 type: "POST",
-                url:"modifyRecommend.html",
+                url:"modifyVipNbr.html",
                 data : {
-                    custId : $("#J_R_custId").val(),
-                    recommend : _recommend
+                    custId : custId,
+                    vipNbr : vipNbr,
+                    svipNbr : svipNbr
                 },
                 dataType:"json",
                 async:true,
@@ -168,9 +185,7 @@ function editVipNbr(data, layEvent, obj){
                         time: 2000 //2秒关闭（如果不配置，默认是3秒）
                     }, function(){
                         if(data.code == 1){
-                            obj.update({
-                                recomend: _recommend
-                            });
+                            searchList();
                             layer.closeAll();
                         }else{
                             return false;
@@ -186,33 +201,38 @@ function editVipNbr(data, layEvent, obj){
 
 function editAgent(data, layEvent, obj){
     //do something
+    var custId = data.custId;
+    var old = data.isAgent;
     layer.open({
         type: 1
         ,offset: '200px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
         ,id: layEvent //防止重复弹出
         ,title : '修改VIP等级'
-        ,content: '<div style="padding: 20px 100px;"><input type="hidden" id="J_R_custId" value="' + data.custId + '">'
-        + '<input type="radio" value="0" name="vip_lv" title="无">无身份'
-        + ' <input type="radio" value="1" name="vip_lv" title="代理商">代理商'
-        + ' <input type="radio" value="2" name="vip_lv" title="合伙人">合伙人'
-        + ' <input type="radio" value="3" name="vip_lv" title="分公司">分公司' + '</div>'
+        ,content: '<div style="padding: 20px 80px;">'
+        + ' <input type="radio" value="1" style="padding: 20px 20px" name="agent_lv" title="代理商">代理商'
+        + ' <input type="radio" value="2" style="padding: 20px 20px" name="agent_lv" title="合伙人">合伙人'
+        + ' <input type="radio" value="3" style="padding: 20px 20px" name="agent_lv" title="分公司">分公司' + '</div>'
         ,btn: '提交'
         ,success: function(layero, index){
             form.render();
         }
         ,yes: function(index, layero){
             // 修改逻辑
-            var _userLevel = $("input[name='vip_lv']:checked").val();
-            if(_userLevel==''){
-                layer.msg('请选择用户等级');
+            var _agentLv = $("input[name='agent_lv']:checked").val();
+            if(_agentLv==''){
+                layer.msg('请选择代理商等级');
+                return false;
+            }
+            if(old==_agentLv){
+                layer.msg('代理商等级未改变');
                 return false;
             }
             $.ajax({
                 type: "POST",
-                url:"modifyUserLevel.html",
+                url:"modifyAgentType.html",
                 data : {
-                    custId : $("#J_R_custId").val(),
-                    userLevel : _userLevel
+                    custId : custId,
+                    type : _agentLv
                 },
                 dataType:"json",
                 success: function(data) {
@@ -220,9 +240,7 @@ function editAgent(data, layEvent, obj){
                         time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
                     }, function(){
                         if(data.code == 1){
-                            obj.update({
-                                userLevel: _userLevel
-                            });
+                            searchList();
                             layer.closeAll();
                         }else{
                             return false;
@@ -238,8 +256,29 @@ function editAgent(data, layEvent, obj){
 
 function cancelAgent(data, layEvent, obj){
     layer.confirm('确认取消代理商？', {icon: 3, title:'提示'}, function(index){
-        // TODO 取消代理商
-
-        layer.close(index);
+        $.ajax({
+            type: "POST",
+            url:"delAgent.html",
+            data : {
+                custId : data.custId
+            },
+            dataType:"json",
+            success: function(data) {
+                layer.msg(data.msg, {
+                    time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
+                }, function(){
+                    if(data.code == 1){
+                        searchList();
+                        layer.close(index);
+                    }else{
+                        return false;
+                    }
+                });
+            }
+        });
     });
+}
+
+function searchList() {
+    $("#searchList").click();
 }

@@ -6,47 +6,55 @@
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
     <result column="real_name" property="realName" jdbcType="VARCHAR" />
-    <result column="province" property="province" jdbcType="VARCHAR" />
-    <result column="city" property="city" jdbcType="VARCHAR" />
     <result column="first_lv_nbr" property="firstLvNbr" jdbcType="INTEGER" />
     <result column="second_lv_nbr" property="secondLvNbr" jdbcType="INTEGER" />
     <result column="user_level" property="userLevel" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
     <result column="email" property="email" jdbcType="VARCHAR" />
     <result column="is_chinese" property="isChinese" jdbcType="INTEGER" />
-    <result column="recomend" property="recomend" jdbcType="VARCHAR" />
+    <result column="recommend" property="recommend" jdbcType="VARCHAR" />
+    <result column="recommend_link" property="recommendLink" jdbcType="VARCHAR" />
     <result column="is_agent" property="isAgent" jdbcType="INTEGER" />
+    <result column="sex" property="sex" jdbcType="INTEGER" />
+    <result column="country" property="country" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
     <result column="address" property="address" jdbcType="VARCHAR" />
-    <result column="weixin_id" property="weixinId" jdbcType="VARCHAR" />
+    <result column="head_img_url" property="headImgUrl" jdbcType="VARCHAR" />
+    <result column="privilege" property="privilege" jdbcType="VARCHAR" />
+    <result column="meta_data" property="metaData" jdbcType="VARCHAR" />
+    <result column="openid" property="openid" jdbcType="VARCHAR" />
+    <result column="unionid" property="unionid" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, nick_name, real_name, province, city, first_lv_nbr, second_lv_nbr, user_level, phone, email, is_chinese, recomend, is_agent,
-    address, weixin_id, created_at, updated_at
+    id, cust_id, nick_name, real_name, first_lv_nbr, second_lv_nbr, user_level, phone, email, is_chinese, recommend,
+    (select if(tt.is_chinese=1, phone, email) from tb_cust tt where tt.cust_id = a.recommend) as recommend_link,
+    is_agent, sex, country, province, city, address, head_img_url, privilege, meta_data, openid, unionid, created_at, updated_at
   </sql>
-  <sql id="Simple_Column_List" >
-    cust_id, nick_name, real_name, user_level, phone, email, is_agent, is_chinese, created_at
+  <sql id="Simple_Column_List">
+    cust_id, nick_name, real_name, user_level, phone, email, is_agent, is_chinese, openid, unionid, created_at
   </sql>
 
-  <select id="selectByWX" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByOpenid" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
-    from tb_cust
-    where weixin_id = #{weixin_id}
+    from tb_cust a
+    where openid = #{openid}
   </select>
 
   <select id="selectByCustId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
-    from tb_cust
+    from tb_cust a
     where cust_id = #{custId}
   </select>
 
   <select id="selectByPhoneOrEmail" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
-    from tb_cust
+    from tb_cust a
     where is_chinese = #{isChinese}
     <if test="isChinese==1">
       and phone = #{phone}
@@ -59,7 +67,7 @@
   <select id="pager" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Cust" >
     select
     <include refid="Base_Column_List" />
-    from tb_cust
+    from tb_cust a
     where 1=1
     <include refid="WHERE_SQL"/>
     order by created_at desc
@@ -79,6 +87,9 @@
     <if test="nickName!=null and nickName!=''">
       and nick_name like CONCAT('%', #{nickName},'%')
     </if>
+    <if test="realName!=null and realName!=''">
+      and real_name like CONCAT('%', #{realName},'%')
+    </if>
     <if test="userLevel!=null and userLevel!=''">
       and user_level = #{userLevel}
     </if>
@@ -91,11 +102,23 @@
     <if test="isChinese!=null and isChinese!=-1">
       and is_chinese = #{isChinese}
     </if>
-    <if test="recomend!=null and recomend!=''">
-      and recomend = #{recomend}
+    <if test="recommend!=null and recommend!=''">
+      and recommend = #{recommend}
     </if>
     <if test="isAgent!=null and isAgent!=-1">
       and is_agent = #{isAgent}
+    </if>
+    <if test="country!=null and country!=''">
+      and country = #{country}
+    </if>
+    <if test="province!=null and province!=''">
+      and province = #{province}
+    </if>
+    <if test="city!=null and city!=''">
+      and city = #{city}
+    </if>
+    <if test="sex!=null">
+      and sex = #{sex}
     </if>
     <if test="startDate!=null and startDate!=''">
       and created_at >= #{startDate}
@@ -111,19 +134,16 @@
   </delete>
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Cust" >
-    insert into tb_cust (cust_id, nick_name, real_name, province, city,
-      user_level, phone, email, 
-      is_chinese, recomend, is_agent, 
-      address, weixin_id, created_at, 
-      updated_at)
+    insert into tb_cust (cust_id, nick_name, real_name, user_level, phone, email, first_lv_nbr, second_lv_nbr, is_chinese, recommend, is_agent,
+    sex, country, province, city, address, head_img_url, privilege, openid, unionid, created_at, updated_at)
     values (#{custId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},#{realName,jdbcType=VARCHAR},
-      #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
-      #{userLevel,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
-      #{isChinese,jdbcType=INTEGER}, #{recomend,jdbcType=VARCHAR}, #{isAgent,jdbcType=INTEGER}, 
-      #{address,jdbcType=VARCHAR}, #{weixinId,jdbcType=VARCHAR}, now(), now())
+      'NONE', #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 0, 0,
+      #{isChinese,jdbcType=INTEGER}, #{recommend,jdbcType=VARCHAR}, 0, #{sex,jdbcType=INTEGER},
+      #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{headImgUrl,jdbcType=VARCHAR}, #{privilege,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR}, now(), now())
   </insert>
 
-  <update id="updateByCustId" parameterType="org.loxf.jyadmin.dal.po.Cust" >
+  <update id="updateByCustIdOrOpenid" parameterType="org.loxf.jyadmin.dal.po.Cust" >
     update tb_cust
     set
     <if test="nickName!=null and nickName!=''">
@@ -141,20 +161,41 @@
     <if test="isChinese!=null and isChinese!=-1">
       is_chinese = #{isChinese,jdbcType=INTEGER},
     </if>
-    <if test="recomend!=null and recomend!=''">
-      recomend = #{recomend,jdbcType=VARCHAR},
+    <if test="recommend!=null and recommend!=''">
+      recommend = #{recommend,jdbcType=VARCHAR},
     </if>
     <if test="isAgent!=null and isAgent!=-1">
       is_agent = #{isAgent,jdbcType=INTEGER},
     </if>
+    <if test="sex!=null and sex!=-1">
+      sex = #{sex,jdbcType=INTEGER},
+    </if>
+    <if test="country!=null and country!=''">
+      country = #{country,jdbcType=VARCHAR},
+    </if>
+    <if test="province!=null and province!=''">
+      province = #{province,jdbcType=VARCHAR},
+    </if>
+    <if test="city!=null and city!=''">
+      city = #{city,jdbcType=VARCHAR},
+    </if>
     <if test="address!=null and address!=''">
       address = #{address,jdbcType=VARCHAR},
     </if>
-    <if test="weixinId!=null and weixinId!=''">
-      weixin_id = #{weixinId,jdbcType=VARCHAR},
+    <if test="metaData!=null and metaData!=''">
+      meta_data = #{metaData,jdbcType=VARCHAR},
+    </if>
+    <if test="headImgUrl!=null and headImgUrl!=''">
+      head_img_url = #{headImgUrl,jdbcType=VARCHAR},
     </if>
       updated_at = now()
-    where cust_id = #{custId}
+    where 1=1
+    <if test="custId!=null and custId!=''">
+      and cust_id = #{custId}
+    </if>
+    <if test="openid!=null and openid!=''">
+      and openid = #{openid,jdbcType=VARCHAR}
+    </if>
   </update>
 
 
@@ -162,7 +203,7 @@
     select
     <include refid="Simple_Column_List" />
     from tb_cust
-    where recomend in (
+    where recommend in (
     <foreach collection="list" item="item" separator="," >
       #{item}
     </foreach>
@@ -174,10 +215,27 @@
   <select id="queryChildListCount" resultType="int" >
     select count(1)
     from tb_cust
-    where  recomend in (
+    where recommend in (
     <foreach collection="list" item="item" separator=",">
       #{item}
     </foreach>
     )
   </select>
+
+  <update id="updateChildNbr">
+    update tb_cust set updated_at = now()
+    <if test="type==1 and isAdd==1">
+      , first_lv_nbr = first_lv_nbr + 1
+    </if>
+    <if test="type==1 and isAdd==2">
+      , first_lv_nbr = first_lv_nbr - 1
+    </if>
+    <if test="type==2 and isAdd==1">
+      , second_lv_nbr = second_lv_nbr + 1
+    </if>
+    <if test="type==2 and isAdd==2">
+      , second_lv_nbr = second_lv_nbr - 1
+    </if>
+    where cust_id = #{custId}
+  </update>
 </mapper>

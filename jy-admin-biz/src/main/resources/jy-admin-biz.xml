@@ -10,7 +10,7 @@
     <context:component-scan base-package="org.loxf.jyadmin.biz"/>
     <import resource="jy-admin-dal.xml"/>
 
-    <bean id="jedisUtil" class="org.loxf.jyadmin.biz.util.JedisUtil" >
+    <bean id="jedisUtil" class="org.loxf.jyadmin.base.util.JedisUtil" >
         <constructor-arg index="0" ref="jedisPool"/>
         <constructor-arg index="1" value="${env}"/>
     </bean>

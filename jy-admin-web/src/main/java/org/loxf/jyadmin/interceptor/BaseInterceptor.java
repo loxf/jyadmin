@@ -3,7 +3,7 @@ package org.loxf.jyadmin.interceptor;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
-import org.loxf.jyadmin.client.constant.BaseConstant;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.util.CookieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 
 public class BaseInterceptor extends HandlerInterceptorAdapter {
     private static Logger logger = LoggerFactory.getLogger(BaseInterceptor.class);
-    private static String [] excludeUrl = {"/static/*", "/admin/login.html", "/"};
+    private static String [] excludeUrl = {"/static/*", "/admin/login.html", "/admin/weixin/api_access.html", "/"};
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if(needFilter(request.getRequestURI())){

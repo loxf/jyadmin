@@ -20,7 +20,7 @@
     {{#  } }}
 </script>
 <script type="text/html" id="agentTpl">
-    {{#  if(d.isAgent===0){ }}
+    {{#  if(d.isAgent===0||d.isAgent==undefined){ }}
     无
     {{#  } else if(d.isAgent===1){ }}
     代理商
@@ -34,10 +34,14 @@
 <script type="text/html" id="phoneOrEmailTpl">
     {{#  if(d.isChinese===1){ }}
     {{ d.phone }}
-    {{#  } else if(d.isChinese===2){ }}
+    {{#  } else if(d.isChinese===2) { }}
+    {{ d.email }}
+    {{#  } else if(d.phone) { }}
+    {{ d.phone }}
+    {{#  } else if(d.email) { }}
     {{ d.email }}
     {{#  } else { }}
-    未知
+    无
     {{#  } }}
 </script>
 <script type="text/javascript">

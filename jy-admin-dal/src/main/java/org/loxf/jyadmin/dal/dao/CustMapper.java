@@ -12,7 +12,7 @@ public interface CustMapper {
 
     int insertSelective(Cust record);
 
-    Cust selectByWX(String wx);
+    Cust selectByOpenid(String openid);
 
     Cust selectByCustId(String custId);
 
@@ -26,5 +26,13 @@ public interface CustMapper {
 
     int queryChildListCount(@Param("list")List<String> parentId);
 
-    int updateByCustId(Cust record);
+    int updateByCustIdOrOpenid(Cust record);
+
+    /**
+     * @param custId
+     * @param type 1:一级 2:二级
+     * @param isAdd 1:加 2:减
+     * @return
+     */
+    int updateChildNbr(@Param("custId")String custId, @Param("type")int type, @Param("isAdd")int isAdd);
 }

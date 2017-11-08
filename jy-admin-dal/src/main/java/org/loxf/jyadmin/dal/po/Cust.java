@@ -12,10 +12,6 @@ public class Cust extends BaseModel {
 
     private String realName;
 
-    private String province;
-
-    private String city;
-
     private Integer firstLvNbr;
 
     private Integer secondLvNbr;
@@ -28,13 +24,31 @@ public class Cust extends BaseModel {
 
     private Integer isChinese;
 
-    private String recomend;
+    private String recommend;
+
+    private String recommendLink;
 
     private Integer isAgent;
 
+    private Integer sex;
+
+    private String country;
+
+    private String province;
+
+    private String city;
+
     private String address;
 
-    private String weixinId;
+    private String headImgUrl;
+
+    private String privilege;
+
+    private String metaData;
+
+    private String openid;
+
+    private String unionid;
 
     public String getCustId() {
         return custId;
@@ -124,12 +138,20 @@ public class Cust extends BaseModel {
         this.isChinese = isChinese;
     }
 
-    public String getRecomend() {
-        return recomend;
+    public String getRecommend() {
+        return recommend;
     }
 
-    public void setRecomend(String recomend) {
-        this.recomend = recomend == null ? null : recomend.trim();
+    public void setRecommend(String recommend) {
+        this.recommend = recommend;
+    }
+
+    public String getRecommendLink() {
+        return recommendLink;
+    }
+
+    public void setRecommendLink(String recommendLink) {
+        this.recommendLink = recommendLink;
     }
 
     public Integer getIsAgent() {
@@ -148,12 +170,59 @@ public class Cust extends BaseModel {
         this.address = address == null ? null : address.trim();
     }
 
-    public String getWeixinId() {
-        return weixinId;
+    public Integer getSex() {
+        return sex;
     }
 
-    public void setWeixinId(String weixinId) {
-        this.weixinId = weixinId == null ? null : weixinId.trim();
+    public void setSex(Integer sex) {
+        this.sex = sex;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getHeadImgUrl() {
+        return headImgUrl;
+    }
+
+    public void setHeadImgUrl(String headImgUrl) {
+        this.headImgUrl = headImgUrl;
+    }
+
+    public String getPrivilege() {
+        return privilege;
+    }
+
+    public void setPrivilege(String privilege) {
+        this.privilege = privilege;
+    }
+
+    public String getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
+    }
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
+
+    public String getUnionid() {
+        return unionid;
+    }
+
+    public void setUnionid(String unionid) {
+        this.unionid = unionid;
+    }
 }

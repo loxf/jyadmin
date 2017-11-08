@@ -54,9 +54,10 @@ table.render({ //其它参数在此省略
             ,templet : '#agentTpl'
         },
         {
-            field: 'recomend',
+            field: 'recommendLink',
             title: '推荐人',
             width: 120
+            ,templet : '#recommendLinkTpl'
         },
         {
             field: 'firstLvNbr',
@@ -130,6 +131,7 @@ table.on('tool(userDataTable)', function (obj) { //注：tool是工具条事件�
 });
 
 function editRecommend(data, layEvent, tr) {
+    var old = data.recommendLink;
     //修改推荐人
     layer.open({
         type: 1
@@ -146,6 +148,10 @@ function editRecommend(data, layEvent, tr) {
                 layer.msg('请填写推荐人');
                 return false;
             }
+            if(old==_recommend){
+                layer.msg('请输入新的推荐人');
+                return false;
+            }
             $.ajax({
                 type: "POST",
                 url:"modifyRecommend.html",
@@ -160,9 +166,7 @@ function editRecommend(data, layEvent, tr) {
                         time: 2000 //2秒关闭（如果不配置，默认是3秒）
                     }, function(){
                         if(data.code == 1){
-                            obj.update({
-                                recomend: _recommend
-                            });
+                            searchList();
                             layer.closeAll();
                         }else{
                             return false;
@@ -177,6 +181,7 @@ function editRecommend(data, layEvent, tr) {
 }
 
 function editVip(data, layEvent, tr) {
+    var old = data.userLevel;
     layer.open({
         type: 1
         ,offset: '200px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
@@ -197,6 +202,10 @@ function editVip(data, layEvent, tr) {
                 layer.msg('请选择用户等级');
                 return false;
             }
+            if(old==_userLevel){
+                layer.msg('用户等级未改变');
+                return false;
+            }
             $.ajax({
                 type: "POST",
                 url:"modifyUserLevel.html",
@@ -210,9 +219,7 @@ function editVip(data, layEvent, tr) {
                         time: 2000 //2秒关闭（如果不配置，默认是3秒）
                     }, function(){
                         if(data.code == 1){
-                            obj.update({
-                                userLevel: _userLevel
-                            });
+                            searchList();
                             layer.closeAll();
                         }else{
                             return false;
@@ -226,12 +233,12 @@ function editVip(data, layEvent, tr) {
     });
 }
 function delCust(data, layEvent, tr) {
-    layer.confirm('删除客户不可恢复，确认删除？', {icon: 3, title:'警告'}, function(index){
+    var layIndex = layer.confirm('删除客户不可恢复，确认删除？', {icon: 3, title:'警告'}, function(index){
         $.ajax({
             type: "POST",
             url:"delCust.html",
             data : {
-                custId : $("#J_R_custId").val(),
+                custId : data.custId
             },
             dataType:"json",
             success: function(data) {
@@ -239,10 +246,8 @@ function delCust(data, layEvent, tr) {
                     time: 2000 //2秒关闭（如果不配置，默认是3秒）
                 }, function(){
                     if(data.code == 1){
-                        obj.update({
-                            userLevel: _userLevel
-                        });
-                        layer.closeAll();
+                        searchList();
+                        layer.close(layIndex);
                     }else{
                         return false;
                     }
@@ -266,4 +271,8 @@ function openChildCustList(type, custId) {
         ,maxmin:true
         ,shade: 0.3
     });
+}
+
+function searchList() {
+    $("#searchList").click();
 }

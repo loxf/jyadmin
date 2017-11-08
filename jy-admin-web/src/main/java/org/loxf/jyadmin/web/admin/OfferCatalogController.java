@@ -1,13 +1,10 @@
 package org.loxf.jyadmin.web.admin;
 
-import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
-import org.loxf.jyadmin.biz.util.ConfigProperties;
-import org.loxf.jyadmin.client.constant.BaseConstant;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.OfferCatalogDto;
-import org.loxf.jyadmin.client.dto.OfferDto;
+import org.loxf.jyadmin.client.service.ConfigService;
 import org.loxf.jyadmin.client.service.OfferCatalogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Controller
 @RequestMapping("/admin/offerCatalog")
 public class OfferCatalogController extends BaseControl<OfferCatalogDto> {
@@ -27,7 +22,7 @@ public class OfferCatalogController extends BaseControl<OfferCatalogDto> {
     @Autowired
     private OfferCatalogService offerCatalogService;
     @Autowired
-    private ConfigProperties configProperties;
+    private ConfigService configService;
 
     @RequestMapping("/index")
     public String index(){
@@ -45,7 +40,7 @@ public class OfferCatalogController extends BaseControl<OfferCatalogDto> {
         BaseResult<OfferCatalogDto> catalogDtoBaseResult = offerCatalogService.queryById(catalogId);
         if(catalogDtoBaseResult.getCode()== BaseConstant.SUCCESS || catalogDtoBaseResult.getData()!=null) {
             model.addAttribute("offerCatalog", catalogDtoBaseResult.getData());
-            model.addAttribute("basePic", configProperties.getIMG_SERVER());
+            model.addAttribute("basePic", configService.queryConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL"));
         }
         return "main/offerCatalog/editOfferCatalog";
     }

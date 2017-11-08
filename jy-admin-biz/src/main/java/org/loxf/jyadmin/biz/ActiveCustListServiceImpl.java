@@ -2,7 +2,7 @@ package org.loxf.jyadmin.biz;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
-import org.loxf.jyadmin.client.constant.BaseConstant;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.ActiveCustListDto;
 import org.loxf.jyadmin.client.service.ActiveCustListService;
 import org.loxf.jyadmin.dal.dao.ActiveCustListMapper;

@@ -149,10 +149,10 @@ create table tb_cust
    phone                varchar(30) comment '手机号',
    email                varchar(100) comment '邮箱',
    is_chinese           int(2) comment '1:中国，2:海外用户',
-   recomend             varchar(64) comment '推荐人',
+   recommend             varchar(64) comment '推荐人',
    is_agent             int(2) comment '0：否，1：代理商，2：合伙人，3：分公司',
    address              varchar(200),
-   weixin_id            varchar(64),
+   openid            varchar(64),
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

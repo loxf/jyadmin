@@ -3,7 +3,7 @@ package org.loxf.jyadmin.biz.util;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-@Component("systemConfig")
+@Component
 public class ConfigProperties {
     @Value("#{configProperties['mq.topic']}")
     private String mqTopic;

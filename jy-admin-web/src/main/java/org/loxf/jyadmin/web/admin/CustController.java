@@ -1,9 +1,11 @@
 package org.loxf.jyadmin.web.admin;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
-import org.loxf.jyadmin.client.constant.BaseConstant;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.CustService;
 import org.slf4j.Logger;
@@ -37,7 +39,7 @@ public class CustController extends BaseControl<CustDto> {
     @RequestMapping("/modifyRecommend")
     @ResponseBody
     public BaseResult modifyRecommend(String custId, String recommend){
-        if(StringUtils.isBlank(custId) || StringUtils.isBlank(custId)){
+        if(StringUtils.isBlank(custId) || StringUtils.isBlank(recommend)){
             return new BaseResult(0, "推荐人不能为空");
         }
         int isChinese = 1;//国内用户
@@ -49,10 +51,7 @@ public class CustController extends BaseControl<CustDto> {
             return baseResult;
         } else {
             // 执行修改逻辑
-            CustDto custDto = new CustDto();
-            custDto.setCustId(custId);
-            custDto.setRecomend(recommend);
-            return custService.updateCust(custDto);
+            return custService.updateRecommend(custId, baseResult.getData().getCustId());
         }
     }
 
@@ -60,7 +59,7 @@ public class CustController extends BaseControl<CustDto> {
     @ResponseBody
     public BaseResult modifyUserLevel(String custId, String userLevel){
         if(StringUtils.isBlank(custId) || StringUtils.isBlank(custId)){
-            return new BaseResult(0, "推荐人不能为空");
+            return new BaseResult(0, "客户ID不能为空");
         }
         // 执行修改逻辑
         CustDto custDto = new CustDto();

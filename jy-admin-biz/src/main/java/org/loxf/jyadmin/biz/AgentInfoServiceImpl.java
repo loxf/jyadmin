@@ -1,7 +1,9 @@
 package org.loxf.jyadmin.biz;
 
+import org.apache.commons.lang3.StringUtils;
+import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
-import org.loxf.jyadmin.client.constant.BaseConstant;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.AgentInfoDto;
 import org.loxf.jyadmin.client.service.AgentInfoService;
 import org.loxf.jyadmin.dal.dao.AgentInfoMapper;
@@ -9,6 +11,7 @@ import org.loxf.jyadmin.dal.po.AgentInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,5 +40,48 @@ public class AgentInfoServiceImpl implements AgentInfoService {
         }
         int tatalPage = total/agentInfoDto.getPager().getSize() + (total%agentInfoDto.getPager().getSize()==0?0:1);
         return new PageResult<AgentInfoDto>(tatalPage, agentInfoDto.getPager().getSize(), total, list);
+    }
+
+    @Override
+    public BaseResult<AgentInfoDto> queryAgent(String custId) {
+        AgentInfo agentInfo = agentInfoMapper.selectByCustId(custId);
+        if(agentInfo==null){
+            return new BaseResult<>(BaseConstant.FAILED, "无代理信息");
+        }
+        AgentInfoDto dto = new AgentInfoDto();
+        BeanUtils.copyProperties(agentInfo, dto);
+        return new BaseResult<>(dto);
+    }
+
+    @Override
+    @Transactional
+    public BaseResult<String> addAgent(AgentInfoDto agentInfoDto) {
+        if(agentInfoDto==null){
+            return new BaseResult<>(BaseConstant.FAILED, "参数不全");
+        }
+        AgentInfo agentInfo = new AgentInfo();
+        BeanUtils.copyProperties(agentInfoDto, agentInfo);
+        if(agentInfoMapper.insert(agentInfo)>0) {
+            return new BaseResult<>(agentInfoDto.getCustId());
+        } else {
+            return new BaseResult<>(BaseConstant.FAILED, "新增失败");
+        }
+    }
+
+    @Override
+    @Transactional
+    public BaseResult updateAgent(AgentInfoDto agentInfoDto) {
+        if(agentInfoDto==null){
+            return new BaseResult<>(BaseConstant.FAILED, "参数不全");
+        }
+        AgentInfo agentInfo = new AgentInfo();
+        BeanUtils.copyProperties(agentInfoDto, agentInfo);
+        return new BaseResult(agentInfoMapper.updateByCustId(agentInfo));
+    }
+
+    @Override
+    public BaseResult delAgent(String custId) {
+        agentInfoMapper.delete(custId);
+        return new BaseResult();
     }
 }

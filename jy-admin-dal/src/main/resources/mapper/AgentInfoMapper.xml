@@ -5,6 +5,8 @@
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
     <result column="email" property="email" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
@@ -17,12 +19,12 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, real_name, phone, email, status, type, eff_date, exp_date, meta_data, remark, created_at, updated_at
+    id, cust_id, real_name, province, city, phone, email, status, type, eff_date, exp_date, meta_data, remark, created_at, updated_at
   </sql>
   <sql id="Cust_Agent_List" >
-    a.cust_id as custId, a.status, a.type, a.eff_date as effDate, a.exp_date as expDate, a.meta_data as metaData, a.created_at as createdAt,
-    a.updated_at as updatedAt, b.nick_name as nickName, a.real_name as realName, b.province, b.city, b.first_lv_nbr as firstLvNbr,
-    b.second_lv_nbr as secondLvNbr, b.user_level as userLevel, a.phone, a.email, b.is_chinese as isChinese, b.recomend, b.is_agent as isAgent, b.address
+    a.cust_id as custId, a.status, a.type, a.province, a.city, a.eff_date as effDate, a.exp_date as expDate, a.meta_data as metaData, a.created_at as createdAt,
+    a.updated_at as updatedAt, b.nick_name as nickName, a.real_name as realName, b.sex, b.country, b.first_lv_nbr as firstLvNbr,
+    b.second_lv_nbr as secondLvNbr, b.user_level as userLevel, a.phone, a.email, b.is_chinese as isChinese, b.recommend, b.is_agent as isAgent, b.address
   </sql>
 
   <select id="selectByCustId" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -73,26 +75,47 @@
     <if test="endDate!=null and endDate!='' ">
       and a.eff_date &lt; date_add(#{endDate}, INTERVAL 1 DAY)
     </if>
+    <if test="status!=null">
+      and a.status = #{status}
+    </if>
+    <if test="province!=null and province!=''">
+      and a.province = #{province}
+    </if>
+    <if test="city!=null and city!=''">
+      and a.city = #{city}
+    </if>
   </sql>
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.AgentInfo" >
     insert into tb_agent_info (cust_id, status, real_name, phone, email,
-      type, eff_date, exp_date, meta_data,
-      total_free_nbr, use_nbr, created_at, 
-      updated_at)
-    values (#{custId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER},#{realName,jdbcType=INTEGER},
-      #{phone,jdbcType=INTEGER},#{email,jdbcType=INTEGER},#{type,jdbcType=INTEGER}, #{effDate,jdbcType=VARCHAR},
+      type, eff_date, exp_date, meta_data, created_at, updated_at)
+    values (#{custId,jdbcType=VARCHAR}, 0, #{realName,jdbcType=VARCHAR},
+      #{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{type,jdbcType=INTEGER}, #{effDate,jdbcType=VARCHAR},
       #{expDate,jdbcType=VARCHAR}, #{metaData,jdbcType=VARCHAR}, now(), now())
   </insert>
-  <update id="updateByCustId" parameterType="org.loxf.jyadmin.dal.po.AgentInfo" >
+  <update id="updateByCustId" parameterType="org.loxf.jyadmin.dal.po.AgentInfo">
     update tb_agent_info
-    set status = #{status,jdbcType=INTEGER},
+    set
+    <if test="status!=null and status!=''">
+      status = #{status,jdbcType=INTEGER},
+    </if>
+    <if test="type!=null and type!=''">
       type = #{type,jdbcType=INTEGER},
+    </if>
+    <if test="metaData!=null and metaData!=''">
       meta_data = #{metaData,jdbcType=VARCHAR},
+    </if>
+    <if test="effDate!=null and effDate!=''">
       eff_date = #{effDate,jdbcType=VARCHAR},
+    </if>
+    <if test="expDate!=null and expDate!=''">
       exp_date = #{expDate,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = now()
+    </if>
+    updated_at = now()
     where cust_id = #{custId,jdbcType=VARCHAR}
   </update>
+
+  <delete id="delete">
+    delete from tb_agent_info where cust_id = #{custId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

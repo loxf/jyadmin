@@ -18,11 +18,13 @@ var menu = {
                 menuHref: contextPath + '/admin/partner/index.html'
             }, {
                 menuName: '合伙人审核',
-                menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
+                menuHref: contextPath + '/admin/partner/toPend.html'
             }]
-        },
+        }
+    ],
+    ORDER: [
         {
-            menuName: '积分管理',
+            menuName: '全部订单',
             menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
         },
         {
@@ -30,13 +32,11 @@ var menu = {
             menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
         },
         {
-            menuName: '银行卡管理',
+            menuName: '积分管理',
             menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
-        }
-    ],
-    ORDER: [
+        },
         {
-            menuName: '全部订单',
+            menuName: '银行卡管理',
             menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
         },
         {

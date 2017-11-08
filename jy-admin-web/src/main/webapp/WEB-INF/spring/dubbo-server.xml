@@ -6,6 +6,14 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo
         http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.CustService" ref="custService"/>
+
     <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
                    interface="org.loxf.jyadmin.client.service.OfferCatalogService" ref="offerCatalogService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.ConfigService" ref="configService"/>
+
 </beans>
