@@ -8,12 +8,72 @@
 
 
     <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.AccountDetailService" ref="accountDetailService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.AccountService" ref="accountService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.ActiveCustListService" ref="activeCustListService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.ActiveCustService" ref="activeCustService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.ActiveService" ref="activeService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.AgentInfoService" ref="agentInfoService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.ConfigService" ref="configService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.CustBankService" ref="custBankService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.CustBpDetailService" ref="custBpDetailService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.CustCashService" ref="custCashService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
                    interface="org.loxf.jyadmin.client.service.CustService" ref="custService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.CustSignService" ref="custSignService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.FriendLinkService" ref="friendLinkService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.HtmlInfoService" ref="htmlInfoService"/>
 
     <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
                    interface="org.loxf.jyadmin.client.service.OfferCatalogService" ref="offerCatalogService"/>
 
     <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
-                   interface="org.loxf.jyadmin.client.service.ConfigService" ref="configService"/>
+                   interface="org.loxf.jyadmin.client.service.OfferService" ref="offerService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.OrderService" ref="orderService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.ProvinceAndCityService" ref="provinceAndCityService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.PurchasedVideoService" ref="purchasedVideoService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.ShareService" ref="shareService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.VideoConfigService" ref="videoConfigService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.VipInfoService" ref="vipInfoService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.WatchRecordService" ref="watchRecordService"/>
 
 </beans>

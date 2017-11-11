@@ -31,7 +31,7 @@ public class CustServiceImpl implements CustService {
 
     @Override
     @Transactional
-    public BaseResult addCust(CustDto custDto, UserAccessToken userAccessToken){
+    public BaseResult<String> addCust(CustDto custDto, UserAccessToken userAccessToken){
         Cust cust = new Cust();
         BeanUtils.copyProperties(custDto, cust);
         String custId = IdGenerator.generate(prefix);
@@ -49,7 +49,7 @@ public class CustServiceImpl implements CustService {
         if (StringUtils.isNotBlank(custDto.getRecommend())) {
             updateRecommendChildNbr(custDto.getRecommend(), 1);
         }
-        return new BaseResult<>();
+        return new BaseResult<>(custId);
     }
 
     @Override

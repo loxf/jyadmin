@@ -6,7 +6,7 @@ import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
 import org.loxf.jyadmin.client.dto.CustDto;
 
 public interface CustService {
-    public BaseResult addCust(CustDto custDto, UserAccessToken userAccessToken);
+    public BaseResult<String> addCust(CustDto custDto, UserAccessToken userAccessToken);
     public PageResult<CustDto> pager(CustDto custDto);
     public BaseResult<CustDto> queryCust(int type, String phoneOrEmail);
     public BaseResult<CustDto> queryCustByCustId(String custId);

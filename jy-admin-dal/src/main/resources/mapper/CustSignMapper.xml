@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.CustSignMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CustSign" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="sign_date" property="signDate" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cust_id, sign_date, created_at
+  </sql>
+  <select id="selectByCustAndSignDate" resultType="int" >
+    select 
+    count(1)
+    from tb_cust_sign
+    where cust_id = #{custId} and sign_date = #{signDate}
+  </select>
+  <insert id="insert">
+    insert into tb_cust_sign (cust_id, sign_date, created_at)
+    values (#{custId,jdbcType=VARCHAR}, #{signDate,jdbcType=VARCHAR}, now())
+  </insert>
+</mapper>
