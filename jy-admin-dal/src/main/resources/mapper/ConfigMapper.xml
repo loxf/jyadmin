@@ -53,7 +53,7 @@
     where id = #{id}
   </update>
 
-  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.Config">
+  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.Config">
     select count(1)
     from tb_config
     where 1=1

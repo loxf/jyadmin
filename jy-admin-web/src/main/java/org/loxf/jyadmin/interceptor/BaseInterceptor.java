@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.util.ConfigUtil;
 import org.loxf.jyadmin.util.CookieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class BaseInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
         }
+        request.setAttribute("basePic", ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL").getConfigValue());
         return super.preHandle(request, response, handler);
     }
 

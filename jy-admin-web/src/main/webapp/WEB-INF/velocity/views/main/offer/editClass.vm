@@ -79,13 +79,13 @@
                 #if(${metaDataJson} && ${metaDataJson.HOT} ) checked #end lay-skin="switch" lay-text="ON|OFF">
         </div>
     </div>
-    <div class="layui-form-item">
+    #*<div class="layui-form-item">
         <label class="layui-form-label">首页展示</label>
         <div class="layui-input-block">
             <input type="checkbox" #if(${metaDataJson} && ${metaDataJson.INDEX} ) checked #end
                    name="INDEX" lay-skin="switch" lay-text="ON|OFF">
         </div>
-    </div>
+    </div>*#
 
     <div class="layui-form-item" id="J_teacherDiv">
         #if(${metaDataJson} && ${metaDataJson.TEACHER} )

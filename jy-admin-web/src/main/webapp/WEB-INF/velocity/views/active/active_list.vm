@@ -59,11 +59,14 @@
 <script type="text/html" id="barTable">
     {{#  if(d.status===0){ }}
     <a class="layui-btn layui-btn-mini" lay-event="onActive">发布</a>
-    {{#  } else { }}
-    <a class="layui-btn layui-btn-mini" lay-event="offActive">取消</a>
-    {{#  } }}
     <a class="layui-btn layui-btn-mini" lay-event="editActive">编辑</a>
     <a class="layui-btn layui-btn-mini" lay-event="deleteActive">删除</a>
+    {{#  } else { }}
+    <a class="layui-btn layui-btn-mini" lay-event="offActive">取消</a>
+    <a class="layui-btn layui-btn-mini" lay-event="indexShow">首页轮播</a>
+    <a class="layui-btn layui-btn-mini" lay-event="copyHref">复制链接</a>
+    <a class="layui-btn layui-btn-mini" lay-event="sendWeiXin">微信推送</a>
+    {{#  } }}
 </script>
 
 <script type="text/html" id="studentsTpl">
@@ -83,6 +86,19 @@
         {{#  } }}
     {{#  } else {  }}
         无限制
+    {{#  } }}
+</script>
+
+<script type="text/html" id="indexShowTpl">
+    {{#  if(d.metaData){ }}
+    {{#  var json = eval("("+d.metaData+")");}}
+    {{# if(json.INDEX){ }}
+    <font color="#8b0000">是</font>
+    {{#  } else { }}
+    否
+    {{# } }}
+    {{#  } else { }}
+    否
     {{#  } }}
 </script>
 <script type="text/html" id="activeTimeTpl">

@@ -29,7 +29,7 @@
     from tb_offer_catalog where
     catalog_id = #{catalogId}
   </select>
-  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
+  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
     select count(1)
     from tb_offer_catalog
     where 1=1

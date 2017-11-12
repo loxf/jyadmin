@@ -9,8 +9,6 @@ public class ConfigProperties {
     private String mqTopic;
     @Value("#{configProperties['IMAGE.SERVER.PATH']}")
     private String IMG_SERVER_PATH;
-    @Value("#{configProperties['IMAGE.SERVER']}")
-    private String IMG_SERVER;
 
     public String getMqTopic() {
         return mqTopic;
@@ -20,7 +18,4 @@ public class ConfigProperties {
         return IMG_SERVER_PATH;
     }
 
-    public String getIMG_SERVER() {
-        return IMG_SERVER;
-    }
 }

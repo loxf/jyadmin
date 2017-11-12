@@ -1,15 +1,15 @@
 package org.loxf.jyadmin.biz;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.ActiveDto;
 import org.loxf.jyadmin.client.service.ActiveService;
-import org.loxf.jyadmin.dal.dao.ActiveCustListMapper;
-import org.loxf.jyadmin.dal.dao.ActiveMapper;
-import org.loxf.jyadmin.dal.dao.CityMapper;
-import org.loxf.jyadmin.dal.dao.ProvinceMapper;
+import org.loxf.jyadmin.dal.dao.*;
 import org.loxf.jyadmin.dal.po.Active;
 import org.loxf.jyadmin.dal.po.City;
 import org.loxf.jyadmin.dal.po.Province;
@@ -32,6 +32,8 @@ public class ActiveServiceImpl implements ActiveService {
     private ProvinceMapper provinceMapper;
     @Autowired
     private CityMapper cityMapper;
+    @Autowired
+    private IndexRecommendMapper indexRecommendMapper;
     
     @Override
     public PageResult<ActiveDto> pager(ActiveDto activeDto) {
@@ -142,5 +144,32 @@ public class ActiveServiceImpl implements ActiveService {
             }
         }
         return new BaseResult(activeMapper.onOrOffActive(activeId, status));
+    }
+
+    @Override
+    @Transactional
+    public BaseResult sendIndexRecommend(String activeId){
+        Active active = activeMapper.selectByActiveId(activeId);
+        if(active==null){
+            return new BaseResult(BaseConstant.FAILED, "活动不存在");
+        }
+        String metaData = active.getMetaData();
+        JSONObject metaJSON = null;
+        if(StringUtils.isBlank(metaData)){
+            metaJSON = new JSONObject();
+        } else {
+            metaJSON = JSON.parseObject(metaData);
+        }
+        if(metaJSON.containsKey("INDEX")){
+            indexRecommendMapper.updateByPrimaryKey("ACTIVE", activeId);
+        } else {
+            indexRecommendMapper.insert("ACTIVE", activeId);
+            metaJSON.put("INDEX", "on");
+            Active activeRefresh = new Active();
+            activeRefresh.setActiveId(activeId);
+            activeRefresh.setMetaData(metaJSON.toJSONString());
+            activeMapper.updateByActiveId(activeRefresh);
+        }
+        return new BaseResult();
     }
 }

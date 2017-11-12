@@ -29,6 +29,8 @@ public class OfferDto extends BaseModel {
 
     private Integer status;
 
+    private Integer playTime;
+
     private List<OfferDto> relOffers;
 
     public String getOfferId() {
@@ -125,6 +127,14 @@ public class OfferDto extends BaseModel {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Integer getPlayTime() {
+        return playTime;
+    }
+
+    public void setPlayTime(Integer playTime) {
+        this.playTime = playTime;
     }
 
     public List<OfferDto> getRelOffers() {

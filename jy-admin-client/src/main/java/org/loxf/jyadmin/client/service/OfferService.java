@@ -16,4 +16,5 @@ public interface OfferService {
     BaseResult onOrOffOffer(String offerId, Integer status);
     BaseResult<List<OfferDto>> showOfferRel(String offerId, String relType);
     BaseResult<List<OfferDto>> pagerOfferAndActive(String name);
+    BaseResult sendIndexRecommend(String offerId);
 }

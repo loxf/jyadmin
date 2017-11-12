@@ -74,13 +74,13 @@
             <input type="checkbox" checked="" name="HOT" lay-skin="switch" lay-text="ON|OFF">
         </div>
     </div>
-    <div class="layui-form-item">
+   #* <div class="layui-form-item">
         <label class="layui-form-label">首页展示</label>
         <div class="layui-input-block">
             <input type="checkbox" placeholder="首页展示最多5个，按设置时间倒序排列"
                    name="INDEX" lay-skin="switch" lay-text="ON|OFF">
         </div>
-    </div>
+    </div>*#
     <div class="layui-form-item" id="J_teacherDiv">
         <div class="layui-inline">
             <label class="layui-form-label">

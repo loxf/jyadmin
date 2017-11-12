@@ -11,4 +11,5 @@ public interface ActiveService {
     BaseResult updateActive(ActiveDto activeDto);
     BaseResult deleteActive(String activeId);
     BaseResult onOrOffActive(String activeId, Integer status);
+    BaseResult sendIndexRecommend(String activeId);
 }

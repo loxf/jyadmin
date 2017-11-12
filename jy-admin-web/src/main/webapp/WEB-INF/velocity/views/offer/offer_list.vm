@@ -66,13 +66,14 @@
     {{# if(d.offerType!=='VIP') { }}
     {{#  if(d.status===0){ }}
     <a class="layui-btn layui-btn-mini" lay-event="onOffer">上架</a>
-    {{#  } else { }}
-    <a class="layui-btn layui-btn-mini" lay-event="offOffer">下架</a>
-    {{#  } }}
     <a class="layui-btn layui-btn-mini" lay-event="editOffer">编辑</a>
     <a class="layui-btn layui-btn-mini" lay-event="deleteOffer">删除</a>
+    {{#  } else { }}
+    <a class="layui-btn layui-btn-mini" lay-event="offOffer">下架</a>
+    <a class="layui-btn layui-btn-mini" lay-event="indexShow">首页轮播</a>
     <a class="layui-btn layui-btn-mini" lay-event="copyHref">复制链接</a>
     <a class="layui-btn layui-btn-mini" lay-event="sendWeiXin">微信推送</a>
+    {{#  } }}
     {{#  } }}
 </script>
 
@@ -107,16 +108,29 @@
     {{#  } }}
 </script>
 
+<script type="text/html" id="indexShowTpl">
+    {{#  if(d.metaData){ }}
+        {{#  var json = eval("("+d.metaData+")");}}
+        {{# if(json.INDEX){ }}
+    <font color="#8b0000">是</font>
+        {{#  } else { }}
+        否
+        {{# } }}
+    {{#  } else { }}
+        否
+    {{#  } }}
+</script>
+
 <script type="text/html" id="metaDataTpl">
     {{#  if(d.metaData){ }}
     {{#  var json = eval("("+d.metaData+")");}}
-        {{# if(json.TEACHER){ }}
-            {{# for(var idx in json.TEACHER){ }}
-            <span style="padding-left: 3px"> {{ json.TEACHER[idx].name }} </span>
-            {{# } }}
-        {{#  } else { }}
-        无
-        {{# } }}
+    {{# if(json.TEACHER){ }}
+    {{# for(var idx in json.TEACHER){ }}
+    <span style="padding-left: 3px"> {{ json.TEACHER[idx].name }} </span>
+    {{# } }}
+    {{#  } else { }}
+    无
+    {{# } }}
     {{#  } else { }}
     无
     {{#  } }}

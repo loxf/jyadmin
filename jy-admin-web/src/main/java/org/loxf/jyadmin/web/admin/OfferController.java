@@ -11,10 +11,7 @@ import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.OfferCatalogDto;
 import org.loxf.jyadmin.client.dto.OfferDto;
 import org.loxf.jyadmin.client.dto.OfferRelDto;
-import org.loxf.jyadmin.client.service.ConfigService;
-import org.loxf.jyadmin.client.service.HtmlInfoService;
-import org.loxf.jyadmin.client.service.OfferCatalogService;
-import org.loxf.jyadmin.client.service.OfferService;
+import org.loxf.jyadmin.client.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +36,8 @@ public class OfferController extends BaseControl<OfferDto> {
     private HtmlInfoService htmlInfoService;
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private IndexRecommendService indexRecommendService;
 
     @RequestMapping("/index")
     public String index(Model model){
@@ -171,5 +170,11 @@ public class OfferController extends BaseControl<OfferDto> {
         offerCatalogDto.setPager(pager);
         PageResult<OfferCatalogDto> tmp = offerCatalogService.pager(offerCatalogDto);
         return tmp.getData();
+    }
+
+    @RequestMapping("/indexRecommend")
+    @ResponseBody
+    public BaseResult indexRecommend(String offerId){
+        return offerService.sendIndexRecommend(offerId);
     }
 }

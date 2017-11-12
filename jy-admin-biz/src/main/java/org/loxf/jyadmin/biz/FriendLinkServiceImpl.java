@@ -57,8 +57,8 @@ public class FriendLinkServiceImpl implements FriendLinkService {
         }
         FriendLink friendLink = new FriendLink();
         BeanUtils.copyProperties(dto, friendLink);
-        int count = friendLinkMapper.count(friendLink);
-        if(count>0){
+        Integer count = friendLinkMapper.count(friendLink);
+        if(count!=null && count>0){
             List<FriendLinkDto> friendLinkDtos = new ArrayList<>();
             List<FriendLink> list = friendLinkMapper.list(friendLink, (page-1)*size, size);
             for(FriendLink po : list){

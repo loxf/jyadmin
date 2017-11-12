@@ -46,7 +46,7 @@
     </if>
   </select>
 
-  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.AgentInfo" >
+  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.AgentInfo" >
     select count(1)
     from tb_agent_info a, tb_cust b
     where a.cust_id = b.cust_id
@@ -87,11 +87,10 @@
   </sql>
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.AgentInfo" >
-    insert into tb_agent_info (cust_id, status, real_name, phone, email,
+    insert into tb_agent_info (cust_id, status, real_name, province, city, phone, email,
       type, eff_date, exp_date, meta_data, created_at, updated_at)
-    values (#{custId,jdbcType=VARCHAR}, 0, #{realName,jdbcType=VARCHAR},
-      #{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{type,jdbcType=INTEGER}, #{effDate,jdbcType=VARCHAR},
-      #{expDate,jdbcType=VARCHAR}, #{metaData,jdbcType=VARCHAR}, now(), now())
+    values (#{custId,jdbcType=VARCHAR}, 0, #{realName,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
+      #{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{type,jdbcType=INTEGER}, null, null, null, now(), now())
   </insert>
   <update id="updateByCustId" parameterType="org.loxf.jyadmin.dal.po.AgentInfo">
     update tb_agent_info

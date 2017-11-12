@@ -76,7 +76,7 @@
     </if>
   </select>
 
-  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.Cust" >
+  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.Cust" >
     select count(1)
     from tb_cust
     where  1=1
@@ -212,7 +212,7 @@
       limit #{start}, #{size}
   </select>
 
-  <select id="queryChildListCount" resultType="int" >
+  <select id="queryChildListCount" resultType="java.lang.Integer">
     select count(1)
     from tb_cust
     where recommend in (

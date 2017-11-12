@@ -13,11 +13,14 @@ public class CustSignServiceImpl implements CustSignService {
 
     @Override
     public BaseResult<Boolean> sign(String custId, String signDate) {
-        return new BaseResult<>(custSignMapper.selectByCustAndSignDate(custId, signDate)>0);
+        if(custSignMapper.selectByCustAndSignDate(custId, signDate)>0){
+            return new BaseResult<>();
+        }
+        return new BaseResult<>(custSignMapper.insert(custId, signDate)>0);
     }
 
     @Override
     public BaseResult<Boolean> hasSign(String custId, String signDate) {
-        return new BaseResult<>(custSignMapper.insert(custId, signDate)>0);
+        return new BaseResult<>(custSignMapper.selectByCustAndSignDate(custId, signDate)>0);
     }
 }

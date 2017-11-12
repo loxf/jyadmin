@@ -4,7 +4,6 @@
 
 <script type="text/javascript">
     var contextPath = '${rc.contextPath}';
-    var basePic = "";
-    var baseVideo = "";
+    var basePic = '$request.getAttribute("basePic")';
 </script>
 $!{screen_content}

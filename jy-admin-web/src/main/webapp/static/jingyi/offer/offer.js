@@ -53,6 +53,12 @@ table.render({ //其它参数在此省略
             templet : '#buyPriviTpl'
         },
         {
+            field: 'indexShow',
+            title: '首页轮播',
+            width: 100,
+            templet : '#indexShowTpl'
+        },
+        {
             field: 'offerPic',
             title: '商品图片',
             width: 100 ,
@@ -125,10 +131,12 @@ table.on('tool(userDataTable)', function (obj) { //注：tool是工具条事件�
         copyHref(data, layEvent, obj);
     } else if (layEvent === 'sendWeiXin') {// 微信推送
         sendWeiXin(data, layEvent, obj);
-    } else if (layEvent === 'onOffer') {// 微信推送
+    } else if (layEvent === 'onOffer') {// 上架
         onOffer(data, layEvent, obj);
-    } else if (layEvent === 'offOffer') {// 微信推送
+    } else if (layEvent === 'offOffer') {// 下架
         offOffer(data, layEvent, obj);
+    } else if(layEvent === 'indexShow'){//首页轮播
+        indexRecommend(data, layEvent, obj);
     }
 });
 
@@ -144,6 +152,27 @@ function addOffer() {
         url += '?type=OFFER';
         openNewOffer(url);
         layer.close(winConfirm);
+    });
+}
+
+function indexRecommend(data, layEvent, obj) {
+    $.ajax({
+        type: "POST",
+        url:"indexRecommend.html",
+        data : {
+            offerId : data.offerId
+        },
+        dataType:"json",
+        success: function(data) {
+            layer.msg(data.msg);
+            /*layer.msg(data.msg, {
+                time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
+            }, function(){
+                /!*obj.update({
+                    metaData:{HOT : true}
+                });*!/
+            });*/
+        }
     });
 }
 

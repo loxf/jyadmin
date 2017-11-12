@@ -5,6 +5,7 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.ConfigDto;
 import org.loxf.jyadmin.client.service.ConfigService;
+import org.loxf.jyadmin.util.ConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class FileUploadController {
     @Autowired
     private ConfigService configService;
 
+    @Value("#{configProperties['IMAGE.SERVER.PATH']}")
+    private String IMG_SERVER_PATH;
+
     @RequestMapping("/img")
     @ResponseBody
     public BaseResult uploadImg(MultipartFile file, HttpServletRequest request, HttpServletResponse response) {
@@ -49,11 +53,7 @@ public class FileUploadController {
         if (imageName.equalsIgnoreCase("jpg") || imageName.equalsIgnoreCase("jpeg") ||
                 imageName.equalsIgnoreCase("png") ||
                 imageName.equalsIgnoreCase("icon") || imageName.equalsIgnoreCase("bmp")) {
-            String pathRoot = null;// 绝对路径
-            BaseResult<ConfigDto> picBaseResult = configService.queryConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL");
-            if(picBaseResult.getCode()==BaseConstant.SUCCESS && picBaseResult.getData()!=null){
-                pathRoot = picBaseResult.getData().getConfigValue();
-            }
+            String pathRoot = IMG_SERVER_PATH;// 绝对路径
             return deal(pathRoot, type, uuid + "." + imageName, file, request);
         } else {
             return new BaseResult(BaseConstant.FAILED, "上传格式非图片");
@@ -68,7 +68,7 @@ public class FileUploadController {
                 pathRoot = request.getSession().getServletContext().getRealPath("");
                 path = "/static/upload/" + type;
             } else {
-                path = File.separator + type;
+                path = "/" + type;
             }
             if (!new File(pathRoot + File.separator + path).exists()) {
                 new File(pathRoot + File.separator + path).mkdir();

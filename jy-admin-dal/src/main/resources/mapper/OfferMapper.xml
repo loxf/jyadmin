@@ -40,7 +40,7 @@
     </if>
   </select>
 
-  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.Offer" >
+  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.Offer" >
     select count(1)
     from tb_offer
     where is_deleted = 0
@@ -95,15 +95,34 @@
 
   <update id="updateByOfferId" parameterType="org.loxf.jyadmin.dal.po.Offer" >
     update tb_offer
-    set offer_name = #{offerName,jdbcType=VARCHAR},
+    set
+    <if test="offerName!=null and offerName!=''">
+      offer_name = #{offerName,jdbcType=VARCHAR},
+    </if>
+    <if test="catalogId!=null and catalogId!=''">
       catalog_id = #{catalogId,jdbcType=VARCHAR},
+    </if>
+    <if test="offerType!=null and offerType!=''">
       offer_type = #{offerType,jdbcType=VARCHAR},
+    </if>
+    <if test="saleMoney!=null and saleMoney!=''">
       sale_money = #{saleMoney,jdbcType=DECIMAL},
+    </if>
+    <if test="offerPic!=null and offerPic!=''">
       offer_pic = #{offerPic,jdbcType=DECIMAL},
+    </if>
+    <if test="mainMedia!=null and mainMedia!=''">
       main_media = #{mainMedia,jdbcType=VARCHAR},
+    </if>
+    <if test="buyPrivi!=null">
       buy_privi = #{buyPrivi,jdbcType=VARCHAR},
+    </if>
+    <if test="metaData!=null and metaData!=''">
       meta_data = #{metaData,jdbcType=VARCHAR},
+    </if>
+    <if test="htmlId!=null and htmlId!=''">
       html_id = #{htmlId,jdbcType=VARCHAR},
+    </if>
       updated_at = now()
     where offer_id = #{offerId,jdbcType=VARCHAR}
   </update>

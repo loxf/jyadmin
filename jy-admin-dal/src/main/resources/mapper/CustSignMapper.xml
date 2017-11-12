@@ -10,7 +10,7 @@
   <sql id="Base_Column_List" >
     id, cust_id, sign_date, created_at
   </sql>
-  <select id="selectByCustAndSignDate" resultType="int" >
+  <select id="selectByCustAndSignDate" resultType="java.lang.Integer">
     select 
     count(1)
     from tb_cust_sign

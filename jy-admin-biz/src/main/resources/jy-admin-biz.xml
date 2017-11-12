@@ -33,7 +33,6 @@
         <property name="properties">
             <map>
                 <entry key="LOGIN.SSL.URL" value="${LOGIN.SSL.URL}"></entry>
-                <entry key="IMAGE.SERVER" value="${IMAGE.SERVER}"></entry>
                 <entry key="IMAGE.SERVER.PATH" value="${IMAGE.SERVER.PATH}"></entry>
             </map>
         </property>

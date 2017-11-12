@@ -79,8 +79,7 @@
 </script>
 <script type="text/javascript">
     var contextPath = '${rc.contextPath}';
-    var basePic = "http://127.0.0.1:8080";
-    var baseVideo = "";
+    var basePic = '$request.getAttribute("basePic")';
 
     function modifyPw() {
         var layer = layui.layer

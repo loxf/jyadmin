@@ -65,12 +65,17 @@
                              targetProject="src/main/java" type="XMLMAPPER">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
-        <table tableName="tb_cust_sign" domainObjectName="CustSign"
+        <table tableName="tb_index_recommend" domainObjectName="IndexRecommend"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
         </table>
         <!--
+        <table tableName="tb_cust_sign" domainObjectName="CustSign"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false" enableSelectByExample="false"
+               selectByExampleQueryId="false">
+        </table>
         <table tableName="tb_friend_link" domainObjectName="FriendLink"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"

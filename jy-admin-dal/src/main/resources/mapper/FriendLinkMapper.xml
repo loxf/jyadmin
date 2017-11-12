@@ -7,11 +7,12 @@
     <result column="pic" property="pic" jdbcType="VARCHAR" />
     <result column="url" property="url" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="order" property="order" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, pic, url, status, order, created_at, updated_at
+    id, `name`, pic, url, status, `order`, created_at, updated_at
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -24,11 +25,10 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.FriendLink" >
-    insert into tb_friend_link (id, name, pic, 
-      url, status, created_at, 
-      updated_at)
+    insert into tb_friend_link (id, `name`, pic,
+      url, status, `order`, created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, 
-      #{url,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, now(), now())
+      #{url,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{order}, now(), now())
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.FriendLink" >
     update tb_friend_link
@@ -42,6 +42,9 @@
       <if test="url != null and url!=''" >
         url = #{url,jdbcType=VARCHAR},
       </if>
+      <if test="order != null and order!=''" >
+        `order` = #{order},
+      </if>
       <if test="status != null" >
         status = #{status,jdbcType=INTEGER},
       </if>
@@ -50,9 +53,8 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
 
-  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.FriendLink" >
-    select
-    <include refid="Base_Column_List" />
+  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.FriendLink" >
+    select count(1)
     from tb_friend_link
     where 1=1
     <include refid="WHERE_SQL"></include>
@@ -72,7 +74,7 @@
       and name like concat('%', #{name,jdbcType=VARCHAR}, '%')
     </if>
     <if test="url != null and url!=''" >
-      url like concat('%', #{url,jdbcType=VARCHAR}, '%')
+      and url like concat('%', #{url,jdbcType=VARCHAR}, '%')
     </if>
   </sql>
 </mapper>

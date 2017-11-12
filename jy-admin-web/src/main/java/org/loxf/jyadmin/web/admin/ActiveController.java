@@ -136,4 +136,10 @@ public class ActiveController extends BaseControl<ActiveDto> {
     public BaseResult<List<ActiveCustListDto>> studentList(String activeId){
         return activeCustListService.queryList(activeId);
     }
+
+    @RequestMapping("/indexRecommend")
+    @ResponseBody
+    public BaseResult indexRecommend(String activeId){
+        return activeService.sendIndexRecommend(activeId);
+    }
 }

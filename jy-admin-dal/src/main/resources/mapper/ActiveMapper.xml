@@ -42,7 +42,7 @@
         limit #{pager.start}, #{pager.size}
     </select>
 
-    <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.Active">
+    <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.Active">
         select count(1)
         from tb_active
         where is_deleted = 0

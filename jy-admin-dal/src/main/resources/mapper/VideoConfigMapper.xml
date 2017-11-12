@@ -59,7 +59,7 @@
     where video_id = #{videoId,jdbcType=VARCHAR}
   </update>
 
-  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.VideoConfig">
+  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.VideoConfig">
     select count(1)
     from tb_video_config
     where 1=1

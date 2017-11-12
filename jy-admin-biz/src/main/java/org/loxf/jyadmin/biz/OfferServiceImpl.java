@@ -1,17 +1,22 @@
 package org.loxf.jyadmin.biz;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.client.dto.ConfigDto;
 import org.loxf.jyadmin.client.dto.OfferDto;
 import org.loxf.jyadmin.client.dto.OfferRelDto;
 import org.loxf.jyadmin.client.service.OfferService;
-import org.loxf.jyadmin.dal.dao.OfferMapper;
-import org.loxf.jyadmin.dal.dao.OfferRelMapper;
+import org.loxf.jyadmin.dal.dao.*;
+import org.loxf.jyadmin.dal.po.Config;
 import org.loxf.jyadmin.dal.po.Offer;
 import org.loxf.jyadmin.dal.po.OfferRel;
+import org.loxf.jyadmin.dal.po.WatchRecord;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +33,12 @@ public class OfferServiceImpl implements OfferService {
     private OfferMapper offerMapper;
     @Autowired
     private OfferRelMapper offerRelMapper;
+    @Autowired
+    private ConfigMapper configMapper;
+    @Autowired
+    private IndexRecommendMapper indexRecommendMapper;
+    @Autowired
+    private WatchRecordMapper watchRecordMapper;
 
     @Override
     public PageResult<OfferDto> pager(OfferDto offerDto){
@@ -39,10 +50,21 @@ public class OfferServiceImpl implements OfferService {
         int total = offerMapper.count(offer);
         List<OfferDto> dtos = new ArrayList<>();
         if(total>0) {
+            Config basePlayTime = configMapper.selectConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "BASE_PLAY_TIME");
+            int basePlay = 0;
+            if(basePlayTime!=null && StringUtils.isNotBlank(basePlayTime.getConfigValue())){
+                basePlay = Integer.valueOf(basePlayTime.getConfigValue());
+            }
             List<Offer> custList = offerMapper.pager(offer);
             for(Offer po : custList){
                 OfferDto tmp = new OfferDto();
                 BeanUtils.copyProperties(po, tmp);
+                //
+                if(po.getOfferType().equals("CLASS")) {
+                    String videoId = po.getMainMedia();
+                    int times = watchRecordMapper.countByVideo(videoId);
+                    tmp.setPlayTime(basePlay + times);
+                }
                 dtos.add(tmp);
             }
         }
@@ -133,5 +155,32 @@ public class OfferServiceImpl implements OfferService {
             }
         }
         return new BaseResult(result);
+    }
+
+    @Override
+    @Transactional
+    public BaseResult sendIndexRecommend(String offerId){
+        Offer offer = offerMapper.selectByOfferId(offerId);
+        if(offer==null){
+            return new BaseResult(BaseConstant.FAILED, "商品不存在");
+        }
+        String metaData = offer.getMetaData();
+        JSONObject metaJSON = null;
+        if(StringUtils.isBlank(metaData)){
+            metaJSON = new JSONObject();
+        } else {
+            metaJSON = JSON.parseObject(metaData);
+        }
+        if(metaJSON.containsKey("INDEX")){
+            indexRecommendMapper.updateByPrimaryKey("OFFER", offerId);
+        } else {
+            indexRecommendMapper.insert("OFFER", offerId);
+            metaJSON.put("INDEX", "on");
+            Offer offerRefresh = new Offer();
+            offerRefresh.setOfferId(offerId);
+            offerRefresh.setMetaData(metaJSON.toJSONString());
+            offerMapper.updateByOfferId(offerRefresh);
+        }
+        return new BaseResult();
     }
 }

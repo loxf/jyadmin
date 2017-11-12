@@ -9,6 +9,8 @@ public class WatchRecord extends BaseModel {
 
     private String videoId;
 
+    private Integer minutes;
+
     public String getCustId() {
         return custId;
     }
@@ -25,4 +27,11 @@ public class WatchRecord extends BaseModel {
         this.videoId = videoId == null ? null : videoId.trim();
     }
 
+    public Integer getMinutes() {
+        return minutes;
+    }
+
+    public void setMinutes(Integer minutes) {
+        this.minutes = minutes;
+    }
 }
