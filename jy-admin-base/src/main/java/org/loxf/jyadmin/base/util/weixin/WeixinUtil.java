@@ -28,8 +28,9 @@ public class WeixinUtil {
     }
 
     public static String getLoginUrl(String url, String code){
-        String redirectUrl = String.format(BaseConstant.LOGIN_URL, url);
+        String redirectUrl = "";
         try {
+            redirectUrl = String.format(BaseConstant.LOGIN_URL, URLEncoder.encode(url, "UTF-8"));
             redirectUrl = URLEncoder.encode(redirectUrl, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             logger.error("Url decode failed." , e);

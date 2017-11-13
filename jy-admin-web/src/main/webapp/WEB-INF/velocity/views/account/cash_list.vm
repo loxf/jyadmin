@@ -1,0 +1,76 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">客户名称</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="custName" placeholder="客户名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <select name="type">
+                <option value="">提现类型</option>
+                <option value="1">微信 </option>
+                <option value="2">银行卡</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <select name="status">
+                <option value="">状态</option>
+                <option value="1">待打款</option>
+                <option value="3">已打款</option>
+                <option value="-3">拒绝打款</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">提现对象</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="objId" placeholder="银行卡号/微信ID" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <div class="layui-input-inline">
+                <input type="text" name="rangDate" placeholder="提现申请时间" id="createdAt" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+<script type="text/html" id="barTable">
+    {{#  if(d.status===1 && d.type==2){ }}
+    <a class="layui-btn layui-btn-mini" lay-event="passPending">已打款</a>
+    <a class="layui-btn layui-btn-mini" lay-event="notpassPending">拒绝打款</a>
+    {{#  } }}
+</script>
+
+<script type="text/html" id="typeTpl">
+    {{#  if(d.type===1){ }}
+    微信
+    {{#  } else if(d.type===2){ }}
+    银行卡
+    {{#  } else { }}
+    未知
+    {{#  } }}
+</script>
+<script type="text/html" id="statusTpl">
+    {{#  if(d.status===1){ }}
+    待打款
+    {{#  } else if(d.status===3){ }}
+    已打款
+    {{#  } else if(d.status===-3){ }}
+    拒绝打款
+    {{#  } else { }}
+    未知
+    {{#  } }}
+</script>
+
+<script src="${rc.contextPath}/static/jingyi/account/custCash.js"></script>

@@ -10,7 +10,7 @@ public interface AccountMapper {
 
     int deleteByCustId(String custId);
 
-    int lockAccount(Account record);
+    int lockAccount(String custId);
 
     int updateBalanceOrBp(Account record);
 }

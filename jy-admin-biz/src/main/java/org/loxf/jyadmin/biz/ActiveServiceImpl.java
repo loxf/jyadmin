@@ -2,6 +2,7 @@ package org.loxf.jyadmin.biz;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
@@ -46,42 +47,44 @@ public class ActiveServiceImpl implements ActiveService {
         List<ActiveDto> dtos = new ArrayList<>();
         if(total>0) {
             List<Active> custList = activeMapper.pager(active);
-            for(Active po : custList){
-                ActiveDto tmp = new ActiveDto();
-                BeanUtils.copyProperties(po, tmp);
-                // 查询当前活动的参与人数
-                int studentsNbr = activeCustListMapper.countByActiveId(tmp.getActiveId());
-                tmp.setStudentsNbr(studentsNbr);
-                //设置活动状态 0:进行中 1:即将开始 2:报名中 3:已经结束
-                if(tmp.getActiveStartTime()!=null) {
-                    long diff = tmp.getActiveStartTime().getTime() - System.currentTimeMillis();
-                    Province p = provinceMapper.selectProvince(tmp.getProvince());
-                    if (p != null) {
-                        tmp.setProvince(p.getProvince());
+            if(CollectionUtils.isNotEmpty(custList)) {
+                for (Active po : custList) {
+                    ActiveDto tmp = new ActiveDto();
+                    BeanUtils.copyProperties(po, tmp);
+                    // 查询当前活动的参与人数
+                    int studentsNbr = activeCustListMapper.countByActiveId(tmp.getActiveId());
+                    tmp.setStudentsNbr(studentsNbr);
+                    //设置活动状态 0:进行中 1:即将开始 2:报名中 3:已经结束
+                    if (tmp.getActiveStartTime() != null) {
+                        long diff = tmp.getActiveStartTime().getTime() - System.currentTimeMillis();
+                        Province p = provinceMapper.selectProvince(tmp.getProvince());
+                        if (p != null) {
+                            tmp.setProvince(p.getProvince());
+                        }
+                        City c = cityMapper.selectCity(tmp.getCity());
+                        if (c != null) {
+                            tmp.setCity(c.getCity());
+                        }
+                        if (diff >= 48 * 60 * 1000 * 1000) {
+                            // 报名中 2天以上的
+                            tmp.setActiveStatus(2);
+                        } else if (diff >= 0 && diff < 48 * 60 * 1000 * 1000) {
+                            // 1:即将开始
+                            tmp.setActiveStatus(1);
+                        } else if (tmp.getActiveEndTime() != null && diff < 0 && tmp.getActiveEndTime().getTime() - System.currentTimeMillis() >= 0) {
+                            // 进行中
+                            tmp.setActiveStatus(0);
+                        } else {
+                            // 已结束
+                            tmp.setActiveStatus(3);
+                        }
                     }
-                    City c = cityMapper.selectCity(tmp.getCity());
-                    if (c != null) {
-                        tmp.setCity(c.getCity());
-                    }
-                    if (diff >= 48 * 60 * 1000 * 1000) {
-                        // 报名中 2天以上的
-                        tmp.setActiveStatus(2);
-                    } else if (diff >= 0 && diff < 48 * 60 * 1000 * 1000) {
-                        // 1:即将开始
-                        tmp.setActiveStatus(1);
-                    } else if (tmp.getActiveEndTime()!=null && diff < 0 && tmp.getActiveEndTime().getTime() - System.currentTimeMillis() >= 0) {
-                        // 进行中
-                        tmp.setActiveStatus(0);
-                    } else {
-                        // 已结束
-                        tmp.setActiveStatus(3);
-                    }
+                    dtos.add(tmp);
                 }
-                dtos.add(tmp);
             }
         }
-        int tatalPage = total/activeDto.getPager().getSize() + (total%activeDto.getPager().getSize()==0?0:1);
-        return new PageResult<ActiveDto>(tatalPage, activeDto.getPager().getPage(), total, dtos);
+        int totalPage = total/activeDto.getPager().getSize() + (total%activeDto.getPager().getSize()==0?0:1);
+        return new PageResult<ActiveDto>(totalPage, activeDto.getPager().getPage(), total, dtos);
     }
 
     @Override

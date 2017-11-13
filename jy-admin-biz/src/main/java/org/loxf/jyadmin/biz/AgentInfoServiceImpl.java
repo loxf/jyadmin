@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.biz;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
@@ -32,14 +33,16 @@ public class AgentInfoServiceImpl implements AgentInfoService {
         List<AgentInfoDto> list = new ArrayList<>();
         if(total>0) {
             List<AgentInfo> agentInfos = agentInfoMapper.pager(agentInfo);
-            for(AgentInfo agent : agentInfos){
-                AgentInfoDto tmp = new AgentInfoDto();
-                BeanUtils.copyProperties(agent, tmp);
-                list.add(tmp);
+            if(CollectionUtils.isNotEmpty(agentInfos)) {
+                for (AgentInfo agent : agentInfos) {
+                    AgentInfoDto tmp = new AgentInfoDto();
+                    BeanUtils.copyProperties(agent, tmp);
+                    list.add(tmp);
+                }
             }
         }
-        int tatalPage = total/agentInfoDto.getPager().getSize() + (total%agentInfoDto.getPager().getSize()==0?0:1);
-        return new PageResult<AgentInfoDto>(tatalPage, agentInfoDto.getPager().getSize(), total, list);
+        int totalPage = total/agentInfoDto.getPager().getSize() + (total%agentInfoDto.getPager().getSize()==0?0:1);
+        return new PageResult<AgentInfoDto>(totalPage, agentInfoDto.getPager().getSize(), total, list);
     }
 
     @Override

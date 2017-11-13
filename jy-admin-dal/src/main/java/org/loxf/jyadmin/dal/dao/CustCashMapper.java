@@ -1,17 +1,19 @@
 package org.loxf.jyadmin.dal.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.CustCash;
 
+import java.util.List;
+
 public interface CustCashMapper {
-    int deleteByPrimaryKey(Long id);
+    CustCash selectById(Long id);
 
     int insert(CustCash record);
 
-    int insertSelective(CustCash record);
+    int pendingCustCash(@Param("id") Long recordId, @Param("status") Integer status, @Param("remark") String remark);
 
-    CustCash selectByPrimaryKey(Long id);
+    List<CustCash> pager(CustCash custCash);
 
-    int updateByPrimaryKeySelective(CustCash record);
+    int count(CustCash custCash);
 
-    int updateByPrimaryKey(CustCash record);
 }

@@ -1,4 +1,4 @@
-package org.loxf.jyadmin.util;
+package org.loxf.jyadmin.biz.util;
 
 import org.loxf.jyadmin.base.util.SpringApplicationContextUtil;
 import org.loxf.jyadmin.client.dto.ConfigDto;

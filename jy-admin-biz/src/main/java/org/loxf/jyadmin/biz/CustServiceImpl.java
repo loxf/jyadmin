@@ -71,14 +71,10 @@ public class CustServiceImpl implements CustService {
         List<CustDto> dtos = new ArrayList<>();
         if(total>0) {
             List<Cust> custList = custMapper.pager(cust);
-            for(Cust po : custList){
-                CustDto tmp = new CustDto();
-                BeanUtils.copyProperties(po, tmp);
-                dtos.add(tmp);
-            }
+            convertCust(custList, dtos);
         }
-        int tatalPage = total/custDto.getPager().getSize() + (total%custDto.getPager().getSize()==0?0:1);
-        return new PageResult<CustDto>(tatalPage, custDto.getPager().getSize(), total, dtos);
+        int totalPage = total/custDto.getPager().getSize() + (total%custDto.getPager().getSize()==0?0:1);
+        return new PageResult<CustDto>(totalPage, custDto.getPager().getSize(), total, dtos);
     }
 
     @Override
@@ -214,14 +210,20 @@ public class CustServiceImpl implements CustService {
             }
             int start = (page-1)*size;
             List<Cust> list = custMapper.queryChildList(recommends, start, size);
-            for(Cust tmp : list){
+            convertCust(list, resultList);
+        }
+        int totalPage = total/size + (total%size==0?0:1);
+        return new PageResult<>(totalPage, page, total, resultList);
+    }
+
+    private void convertCust(List<Cust> list, List<CustDto> resultList){
+        if(CollectionUtils.isNotEmpty(list)) {
+            for (Cust tmp : list) {
                 CustDto dto = new CustDto();
                 BeanUtils.copyProperties(tmp, dto);
                 resultList.add(dto);
             }
         }
-        int tatalPage = total/size + (total%size==0?0:1);
-        return new PageResult<>(tatalPage, page, total, resultList);
     }
 
     @Override

@@ -56,19 +56,21 @@ public class OfferServiceImpl implements OfferService {
                 basePlay = Integer.valueOf(basePlayTime.getConfigValue());
             }
             List<Offer> custList = offerMapper.pager(offer, appType);
-            for(Offer po : custList){
-                OfferDto tmp = new OfferDto();
-                BeanUtils.copyProperties(po, tmp);
-                if(po.getOfferType().equals("CLASS")) {
-                    String videoId = po.getMainMedia();
-                    int times = watchRecordMapper.countByVideo(videoId);
-                    tmp.setPlayTime(basePlay + times);
+            if(CollectionUtils.isNotEmpty(custList)) {
+                for (Offer po : custList) {
+                    OfferDto tmp = new OfferDto();
+                    BeanUtils.copyProperties(po, tmp);
+                    if (po.getOfferType().equals("CLASS")) {
+                        String videoId = po.getMainMedia();
+                        int times = watchRecordMapper.countByVideo(videoId);
+                        tmp.setPlayTime(basePlay + times);
+                    }
+                    dtos.add(tmp);
                 }
-                dtos.add(tmp);
             }
         }
-        int tatalPage = total/offerDto.getPager().getSize() + (total%offerDto.getPager().getSize()==0?0:1);
-        return new PageResult<OfferDto>(tatalPage, offerDto.getPager().getPage(), total, dtos);
+        int totalPage = total/offerDto.getPager().getSize() + (total%offerDto.getPager().getSize()==0?0:1);
+        return new PageResult<OfferDto>(totalPage, offerDto.getPager().getPage(), total, dtos);
     }
 
     @Override

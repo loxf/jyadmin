@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.biz;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
@@ -58,17 +59,18 @@ public class FriendLinkServiceImpl implements FriendLinkService {
         FriendLink friendLink = new FriendLink();
         BeanUtils.copyProperties(dto, friendLink);
         Integer count = friendLinkMapper.count(friendLink);
+        List<FriendLinkDto> friendLinkDtos = new ArrayList<>();
         if(count!=null && count>0){
-            List<FriendLinkDto> friendLinkDtos = new ArrayList<>();
             List<FriendLink> list = friendLinkMapper.list(friendLink, (page-1)*size, size);
-            for(FriendLink po : list){
-                FriendLinkDto dto1 = new FriendLinkDto();
-                BeanUtils.copyProperties(po, dto1);
-                friendLinkDtos.add(dto1);
+            if(CollectionUtils.isNotEmpty(list)) {
+                for (FriendLink po : list) {
+                    FriendLinkDto dto1 = new FriendLinkDto();
+                    BeanUtils.copyProperties(po, dto1);
+                    friendLinkDtos.add(dto1);
+                }
             }
-            int tatalPage = count/size + (count%size==0?0:1);
-            return new PageResult<>(tatalPage, page, count, friendLinkDtos);
         }
-        return new PageResult<>(1, 1,0, null);
+        int totalPage = count/size + (count%size==0?0:1);
+        return new PageResult<>(totalPage, page, count, friendLinkDtos);
     }
 }

@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.biz;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
@@ -79,14 +80,16 @@ public class VideoConfigServiceImpl implements VideoConfigService {
         List<VideoConfigDto> ret = new ArrayList<>();
         if(total>0) {
             List<VideoConfig> list = videoConfigMapper.list(offerCatalog);
-            for(VideoConfig tmp : list){
-                VideoConfigDto dto = new VideoConfigDto();
-                BeanUtils.copyProperties(tmp, dto);
-                ret.add(dto);
+            if(CollectionUtils.isNotEmpty(list)) {
+                for (VideoConfig tmp : list) {
+                    VideoConfigDto dto = new VideoConfigDto();
+                    BeanUtils.copyProperties(tmp, dto);
+                    ret.add(dto);
+                }
             }
         }
-        int tatalPage = total/catalogDto.getPager().getSize() + (total%catalogDto.getPager().getSize()==0?0:1);
-        return new PageResult<>(tatalPage, catalogDto.getPager().getPage(), total, ret);
+        int totalPage = total/catalogDto.getPager().getSize() + (total%catalogDto.getPager().getSize()==0?0:1);
+        return new PageResult<>(totalPage, catalogDto.getPager().getPage(), total, ret);
     }
 
     @Override

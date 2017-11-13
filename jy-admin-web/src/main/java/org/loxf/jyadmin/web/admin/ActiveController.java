@@ -10,7 +10,7 @@ import org.loxf.jyadmin.client.dto.ActiveDto;
 import org.loxf.jyadmin.client.dto.CityDto;
 import org.loxf.jyadmin.client.dto.ProvinceDto;
 import org.loxf.jyadmin.client.service.*;
-import org.loxf.jyadmin.util.ConfigUtil;
+import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

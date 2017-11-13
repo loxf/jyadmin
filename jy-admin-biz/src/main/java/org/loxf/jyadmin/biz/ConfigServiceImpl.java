@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.biz;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
@@ -39,14 +40,16 @@ public class ConfigServiceImpl implements ConfigService {
         List<ConfigDto> dtos = new ArrayList<>();
         if(total>0) {
             List<Config> custList = configMapper.list(config);
-            for(Config po : custList){
-                ConfigDto tmp = new ConfigDto();
-                BeanUtils.copyProperties(po, tmp);
-                dtos.add(tmp);
+            if(CollectionUtils.isNotEmpty(custList)) {
+                for (Config po : custList) {
+                    ConfigDto tmp = new ConfigDto();
+                    BeanUtils.copyProperties(po, tmp);
+                    dtos.add(tmp);
+                }
             }
         }
-        int tatalPage = total/configDto.getPager().getSize() + (total%configDto.getPager().getSize()==0?0:1);
-        return new PageResult<ConfigDto>(tatalPage, configDto.getPager().getPage(), total, dtos);
+        int totalPage = total/configDto.getPager().getSize() + (total%configDto.getPager().getSize()==0?0:1);
+        return new PageResult<ConfigDto>(totalPage, configDto.getPager().getPage(), total, dtos);
     }
 
     @Override

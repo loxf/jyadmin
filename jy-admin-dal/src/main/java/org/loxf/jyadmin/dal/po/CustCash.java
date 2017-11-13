@@ -2,12 +2,15 @@ package org.loxf.jyadmin.dal.po;
 
 import org.loxf.jyadmin.base.bean.BaseModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class CustCash extends BaseModel {
     private String custId;
 
-    private Long balance;
+    private String custName;
+
+    private BigDecimal balance;
 
     private Integer type;
 
@@ -23,11 +26,19 @@ public class CustCash extends BaseModel {
         this.custId = custId == null ? null : custId.trim();
     }
 
-    public Long getBalance() {
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
+    }
+
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(Long balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

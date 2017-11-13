@@ -14,7 +14,7 @@ import org.loxf.jyadmin.client.dto.ProvinceDto;
 import org.loxf.jyadmin.client.service.AgentInfoService;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.client.service.ProvinceAndCityService;
-import org.loxf.jyadmin.util.ConfigUtil;
+import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

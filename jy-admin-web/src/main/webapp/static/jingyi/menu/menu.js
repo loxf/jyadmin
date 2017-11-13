@@ -41,7 +41,7 @@ var menu = {
         },
         {
             menuName: '提现管理',
-            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
+            menuHref: contextPath + '/admin/account/custCashMgr.html'
         },
         {
             menuName: '公司收入',
