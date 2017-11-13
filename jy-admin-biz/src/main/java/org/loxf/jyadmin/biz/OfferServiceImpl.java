@@ -41,13 +41,13 @@ public class OfferServiceImpl implements OfferService {
     private WatchRecordMapper watchRecordMapper;
 
     @Override
-    public PageResult<OfferDto> pager(OfferDto offerDto){
+    public PageResult<OfferDto> pager(OfferDto offerDto, Integer appType){
         if(offerDto==null){
             return new PageResult<>(BaseConstant.FAILED, "入参不能为空");
         }
         Offer offer = new Offer();
         BeanUtils.copyProperties(offerDto, offer);
-        int total = offerMapper.count(offer);
+        int total = offerMapper.count(offer, appType);
         List<OfferDto> dtos = new ArrayList<>();
         if(total>0) {
             Config basePlayTime = configMapper.selectConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "BASE_PLAY_TIME");
@@ -55,11 +55,10 @@ public class OfferServiceImpl implements OfferService {
             if(basePlayTime!=null && StringUtils.isNotBlank(basePlayTime.getConfigValue())){
                 basePlay = Integer.valueOf(basePlayTime.getConfigValue());
             }
-            List<Offer> custList = offerMapper.pager(offer);
+            List<Offer> custList = offerMapper.pager(offer, appType);
             for(Offer po : custList){
                 OfferDto tmp = new OfferDto();
                 BeanUtils.copyProperties(po, tmp);
-                //
                 if(po.getOfferType().equals("CLASS")) {
                     String videoId = po.getMainMedia();
                     int times = watchRecordMapper.countByVideo(videoId);

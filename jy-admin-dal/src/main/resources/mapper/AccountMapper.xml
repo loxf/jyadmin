@@ -6,112 +6,54 @@
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="balance" property="balance" jdbcType="DECIMAL" />
     <result column="bp" property="bp" jdbcType="DECIMAL" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="is_lock" property="isLock" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, balance, bp, is_lock, created_at, updated_at
+    id, cust_id, balance, bp , password, is_lock, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+
+  <select id="selectAccount" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from tb_account
-    where id = #{id,jdbcType=BIGINT}
+    where cust_id = #{custId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+
+  <delete id="deleteByCustId" parameterType="java.lang.String" >
     delete from tb_account
-    where id = #{id,jdbcType=BIGINT}
+    where cust_id = #{custId,jdbcType=VARCHAR}
   </delete>
+
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Account" >
-    insert into tb_account (id, cust_id, balance, 
-      bp, is_lock, created_at, 
+    insert into tb_account ( cust_id, balance,
+      bp, password, is_lock, created_at,
       updated_at)
-    values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{balance,jdbcType=DECIMAL}, 
-      #{bp,jdbcType=DECIMAL}, #{isLock,jdbcType=INTEGER}, #{createdAt,jdbcType=TIMESTAMP}, 
-      #{updatedAt,jdbcType=TIMESTAMP})
+    values ( #{custId,jdbcType=VARCHAR}, 0, 0, null, 0, now(), now())
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.Account" >
-    insert into tb_account
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="custId != null" >
-        cust_id,
-      </if>
-      <if test="balance != null" >
-        balance,
-      </if>
-      <if test="bp != null" >
-        bp,
-      </if>
-      <if test="isLock != null" >
-        is_lock,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="custId != null" >
-        #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="balance != null" >
-        #{balance,jdbcType=DECIMAL},
-      </if>
-      <if test="bp != null" >
-        #{bp,jdbcType=DECIMAL},
-      </if>
-      <if test="isLock != null" >
-        #{isLock,jdbcType=INTEGER},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.Account" >
+
+  <select id="checkPassword">
+    select count(1) from tb_account where cust_id = #{custId} and password = #{password}
+  </select>
+
+  <update id="lockAccount" parameterType="java.lang.String" >
+    update tb_account set is_lock = 1 where cust_id = #{custId}
+  </update>
+
+  <update id="updateBalanceOrBp" parameterType="org.loxf.jyadmin.dal.po.Account" >
     update tb_account
     <set >
-      <if test="custId != null" >
-        cust_id = #{custId,jdbcType=VARCHAR},
-      </if>
       <if test="balance != null" >
         balance = #{balance,jdbcType=DECIMAL},
       </if>
       <if test="bp != null" >
         bp = #{bp,jdbcType=DECIMAL},
       </if>
-      <if test="isLock != null" >
-        is_lock = #{isLock,jdbcType=INTEGER},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
+      is_lock = 0,
+      updated_at = now()
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.Account" >
-    update tb_account
-    set cust_id = #{custId,jdbcType=VARCHAR},
-      balance = #{balance,jdbcType=DECIMAL},
-      bp = #{bp,jdbcType=DECIMAL},
-      is_lock = #{isLock,jdbcType=INTEGER},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+    where cust_id = #{custId,jdbcType=VARCHAR} and lock = 1
   </update>
 </mapper>

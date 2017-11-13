@@ -3,15 +3,14 @@ package org.loxf.jyadmin.dal.dao;
 import org.loxf.jyadmin.dal.po.Account;
 
 public interface AccountMapper {
-    int deleteByPrimaryKey(Long id);
 
     int insert(Account record);
 
-    int insertSelective(Account record);
+    Account selectAccount(String custId);
 
-    Account selectByPrimaryKey(Long id);
+    int deleteByCustId(String custId);
 
-    int updateByPrimaryKeySelective(Account record);
+    int lockAccount(Account record);
 
-    int updateByPrimaryKey(Account record);
+    int updateBalanceOrBp(Account record);
 }

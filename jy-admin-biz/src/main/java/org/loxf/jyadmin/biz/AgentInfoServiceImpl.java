@@ -61,6 +61,9 @@ public class AgentInfoServiceImpl implements AgentInfoService {
         }
         AgentInfo agentInfo = new AgentInfo();
         BeanUtils.copyProperties(agentInfoDto, agentInfo);
+        if(agentInfoMapper.exists(agentInfo.getCustId())>0){
+            return new BaseResult<>(BaseConstant.FAILED, "已是代理商或正在申请代理商");
+        }
         if(agentInfoMapper.insert(agentInfo)>0) {
             return new BaseResult<>(agentInfoDto.getCustId());
         } else {

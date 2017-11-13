@@ -8,7 +8,12 @@ import org.loxf.jyadmin.client.dto.OfferRelDto;
 import java.util.List;
 
 public interface OfferService {
-    PageResult<OfferDto> pager(OfferDto offerDto);
+    /**
+     * @param offerDto
+     * @param appType 1:后台管理 2:前端
+     * @return
+     */
+    PageResult<OfferDto> pager(OfferDto offerDto, Integer appType);
     OfferDto queryOffer(String offerId);
     BaseResult newOffer(OfferDto offerDto, List<OfferRelDto> offerRelDtos);
     BaseResult updateOffer(OfferDto offerDto, List<OfferRelDto> offerRelDtos);

@@ -20,6 +20,8 @@ public class BaseModel implements Serializable {
 
     private Pager pager;
 
+    private String sortType;
+
     public Long getId() {
         return id;
     }
@@ -86,5 +88,13 @@ public class BaseModel implements Serializable {
 
     public void setPager(Pager pager) {
         this.pager = pager;
+    }
+
+    public String getSortType() {
+        return sortType;
+    }
+
+    public void setSortType(String sortType) {
+        this.sortType = sortType;
     }
 }

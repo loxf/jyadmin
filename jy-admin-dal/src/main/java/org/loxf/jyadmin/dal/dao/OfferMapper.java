@@ -8,9 +8,9 @@ import java.util.List;
 public interface OfferMapper {
     int deleteByOfferId(String id);
 
-    List<Offer> pager(Offer offer);
+    List<Offer> pager(@Param("offer") Offer offer, @Param("appType") Integer appType);
 
-    int count(Offer offer);
+    int count(@Param("offer") Offer offer, @Param("appType") Integer appType);
 
     Offer selectByOfferId(String id);
 

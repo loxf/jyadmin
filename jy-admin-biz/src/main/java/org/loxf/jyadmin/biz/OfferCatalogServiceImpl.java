@@ -60,7 +60,7 @@ public class OfferCatalogServiceImpl implements OfferCatalogService {
         // 判断分类是否包含商品。包含不能删除
         Offer offer = new Offer();
         offer.setCatalogId(catalogId);
-        int count = offerMapper.count(offer);
+        int count = offerMapper.count(offer, 1);
         if(count>0){
             return new BaseResult<>(BaseConstant.FAILED, "当前分类包含商品，不能删除");
         } else {

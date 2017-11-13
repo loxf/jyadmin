@@ -98,7 +98,7 @@ public class OfferController extends BaseControl<OfferDto> {
     @ResponseBody
     public PageResult list(OfferDto offerDto){
         initRangeDate(offerDto);
-        PageResult<OfferDto> pageResult = offerService.pager(offerDto);
+        PageResult<OfferDto> pageResult = offerService.pager(offerDto,1);
         return pageResult;
     }
 

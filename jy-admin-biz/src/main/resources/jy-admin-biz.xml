@@ -32,7 +32,6 @@
     <bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <property name="properties">
             <map>
-                <entry key="LOGIN.SSL.URL" value="${LOGIN.SSL.URL}"></entry>
                 <entry key="IMAGE.SERVER.PATH" value="${IMAGE.SERVER.PATH}"></entry>
             </map>
         </property>

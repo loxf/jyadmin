@@ -17,4 +17,6 @@ public interface AgentInfoMapper {
 
     int delete(String custId);
 
+    int exists(String custId);
+
 }

@@ -13,129 +13,35 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, order_id, detail_name, type, balance, change_balance, created_at, updated_at
+    id, cust_id, order_id, detail_name, `type`, balance, change_balance, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+
+  <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
     <include refid="Base_Column_List" />
     from tb_account_detail
-    where id = #{id,jdbcType=BIGINT}
+    where order_id = #{order_id}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from tb_account_detail
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.AccountDetail" >
     insert into tb_account_detail (id, cust_id, order_id, 
-      detail_name, type, balance, 
+      detail_name, `type`, balance,
       change_balance, created_at, updated_at
       )
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR}, 
       #{detailName,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{balance,jdbcType=DECIMAL}, 
-      #{changeBalance,jdbcType=DECIMAL}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
+      #{changeBalance,jdbcType=DECIMAL}, now(), now()
       )
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.AccountDetail" >
-    insert into tb_account_detail
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="custId != null" >
-        cust_id,
-      </if>
-      <if test="orderId != null" >
-        order_id,
-      </if>
-      <if test="detailName != null" >
-        detail_name,
-      </if>
-      <if test="type != null" >
-        type,
-      </if>
-      <if test="balance != null" >
-        balance,
-      </if>
-      <if test="changeBalance != null" >
-        change_balance,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="custId != null" >
-        #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="orderId != null" >
-        #{orderId,jdbcType=VARCHAR},
-      </if>
-      <if test="detailName != null" >
-        #{detailName,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        #{type,jdbcType=INTEGER},
-      </if>
-      <if test="balance != null" >
-        #{balance,jdbcType=DECIMAL},
-      </if>
-      <if test="changeBalance != null" >
-        #{changeBalance,jdbcType=DECIMAL},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.AccountDetail" >
-    update tb_account_detail
-    <set >
-      <if test="custId != null" >
-        cust_id = #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="orderId != null" >
-        order_id = #{orderId,jdbcType=VARCHAR},
-      </if>
-      <if test="detailName != null" >
-        detail_name = #{detailName,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        type = #{type,jdbcType=INTEGER},
-      </if>
-      <if test="balance != null" >
-        balance = #{balance,jdbcType=DECIMAL},
-      </if>
-      <if test="changeBalance != null" >
-        change_balance = #{changeBalance,jdbcType=DECIMAL},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.AccountDetail" >
-    update tb_account_detail
-    set cust_id = #{custId,jdbcType=VARCHAR},
-      order_id = #{orderId,jdbcType=VARCHAR},
-      detail_name = #{detailName,jdbcType=VARCHAR},
-      type = #{type,jdbcType=INTEGER},
-      balance = #{balance,jdbcType=DECIMAL},
-      change_balance = #{changeBalance,jdbcType=DECIMAL},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
+  <select id="sumByType" resultType="java.lang.Integer">
+      select ifnull(sum(change_balance), 0)  from tb_account_detail
+        where cust_id = #{custId}
+        <if test="type!=null">
+          and type = #{type}
+        </if>
+        <if test="dayBefore!=null and dayBefore>=0 ">
+            and created_at >= (CAST(SYSDATE()AS DATE)  - INTERVAL #{dayBefore} DAY)
+        </if>
+  </select>
 </mapper>

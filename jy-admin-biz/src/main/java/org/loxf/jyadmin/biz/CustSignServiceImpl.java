@@ -14,7 +14,7 @@ public class CustSignServiceImpl implements CustSignService {
     @Override
     public BaseResult<Boolean> sign(String custId, String signDate) {
         if(custSignMapper.selectByCustAndSignDate(custId, signDate)>0){
-            return new BaseResult<>();
+            return new BaseResult<>(true);
         }
         return new BaseResult<>(custSignMapper.insert(custId, signDate)>0);
     }

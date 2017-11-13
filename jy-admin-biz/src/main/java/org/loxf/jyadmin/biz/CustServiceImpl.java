@@ -9,8 +9,10 @@ import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
 import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.CustService;
+import org.loxf.jyadmin.dal.dao.AccountMapper;
 import org.loxf.jyadmin.dal.dao.CustMapper;
 import org.loxf.jyadmin.dal.dao.WxUserTokenMapper;
+import org.loxf.jyadmin.dal.po.Account;
 import org.loxf.jyadmin.dal.po.Cust;
 import org.loxf.jyadmin.dal.po.WxUserToken;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +30,8 @@ public class CustServiceImpl implements CustService {
     private CustMapper custMapper;
     @Autowired
     private WxUserTokenMapper wxUserTokenMapper ;
+    @Autowired
+    private AccountMapper accountMapper;
 
     @Override
     @Transactional
@@ -49,6 +53,10 @@ public class CustServiceImpl implements CustService {
         if (StringUtils.isNotBlank(custDto.getRecommend())) {
             updateRecommendChildNbr(custDto.getRecommend(), 1);
         }
+        // 用户账户
+        Account account = new Account();
+        account.setCustId(custId);
+        accountMapper.insert(account);
         return new BaseResult<>(custId);
     }
 

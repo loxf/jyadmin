@@ -8,7 +8,7 @@ public class BaseConstant {
     public static final String FAILED_MSG = "操作失败!";
     public static String USER_COOKIE_NAME = "JY_TOKEN";
     public static String ADMIN_COOKIE_NAME = "JYADMIN_TOKEN";
-    public static String LOGIN_URL = "https://www.jingyizaixian.com/api/loginByWx?targetUrl=%s";
+    public static String LOGIN_URL = "https://api.jingyizaixian.com/api/loginByWx?targetUrl=%s";
     public static String WX_TOKEN = "jyzx2015weixin";
     public static String WX_APPSECRET = "8a51e801fcc89fc9aab671737560b4ed";
     public static String WX_APPID = "wxf45ae0ff3e1bd94e";

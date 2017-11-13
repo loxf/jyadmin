@@ -2,12 +2,14 @@ package org.loxf.jyadmin.client.dto;
 
 import org.loxf.jyadmin.base.bean.BaseModel;
 
+import java.math.BigDecimal;
+
 public class AccountDto extends BaseModel {
     private String custId;
 
-    private Long balance;
+    private BigDecimal balance;
 
-    private Long bp;
+    private BigDecimal bp;
 
     private Integer isLock;
 
@@ -19,19 +21,19 @@ public class AccountDto extends BaseModel {
         this.custId = custId == null ? null : custId.trim();
     }
 
-    public Long getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(Long balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 
-    public Long getBp() {
+    public BigDecimal getBp() {
         return bp;
     }
 
-    public void setBp(Long bp) {
+    public void setBp(BigDecimal bp) {
         this.bp = bp;
     }
 

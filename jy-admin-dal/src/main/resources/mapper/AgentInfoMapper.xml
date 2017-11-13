@@ -117,4 +117,8 @@
   <delete id="delete">
     delete from tb_agent_info where cust_id = #{custId,jdbcType=VARCHAR}
   </delete>
+
+  <select id="exists">
+    select count(1) from tb_agent_info where cust_id = #{custId,jdbcType=VARCHAR} and status in (0, 1)
+  </select>
 </mapper>

@@ -29,18 +29,32 @@
     where offer_id = #{offerId}
   </select>
 
-  <select id="pager" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Offer" >
-    select (select CATALOG_NAME from tb_offer_catalog b where b.CATALOG_id = t.CATALOG_id) as `CATALOG_NAME`, t.*
+  <select id="pager" resultMap="BaseResultMap">
+    select (select CATALOG_NAME from tb_offer_catalog b where b.CATALOG_id = t.CATALOG_id) as `CATALOG_NAME`,
+    <if test="offer.sortType!=null and offer.sortType=='HOT'">
+      locate('"HOT":"on"', meta_data) orderNbr,
+    </if>
+    t.*
     from tb_offer t
     where is_deleted = 0
     <include refid="WHERE_SQL"></include>
-    order by created_at desc
-    <if test="pager!=null">
-      limit #{pager.start}, #{pager.size}
+    <if test="appType==1">
+      order by created_at desc
+    </if>
+    <if test="appType==2">
+      <if test="offer.sortType!=null and offer.sortType==''">
+        order by created_at desc
+      </if>
+      <if test="offer.sortType!=null and offer.sortType=='HOT'">
+        order by orderNbr, created_at desc
+      </if>
+    </if>
+    <if test="offer.pager!=null">
+      limit #{offer.pager.start}, #{offer.pager.size}
     </if>
   </select>
 
-  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.Offer" >
+  <select id="count" resultType="java.lang.Integer" >
     select count(1)
     from tb_offer
     where is_deleted = 0
@@ -48,29 +62,33 @@
   </select>
 
   <sql id="WHERE_SQL">
-    <if test="offerName!=null and offerName!=''">
-      and offer_name like concat('%', #{offerName}, '%')
+    <if test="offer.offerName!=null and offer.offerName!=''">
+      and offer_name like concat('%', #{offer.offerName}, '%')
     </if>
-    <if test="catalogId!=null and catalogId!=''">
-      and catalog_id = #{catalogId}
+    <if test="offer.catalogId!=null and offer.catalogId!=''">
+      and catalog_id = #{offer.catalogId}
     </if>
-    <if test="offerType!=null and offerType!=''">
-      and offer_type = #{offerType}
+    <if test="offer.offerType!=null and offer.offerType!=''">
+      and offer_type = #{offer.offerType}
     </if>
-    <if test="buyPrivi!=null and buyPrivi!=''">
-      and buy_privi like concat('%', #{buyPrivi}, '%')
+    <if test="offer.buyPrivi!=null and offer.buyPrivi!=''">
+      and buy_privi like concat('%', #{offer.buyPrivi}, '%')
     </if>
-    <if test="metaData!=null and metaData!=''">
-      and meta_data like concat('%"', #{metaData}, '"%')
+    <if test="offer.metaData!=null and offer.metaData!=''">
+      and meta_data like concat('%"', #{offer.metaData}, '"%')
     </if>
-    <if test="status!=null">
-      and status = #{status}
+    <if test="offer.status!=null">
+      and status = #{offer.status}
     </if>
-    <if test="startDate!=null and startDate!=''">
-      and created_at >= #{startDate}
+    <if test="offer.startDate!=null and offer.startDate!=''">
+      and created_at >= #{offer.startDate}
     </if>
-    <if test="endDate!=null and endDate!='' ">
-      and created_at &lt; date_add(#{endDate}, INTERVAL 1 DAY)
+    <if test="offer.endDate!=null and offer.endDate!='' ">
+      and created_at &lt; date_add(#{offer.endDate}, INTERVAL 1 DAY)
+    </if>
+    <if test="appType==2">
+      and offer_type in ('OFFER', 'CLASS')
+      and status = 1
     </if>
   </sql>
 
