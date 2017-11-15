@@ -27,4 +27,15 @@
     <include refid="Base_Column_List" />
     from province where provinceid = #{provinceid}
   </select>
+
+  <select id="queryAreaByTree" resultType="java.util.HashMap">
+    SELECT
+	a.province,	a.provinceid, b.city ,	b.cityid, c.area, c.areaid
+      FROM
+          province a, city b, area c
+      WHERE
+          a.provinceid = b.provinceid
+      AND b.cityid = c.cityid
+      order by a.provinceid, b.cityid, c.areaid
+  </select>
 </mapper>
