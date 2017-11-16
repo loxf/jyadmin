@@ -11,6 +11,7 @@ import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.OfferCatalogDto;
 import org.loxf.jyadmin.client.dto.OfferDto;
 import org.loxf.jyadmin.client.dto.OfferRelDto;
+import org.loxf.jyadmin.client.dto.VideoConfigDto;
 import org.loxf.jyadmin.client.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,8 @@ public class OfferController extends BaseControl<OfferDto> {
     private ConfigService configService;
     @Autowired
     private IndexRecommendService indexRecommendService;
+    @Autowired
+    private VideoConfigService videoConfigService;
 
     @RequestMapping("/index")
     public String index(Model model){
@@ -85,6 +88,12 @@ public class OfferController extends BaseControl<OfferDto> {
                 model.addAttribute("offerAndActiveList", baseResult.getData());
                 return "main/offer/editOffer";
             } else {
+                if(StringUtils.isNotBlank(offerDto.getMainMedia())){
+                    BaseResult<VideoConfigDto> videoConfigDtoBaseResult = videoConfigService.queryVideo(offerDto.getMainMedia());
+                    if(videoConfigDtoBaseResult.getCode()==BaseConstant.SUCCESS && videoConfigDtoBaseResult.getData()!=null) {
+                        model.addAttribute("videoName", videoConfigDtoBaseResult.getData().getVideoName());
+                    }
+                }
                 return "main/offer/editClass";
             }
         } else {
