@@ -6,7 +6,8 @@
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="bank" property="bank" jdbcType="VARCHAR" />
     <result column="bank_no" property="bankNo" jdbcType="VARCHAR" />
-    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
     <result column="zh_name" property="zhName" jdbcType="VARCHAR" />
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
@@ -15,116 +16,80 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, bank, bank_no, address, zh_name, user_name, phone, status, created_at, 
-    updated_at
+    id, cust_id, bank, bank_no, province, city, zh_name, user_name, phone, status, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+
+  <select id="pager" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CustBank">
+    select
     <include refid="Base_Column_List" />
     from tb_cust_bank
-    where id = #{id,jdbcType=BIGINT}
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by created_at DESC
+    limit #{pager.start} , #{pager.size}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from tb_cust_bank
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+
+  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.CustBank">
+    select count(1)
+    from tb_cust_bank
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+
+  <sql id="WHERE_SQL">
+    <if test="id!=null">
+      and id = #{id,jdbcType=BIGINT}
+    </if>
+    <if test="custId!=null and custId!=''">
+      and cust_id = #{custId}
+    </if>
+    <if test="userName!=null and userName!=''">
+      and user_name = #{userName}
+    </if>
+    <if test="bank!=null and bank!=''">
+      and bank = #{bank}
+    </if>
+    <if test="bankNo!=null and bankNo!=''">
+      and bank_no = #{bankNo}
+    </if>
+    <if test="province!=null and province!=''">
+      and province = #{province}
+    </if>
+    <if test="city!=null and city!=''">
+      and city = #{city}
+    </if>
+    <if test="phone!=null and phone!=''">
+      and phone = #{phone}
+    </if>
+    <if test="status!=null">
+      and status = #{status}
+    </if>
+  </sql>
+
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustBank" >
     insert into tb_cust_bank (id, cust_id, bank, 
-      bank_no, address, zh_name, 
+      bank_no, province, city, zh_name,
       user_name, phone, status, 
       created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{bank,jdbcType=VARCHAR}, 
-      #{bankNo,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{zhName,jdbcType=VARCHAR}, 
-      #{userName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
-      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+      #{bankNo,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{zhName,jdbcType=VARCHAR},
+      #{userName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, now(), now())
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.CustBank" >
-    insert into tb_cust_bank
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="custId != null" >
-        cust_id,
-      </if>
-      <if test="bank != null" >
-        bank,
-      </if>
-      <if test="bankNo != null" >
-        bank_no,
-      </if>
-      <if test="address != null" >
-        address,
-      </if>
-      <if test="zhName != null" >
-        zh_name,
-      </if>
-      <if test="userName != null" >
-        user_name,
-      </if>
-      <if test="phone != null" >
-        phone,
-      </if>
-      <if test="status != null" >
-        status,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="custId != null" >
-        #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="bank != null" >
-        #{bank,jdbcType=VARCHAR},
-      </if>
-      <if test="bankNo != null" >
-        #{bankNo,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null" >
-        #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="zhName != null" >
-        #{zhName,jdbcType=VARCHAR},
-      </if>
-      <if test="userName != null" >
-        #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="phone != null" >
-        #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null" >
-        #{status,jdbcType=INTEGER},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.CustBank" >
+
+  <update id="update" parameterType="org.loxf.jyadmin.dal.po.CustBank" >
     update tb_cust_bank
     <set >
-      <if test="custId != null" >
-        cust_id = #{custId,jdbcType=VARCHAR},
-      </if>
       <if test="bank != null" >
         bank = #{bank,jdbcType=VARCHAR},
       </if>
       <if test="bankNo != null" >
         bank_no = #{bankNo,jdbcType=VARCHAR},
       </if>
-      <if test="address != null" >
-        address = #{address,jdbcType=VARCHAR},
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
       </if>
       <if test="zhName != null" >
         zh_name = #{zhName,jdbcType=VARCHAR},
@@ -135,30 +100,15 @@
       <if test="phone != null" >
         phone = #{phone,jdbcType=VARCHAR},
       </if>
-      <if test="status != null" >
-        status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
+      updated_at = now()
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT} and cust_id = #{custId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.CustBank" >
+
+  <update id="unbind" >
     update tb_cust_bank
-    set cust_id = #{custId,jdbcType=VARCHAR},
-      bank = #{bank,jdbcType=VARCHAR},
-      bank_no = #{bankNo,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
-      zh_name = #{zhName,jdbcType=VARCHAR},
-      user_name = #{userName,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+    set status = 0,
+      updated_at = now()
+    where id = #{id,jdbcType=BIGINT} and cust_id = #{custId,jdbcType=VARCHAR}
   </update>
 </mapper>

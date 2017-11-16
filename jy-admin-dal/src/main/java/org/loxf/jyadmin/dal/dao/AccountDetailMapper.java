@@ -3,11 +3,17 @@ package org.loxf.jyadmin.dal.dao;
 import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.AccountDetail;
 
+import java.util.List;
+
 public interface AccountDetailMapper {
 
     int insert(AccountDetail record);
 
-    AccountDetail selectByOrderId(String custId);
+    int count(AccountDetail record);
+
+    List<AccountDetail> pager(AccountDetail record);
+
+    AccountDetail selectByOrderId(String orderId);
 
     /**
      * 计算余额变化从dayBefore到现在的和

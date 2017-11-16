@@ -79,7 +79,6 @@ public class ActiveController extends BaseControl<ActiveDto> {
             String htmlInfo = htmlInfoService.getHtml(htmlId).getData();
             model.addAttribute("htmlId", htmlId);
             model.addAttribute("htmlInfo", htmlInfo);
-            model.addAttribute("basePic", ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL").getConfigValue());
             return "main/active/editActive";
         } else {
             model.addAttribute("errorMsg", "活动不存在或活动已发布");

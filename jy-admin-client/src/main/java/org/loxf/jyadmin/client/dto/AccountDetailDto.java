@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 public class AccountDetailDto extends BaseModel {
     private String custId;
 
+    private String custName;
+
     private String orderId;
 
     private String detailName;
@@ -23,6 +25,14 @@ public class AccountDetailDto extends BaseModel {
 
     public void setCustId(String custId) {
         this.custId = custId == null ? null : custId.trim();
+    }
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
     }
 
     public String getOrderId() {

@@ -47,6 +47,8 @@ public class BaseInterceptor extends HandlerInterceptorAdapter {
     private void writeResult(HttpServletResponse response, BaseResult baseResult) {
         PrintWriter writer = null;
         try {
+            response.setCharacterEncoding("utf-8");
+            response.setHeader("Content-type", "application/json;charset=UTF-8");
             writer = response.getWriter();
             writer.write(JSON.toJSONString(baseResult));
             writer.flush();

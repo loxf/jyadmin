@@ -9,7 +9,9 @@ public class CustBankDto extends BaseModel {
 
     private String bankNo;
 
-    private String address;
+    private String province;
+
+    private String city;
 
     private String zhName;
 
@@ -43,12 +45,20 @@ public class CustBankDto extends BaseModel {
         this.bankNo = bankNo == null ? null : bankNo.trim();
     }
 
-    public String getAddress() {
-        return address;
+    public String getProvince() {
+        return province;
     }
 
-    public void setAddress(String address) {
-        this.address = address == null ? null : address.trim();
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getZhName() {

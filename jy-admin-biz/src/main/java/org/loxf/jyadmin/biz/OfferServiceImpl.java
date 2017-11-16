@@ -121,6 +121,7 @@ public class OfferServiceImpl implements OfferService {
     @Override
     @Transactional
     public BaseResult deleteOffer(String offerId){
+        // TODO 删除推荐
         return new BaseResult(offerMapper.deleteByOfferId(offerId));
     }
 

@@ -70,7 +70,6 @@ public class OfferController extends BaseControl<OfferDto> {
             String htmlInfo = htmlInfoService.getHtml(htmlId).getData();
             model.addAttribute("htmlInfo", htmlInfo);
             String buyPrivi = offerDto.getBuyPrivi();
-            model.addAttribute("basePic", configService.queryConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL"));
             if (StringUtils.isNotBlank(buyPrivi)) {
                 JSONObject buyJson = JSONObject.parseObject(buyPrivi);
                 model.addAttribute("buyJson", buyJson);

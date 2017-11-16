@@ -8,6 +8,8 @@ import java.util.Date;
 public class AccountDetail extends BaseModel {
     private String custId;
 
+    private String custName;
+
     private String orderId;
 
     private String detailName;
@@ -24,6 +26,14 @@ public class AccountDetail extends BaseModel {
 
     public void setCustId(String custId) {
         this.custId = custId == null ? null : custId.trim();
+    }
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
     }
 
     public String getOrderId() {

@@ -48,7 +48,6 @@ public class ConfigController {
         BaseResult<ConfigDto> configDtoBaseResult = configService.queryConfig(catalog, configCode);
         if(configDtoBaseResult.getCode()== BaseConstant.SUCCESS && configDtoBaseResult.getData()!=null){
             model.addAttribute("configDto", configDtoBaseResult.getData());
-            model.addAttribute("basePic", configService.queryConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL"));
             if("HTML".equals(configDtoBaseResult.getData().getType())){
                 String htmlId = configDtoBaseResult.getData().getConfigValue();
                 String htmlInfo = htmlInfoService.getHtml(htmlId).getData();
