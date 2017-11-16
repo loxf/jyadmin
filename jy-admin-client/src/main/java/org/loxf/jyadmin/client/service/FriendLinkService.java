@@ -8,5 +8,6 @@ public interface FriendLinkService {
     BaseResult addLink(FriendLinkDto dto);
     BaseResult updateLink(FriendLinkDto dto);
     BaseResult rmLink(Long id);
+    BaseResult<FriendLinkDto> queryLink(Long id);
     PageResult<FriendLinkDto> queryAllLink(FriendLinkDto dto, Integer page, Integer size);
 }

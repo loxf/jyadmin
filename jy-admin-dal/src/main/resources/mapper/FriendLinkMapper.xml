@@ -28,13 +28,13 @@
     insert into tb_friend_link (id, `name`, pic,
       url, status, `order`, created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, 
-      #{url,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{order}, now(), now())
+      #{url,jdbcType=VARCHAR}, 0, #{order}, now(), now())
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.FriendLink" >
+  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.FriendLink" >
     update tb_friend_link
     <set >
       <if test="name != null and name!=''" >
-        name = #{name,jdbcType=VARCHAR},
+        `name` = #{name,jdbcType=VARCHAR},
       </if>
       <if test="pic != null and pic!=''" >
         pic = #{pic,jdbcType=VARCHAR},
@@ -57,24 +57,24 @@
     select count(1)
     from tb_friend_link
     where 1=1
-    <include refid="WHERE_SQL"></include>
+    <include refid="WHERE_SQL"/>
   </select>
 
-  <select id="list" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="list" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from tb_friend_link
     where 1=1
-    <include refid="WHERE_SQL"></include>
+    <include refid="WHERE_SQL"/>
     order by `order` limit #{start} , #{size}
   </select>
 
   <sql id="WHERE_SQL">
-    <if test="name != null and name!=''" >
-      and name like concat('%', #{name,jdbcType=VARCHAR}, '%')
+    <if test="link.name != null and link.name!=''" >
+      and `name` like concat('%', #{link.name,jdbcType=VARCHAR}, '%')
     </if>
-    <if test="url != null and url!=''" >
-      and url like concat('%', #{url,jdbcType=VARCHAR}, '%')
+    <if test="link.url != null and link.url!=''" >
+      and url like concat('%', #{link.url,jdbcType=VARCHAR}, '%')
     </if>
   </sql>
 </mapper>

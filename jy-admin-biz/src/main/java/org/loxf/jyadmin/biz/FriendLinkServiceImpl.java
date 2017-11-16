@@ -27,6 +27,9 @@ public class FriendLinkServiceImpl implements FriendLinkService {
         }
         FriendLink friendLink = new FriendLink();
         BeanUtils.copyProperties(dto, friendLink);
+        if(friendLink.getOrder()==null){
+            friendLink.setOrder(50);
+        }
         friendLinkMapper.insert(friendLink);
         return new BaseResult();
     }
@@ -46,6 +49,17 @@ public class FriendLinkServiceImpl implements FriendLinkService {
     public BaseResult rmLink(Long id) {
         friendLinkMapper.deleteByPrimaryKey(id);
         return new BaseResult();
+    }
+
+    @Override
+    public BaseResult<FriendLinkDto> queryLink(Long id) {
+        FriendLink friendLink = friendLinkMapper.selectByPrimaryKey(id);
+        if(friendLink==null){
+            return new BaseResult<>(BaseConstant.FAILED, "链接不存在");
+        }
+        FriendLinkDto dto = new FriendLinkDto();
+        BeanUtils.copyProperties(friendLink, dto);
+        return new BaseResult(dto);
     }
 
     @Override

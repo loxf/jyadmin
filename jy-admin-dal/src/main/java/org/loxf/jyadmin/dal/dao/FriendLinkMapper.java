@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.dal.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.FriendLink;
 
 import java.util.List;
@@ -13,8 +14,8 @@ public interface FriendLinkMapper {
 
     int updateByPrimaryKey(FriendLink record);
 
-    int count(FriendLink friendLink);
+    int count(@Param("link")FriendLink friendLink);
 
-    List<FriendLink> list(FriendLink friendLink, Integer start, Integer size);
+    List<FriendLink> list(@Param("link") FriendLink friendLink, @Param("start") Integer start, @Param("size")Integer size);
 
 }
