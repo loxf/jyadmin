@@ -14,7 +14,14 @@
                 <input type="text" name="url" placeholder="链接" class="layui-input">
             </div>
         </div>
-        <div class="layui-inline layui-col-lg4">
+        <div class="layui-inline layui-col-lg2">
+            <select name="status">
+                <option value="">是否发布</option>
+                <option value="1">发布</option>
+                <option value="0">未发布</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg3">
             <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
             <input type="button" class="layui-btn" onclick="addFriendLink()" value="新增链接"/>
         </div>

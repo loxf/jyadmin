@@ -76,5 +76,8 @@
     <if test="link.url != null and link.url!=''" >
       and url like concat('%', #{link.url,jdbcType=VARCHAR}, '%')
     </if>
+    <if test="link.status != null" >
+      and status = #{link.status}
+    </if>
   </sql>
 </mapper>
