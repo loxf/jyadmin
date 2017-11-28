@@ -78,13 +78,13 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
     }
 
     @Override
-    public BaseResult verify(String custId, String obj, String code) {
+    public BaseResult verify(String custId, String code) {
         String currentCode = jedisUtil.get(prefix + custId);
         if(currentCode==null){
             return new BaseResult(BaseConstant.FAILED, "验证码不存在或已过期");
         }
         // 无论怎样 先删除验证码
-        jedisUtil.del(prefix + obj);
+        jedisUtil.del(prefix + custId);
         if(!currentCode.equals(code)){
             return new BaseResult(BaseConstant.FAILED, "验证码不正确");
         }

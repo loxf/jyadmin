@@ -125,11 +125,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public BaseResult setPayPassword(String custId, String email, String phone, int isChinese, String password, String verifyCode) {
-        String target = phone;
-        if(isChinese==2){
-            target = email;
-        }
-        BaseResult baseResult = verifyCodeService.verify(custId, target, verifyCode);
+        BaseResult baseResult = verifyCodeService.verify(custId, verifyCode);
         if(baseResult.getCode()==BaseConstant.FAILED){
             return baseResult;
         }
