@@ -33,4 +33,15 @@ public class RandomUtils {
         }
         return fourRandom;
     }
+
+    public static String getRandomStr(int len) {
+        StringBuffer sb = new StringBuffer();
+        for(int i=0; i<len; i++) {
+            sb.append(getRandom(9));
+        }
+        return sb.toString();
+    }
+    public static void main(String [] args){
+        System.out.println(System.currentTimeMillis() + getRandomStr(3));
+    }
 }

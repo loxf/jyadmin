@@ -2,18 +2,14 @@ package org.loxf.jyadmin.client.dto;
 
 import org.loxf.jyadmin.base.bean.BaseModel;
 
-public class ActiveCustListDto extends BaseModel {
+public class ActiveCustListDto extends ActiveDto {
     private String custId;
 
     private String phone;
 
     private String name;
 
-    private String activeId;
-
-    private String activeName;
-
-    private Integer status;
+    private String activeTicketNo;
 
     public String getCustId() {
         return custId;
@@ -39,28 +35,11 @@ public class ActiveCustListDto extends BaseModel {
         this.name = name == null ? null : name.trim();
     }
 
-    public String getActiveId() {
-        return activeId;
+    public String getActiveTicketNo() {
+        return activeTicketNo;
     }
 
-    public void setActiveId(String activeId) {
-        this.activeId = activeId == null ? null : activeId.trim();
+    public void setActiveTicketNo(String activeTicketNo) {
+        this.activeTicketNo = activeTicketNo;
     }
-
-    public String getActiveName() {
-        return activeName;
-    }
-
-    public void setActiveName(String activeName) {
-        this.activeName = activeName == null ? null : activeName.trim();
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
 }

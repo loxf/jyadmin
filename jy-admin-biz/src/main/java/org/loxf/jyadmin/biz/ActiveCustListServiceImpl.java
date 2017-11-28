@@ -3,6 +3,7 @@ package org.loxf.jyadmin.biz;
 import org.apache.commons.collections.CollectionUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.biz.util.RandomUtils;
 import org.loxf.jyadmin.client.dto.ActiveCustListDto;
 import org.loxf.jyadmin.client.service.ActiveCustListService;
 import org.loxf.jyadmin.dal.dao.ActiveCustListMapper;
@@ -40,6 +41,9 @@ public class ActiveCustListServiceImpl implements ActiveCustListService {
     public BaseResult addCustByActive(ActiveCustListDto activeCustListDto) {
         ActiveCustList tmp = new ActiveCustList();
         BeanUtils.copyProperties(activeCustListDto, tmp);
+        // 生成票号
+        String ticketNo = System.currentTimeMillis() + RandomUtils.getRandomStr(3);
+        tmp.setActiveTicketNo(ticketNo);
         if (activeCustListMapper.insert(tmp) > 0) {
             return new BaseResult();
         } else {

@@ -8,12 +8,23 @@
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="active_id" property="activeId" jdbcType="VARCHAR" />
     <result column="active_name" property="activeName" jdbcType="VARCHAR" />
+    <result column="active_ticket_no" property="activeTicketNo" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+    <result column="price" property="price" jdbcType="DECIMAL"/>
+    <result column="active_privi" property="activePrivi" jdbcType="VARCHAR"/>
+    <result column="pic" property="pic" jdbcType="VARCHAR"/>
+    <result column="province" property="province" jdbcType="VARCHAR"/>
+    <result column="city" property="city" jdbcType="VARCHAR"/>
+    <result column="addr" property="addr" jdbcType="VARCHAR"/>
+    <result column="active_start_time" property="activeStartTime" jdbcType="TIMESTAMP"/>
+    <result column="active_end_time" property="activeEndTime" jdbcType="TIMESTAMP"/>
+    <result column="html_id" property="htmlId" jdbcType="VARCHAR"/>
+    <result column="meta_data" property="metaData" jdbcType="VARCHAR"/>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, phone, name, active_id, active_name, status, created_at, updated_at
+    id, cust_id, phone, `name`, active_id, active_name, status, active_ticket_no, created_at, updated_at
   </sql>
   <select id="queryList" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -24,15 +35,24 @@
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.ActiveCustList" >
     insert into tb_active_cust_list (cust_id, phone,
-      name, active_id, active_name, 
-      status, created_at, updated_at
+      `name`, active_id, active_name,
+      status, active_ticket_no, created_at, updated_at
       )
     values (#{custId,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
       #{name,jdbcType=VARCHAR}, #{activeId,jdbcType=VARCHAR}, #{activeName,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER}, now(), now() )
+      #{status,jdbcType=INTEGER}, #{activeTicketNo,jdbcType=VARCHAR},  now(), now() )
   </insert>
 
   <select id="countByActiveId" parameterType="String" resultType="java.lang.Integer">
     select count(1) from tb_active_cust_list where active_id = #{activeId}
+  </select>
+
+  <select id="countByCustId" parameterType="String" resultType="java.lang.Integer">
+    select count(DISTINCT active_id) from tb_active_cust_list where cust_id = #{custId}
+  </select>
+
+  <select id="queryListByCustId" resultMap="BaseResultMap">
+    select b.active_ticket_no, a.* from tb_active a, tb_active_cust_list b where b.cust_id = #{custId} and a.active_id = b.active_id
+     limit #{start}, #{size}
   </select>
 </mapper>

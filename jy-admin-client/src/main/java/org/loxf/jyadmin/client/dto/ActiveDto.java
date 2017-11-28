@@ -143,8 +143,24 @@ public class ActiveDto extends BaseModel {
         return activeStatus;
     }
 
-    public void setActiveStatus(Integer activeStatus) {
-        this.activeStatus = activeStatus;
+    public void setActiveStatus() {
+        //设置活动状态 0:进行中 1:即将开始 2:报名中 3:已经结束
+        if (this.getActiveStartTime() != null) {
+            long diff = this.getActiveStartTime().getTime() - System.currentTimeMillis();
+            if (diff >= 48 * 60 * 1000 * 1000) {
+                // 报名中 2天以上的
+                this.activeStatus = 2;
+            } else if (diff >= 0 && diff < 48 * 60 * 1000 * 1000) {
+                // 1:即将开始
+                this.activeStatus = 1;
+            } else if (this.getActiveEndTime() != null && diff < 0 && this.getActiveEndTime().getTime() - System.currentTimeMillis() >= 0) {
+                // 进行中
+                this.activeStatus = 0;
+            } else {
+                // 已结束
+                this.activeStatus = 3;
+            }
+        }
     }
 
     public Integer getStudentsNbr() {

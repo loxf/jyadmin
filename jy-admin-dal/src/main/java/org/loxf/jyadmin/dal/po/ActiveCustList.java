@@ -4,7 +4,7 @@ import org.loxf.jyadmin.base.bean.BaseModel;
 
 import java.util.Date;
 
-public class ActiveCustList extends BaseModel {
+public class ActiveCustList extends Active {
     private String custId;
 
     private String phone;
@@ -16,6 +16,8 @@ public class ActiveCustList extends BaseModel {
     private String activeName;
 
     private Integer status;
+
+    private String activeTicketNo;
 
     public String getCustId() {
         return custId;
@@ -65,4 +67,11 @@ public class ActiveCustList extends BaseModel {
         this.status = status;
     }
 
+    public String getActiveTicketNo() {
+        return activeTicketNo;
+    }
+
+    public void setActiveTicketNo(String activeTicketNo) {
+        this.activeTicketNo = activeTicketNo;
+    }
 }
