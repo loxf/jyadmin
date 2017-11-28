@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.VerifyCodeMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.VerifyCode" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="obj" property="obj" jdbcType="VARCHAR" />
+    <result column="send_type" property="sendType" jdbcType="INTEGER" />
+    <result column="code_type" property="codeType" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, obj, send_type, code_type, code, created_at
+  </sql>
+  <select id="selectCount" resultType="int">
+    select count(1)
+    from tb_verify_code
+    where obj = #{obj} and send_type = #{sendType} and created_at >= curdate()
+  </select>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.VerifyCode" >
+    insert into tb_verify_code (id, obj, send_type, 
+      code_type, code, created_at
+      )
+    values (#{id,jdbcType=BIGINT}, #{obj,jdbcType=VARCHAR}, #{sendType,jdbcType=INTEGER}, 
+      #{codeType,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, now()
+      )
+  </insert>
+</mapper>

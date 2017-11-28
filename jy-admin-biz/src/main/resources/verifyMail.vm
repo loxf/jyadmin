@@ -1,0 +1,16 @@
+<html>
+
+<body>
+<div>
+    <label style="font-size:15px">静怡雅学馆欢迎您：</label>
+    <br>
+    <label>您正在 #if($!{codeType}==1) 设置支付密码 #elseif($!{codeType}==2) 绑定用户 #end</label>
+    <br>
+    <label>您的系统验证码为：<font color="red">$!{verifyCode}</font>，该验证码5分钟有效，请勿泄露于他人。</label>
+</div>
+<br>
+<div>
+    <label style="font-style: italic; font-size:15px">本条信息是系统自动发送，请勿回复！</label>
+</div>
+</body>
+</html>

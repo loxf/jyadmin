@@ -355,3 +355,14 @@ create table tb_vip_info
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table tb_verify_code
+(
+   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+   `obj`            varchar(255),
+   `send_type`            int(1),
+   `code_type`            int(1),
+   `code`            varchar(8),
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

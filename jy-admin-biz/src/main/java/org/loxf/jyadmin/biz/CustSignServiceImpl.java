@@ -13,6 +13,7 @@ public class CustSignServiceImpl implements CustSignService {
 
     @Override
     public BaseResult<Boolean> sign(String custId, String signDate) {
+        //TODO 签到送积分 是否应该事件驱动？
         if(custSignMapper.selectByCustAndSignDate(custId, signDate)>0){
             return new BaseResult<>(true);
         }

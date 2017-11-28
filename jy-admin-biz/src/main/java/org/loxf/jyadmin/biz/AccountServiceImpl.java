@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.service.AccountService;
+import org.loxf.jyadmin.client.service.VerifyCodeService;
 import org.loxf.jyadmin.dal.dao.AccountDetailMapper;
 import org.loxf.jyadmin.dal.dao.AccountMapper;
 import org.loxf.jyadmin.dal.po.Account;
@@ -25,6 +26,8 @@ public class AccountServiceImpl implements AccountService {
     private AccountMapper accountMapper;
     @Autowired
     private AccountDetailMapper accountDetailMapper;
+    @Autowired
+    private VerifyCodeService verifyCodeService;
 
     @Override
     public BaseResult<JSONObject> queryBasicInfo(String custId) {
@@ -104,6 +107,20 @@ public class AccountServiceImpl implements AccountService {
             return new BaseResult<>(BaseConstant.FAILED, "记录账户明细失败");
         }
         return new BaseResult(true);
+    }
+
+    @Override
+    public BaseResult setPayPassword(String custId, String email, String phone, int isChinese, String password, String verifyCode) {
+        String target = phone;
+        if(isChinese==2){
+            target = email;
+        }
+        BaseResult baseResult = verifyCodeService.verify(custId, target, verifyCode);
+        if(baseResult.getCode()==BaseConstant.FAILED){
+            return baseResult;
+        }
+        accountMapper.setPayPassword(custId, password);
+        return new BaseResult();
     }
 
     private AccountDetail createAccountDetail(String custId, BigDecimal balance, BigDecimal changeMoney,

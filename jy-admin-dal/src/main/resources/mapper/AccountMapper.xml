@@ -56,4 +56,13 @@
     </set>
     where cust_id = #{custId,jdbcType=VARCHAR} and lock = 1
   </update>
+
+  <update id="setPayPassword">
+    update tb_account
+    <set >
+      password = #{password}
+      updated_at = now()
+    </set>
+    where cust_id = #{custId}
+  </update>
 </mapper>
