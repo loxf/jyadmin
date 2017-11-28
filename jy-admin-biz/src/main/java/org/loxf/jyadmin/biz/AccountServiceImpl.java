@@ -30,6 +30,20 @@ public class AccountServiceImpl implements AccountService {
     private VerifyCodeService verifyCodeService;
 
     @Override
+    public BaseResult<JSONObject> queryAccount(String custId) {
+        Account account = accountMapper.selectAccount(custId);
+        if(account==null){
+            return new BaseResult<>(BaseConstant.FAILED, "客户不存在");
+        }
+        JSONObject result = new JSONObject();
+        result.put("balance", account.getBalance().toPlainString());
+        result.put("bp", account.getBp().toPlainString());
+        // 是否设置支付密码
+        result.put("hasPassword", StringUtils.isNotBlank(account.getPassword()));
+        return new BaseResult<>(result);
+    }
+
+    @Override
     public BaseResult<JSONObject> queryBasicInfo(String custId) {
         Account account = accountMapper.selectAccount(custId);
         if(account==null){
