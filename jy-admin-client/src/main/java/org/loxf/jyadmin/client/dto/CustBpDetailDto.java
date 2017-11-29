@@ -5,6 +5,8 @@ import org.loxf.jyadmin.base.bean.BaseModel;
 public class CustBpDetailDto extends BaseModel {
     private String custId;
 
+    private String custName;
+
     private String detailName;
 
     private Integer type;
@@ -19,6 +21,14 @@ public class CustBpDetailDto extends BaseModel {
 
     public void setCustId(String custId) {
         this.custId = custId == null ? null : custId.trim();
+    }
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
     }
 
     public String getDetailName() {

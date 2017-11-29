@@ -139,7 +139,7 @@ public class ProvinceAndCityServiceImpl implements ProvinceAndCityService {
 
                         // 新增一个area
                         JSONObject cityObject = new JSONObject();
-                        cityObject.put("label", areaid);
+                        cityObject.put("label", arealabel);
                         cityObject.put("value", arealabel + "," + provinceid + "-" + cityid + "-" + areaid);
                         areaOfCity.add(cityObject);
                     }

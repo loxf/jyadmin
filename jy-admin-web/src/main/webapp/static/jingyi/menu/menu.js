@@ -33,7 +33,7 @@ var menu = {
         },
         {
             menuName: '积分管理',
-            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
+            menuHref: contextPath + '/admin/bp/index.html'
         },
         {
             menuName: '银行卡管理',

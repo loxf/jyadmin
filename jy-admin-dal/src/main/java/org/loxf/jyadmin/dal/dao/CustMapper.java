@@ -16,6 +16,8 @@ public interface CustMapper {
 
     Cust selectByCustId(String custId);
 
+    List<Cust> selectByName(String name);
+
     Cust selectByPhoneOrEmail(@Param("isChinese") int isChinese, @Param("phone")String phone);
 
     int count(Cust cust);

@@ -51,6 +51,13 @@
     where cust_id = #{custId}
   </select>
 
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_cust a
+    where nick_name like concat('%', #{name}, '%') or real_name like concat('%', #{name}, '%')
+  </select>
+
   <select id="selectByPhoneOrEmail" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />

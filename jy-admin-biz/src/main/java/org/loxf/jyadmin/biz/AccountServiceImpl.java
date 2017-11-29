@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
 
 @Service("accountService")
 public class AccountServiceImpl implements AccountService {
@@ -131,6 +133,19 @@ public class AccountServiceImpl implements AccountService {
         }
         accountMapper.setPayPassword(custId, password);
         return new BaseResult();
+    }
+
+    @Override
+    public BaseResult<JSONObject> queryBpRankingList(String custId) {
+        List<HashMap> bpList = accountMapper.selectBpTop10();
+        Integer ranking = accountMapper.queryBpRankingByCustId(custId);
+        if(ranking==null){
+            ranking = 100000;
+        }
+        JSONObject result = new JSONObject();
+        result.put("tenTop", bpList);
+        result.put("myRanking", ranking);
+        return new BaseResult<>(result);
     }
 
     private AccountDetail createAccountDetail(String custId, BigDecimal balance, BigDecimal changeMoney,

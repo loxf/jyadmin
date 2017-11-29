@@ -11,4 +11,5 @@ public interface AccountService {
     BaseResult<Boolean> reduce(String custId, String password, BigDecimal money, String orderId, String detailName);
     BaseResult<Boolean> increase(String custId, BigDecimal money, String orderId, String detailName);
     BaseResult setPayPassword(String custId, String email, String phone, int isChinese, String password, String verifyCode);
+    BaseResult<JSONObject> queryBpRankingList(String custId);
 }

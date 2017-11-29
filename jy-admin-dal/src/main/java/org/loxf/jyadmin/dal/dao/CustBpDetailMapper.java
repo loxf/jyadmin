@@ -2,16 +2,12 @@ package org.loxf.jyadmin.dal.dao;
 
 import org.loxf.jyadmin.dal.po.CustBpDetail;
 
-public interface CustBpDetailMapper {
-    int deleteByPrimaryKey(Long id);
+import java.util.List;
 
+public interface CustBpDetailMapper {
     int insert(CustBpDetail record);
 
-    int insertSelective(CustBpDetail record);
+    List<CustBpDetail> list(CustBpDetail record);
 
-    CustBpDetail selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(CustBpDetail record);
-
-    int updateByPrimaryKey(CustBpDetail record);
+    int count(CustBpDetail record);
 }

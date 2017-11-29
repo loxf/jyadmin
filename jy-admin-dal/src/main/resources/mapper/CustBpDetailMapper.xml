@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CustBpDetail" >
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="cust_name" property="custName" jdbcType="VARCHAR" />
     <result column="detail_name" property="detailName" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="bp_balance" property="bpBalance" jdbcType="DECIMAL" />
@@ -12,117 +13,61 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, detail_name, type, bp_balance, change_balance, created_at, updated_at
+    a.id, a.cust_id, (select nick_name from tb_cust t where t.cust_id = a.cust_id) as cust_name, a.detail_name, a.`type`,
+    a.bp_balance, a.change_balance, a.created_at, a.updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from tb_cust_bp_detail
-    where id = #{id,jdbcType=BIGINT}
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
+    select count(1)
+    from tb_cust_bp_detail a
+    <if test="custName!=null and custName!=''">
+      , tb_cust b
+    </if>
+    where 1=1
+    <include refid="WHERE_SQL"/>
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from tb_cust_bp_detail
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_cust_bp_detail a
+    <if test="custName!=null and custName!=''">
+      , tb_cust b
+    </if>
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by a.created_at DESC
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
     insert into tb_cust_bp_detail (id, cust_id, detail_name, 
-      type, bp_balance, change_balance, 
+      `type`, bp_balance, change_balance,
       created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{detailName,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER}, #{bpBalance,jdbcType=DECIMAL}, #{changeBalance,jdbcType=INTEGER}, 
-      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+      #{type,jdbcType=INTEGER}, #{bpBalance,jdbcType=DECIMAL}, #{changeBalance,jdbcType=INTEGER}, now(), now())
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
-    insert into tb_cust_bp_detail
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="custId != null" >
-        cust_id,
-      </if>
-      <if test="detailName != null" >
-        detail_name,
-      </if>
-      <if test="type != null" >
-        type,
-      </if>
-      <if test="bpBalance != null" >
-        bp_balance,
-      </if>
-      <if test="changeBalance != null" >
-        change_balance,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="custId != null" >
-        #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="detailName != null" >
-        #{detailName,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        #{type,jdbcType=INTEGER},
-      </if>
-      <if test="bpBalance != null" >
-        #{bpBalance,jdbcType=DECIMAL},
-      </if>
-      <if test="changeBalance != null" >
-        #{changeBalance,jdbcType=INTEGER},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
-    update tb_cust_bp_detail
-    <set >
-      <if test="custId != null" >
-        cust_id = #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="detailName != null" >
-        detail_name = #{detailName,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null" >
-        type = #{type,jdbcType=INTEGER},
-      </if>
-      <if test="bpBalance != null" >
-        bp_balance = #{bpBalance,jdbcType=DECIMAL},
-      </if>
-      <if test="changeBalance != null" >
-        change_balance = #{changeBalance,jdbcType=INTEGER},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
-    update tb_cust_bp_detail
-    set cust_id = #{custId,jdbcType=VARCHAR},
-      detail_name = #{detailName,jdbcType=VARCHAR},
-      type = #{type,jdbcType=INTEGER},
-      bp_balance = #{bpBalance,jdbcType=DECIMAL},
-      change_balance = #{changeBalance,jdbcType=INTEGER},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
+  <sql id="WHERE_SQL">
+    <if test="custName!=null and custName!=''">
+      and a.cust_id = b.cust_id
+      and (b.nick_name like concat('%', #{custName}, '%') or b.real_name like concat('%', #{custName}, '%'))
+    </if>
+    <if test="detailName!=null and detailName!=''">
+      and a.detail_name = #{detailName}
+    </if>
+    <if test="type!=null and type!=''">
+      and a.`type` = #{type}
+    </if>
+    <if test="custId!=null and custId!=''">
+      and a.cust_id = #{custId}
+    </if>
+    <if test="startDate!=null and startDate!=''">
+      and a.created_at >= #{startDate}
+    </if>
+    <if test="endDate!=null and endDate!='' ">
+      and a.created_at &lt; date_add(#{endDate}, INTERVAL 1 DAY)
+    </if>
+  </sql>
 </mapper>

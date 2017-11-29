@@ -65,4 +65,17 @@
     </set>
     where cust_id = #{custId}
   </update>
+
+  <select id="selectBpTop10" resultType="java.util.HashMap">
+    select b.nick_name, a.bp, @i := @i + 1 AS `order`
+        from tb_account a, tb_cust b,(SELECT @i := 0) AS it where a.cust_id = b.cust_id order by bp desc limit 0, 10
+  </select>
+
+  <select id="queryBpRankingByCustId" resultType="int" parameterType="String">
+    SELECT ranking FROM (
+            SELECT cust_id, @i := @i + 1 AS ranking FROM
+                tb_account, (SELECT @i := 0) AS it
+            ORDER BY bp DESC) t
+    WHERE cust_id = #{custId}
+  </select>
 </mapper>
