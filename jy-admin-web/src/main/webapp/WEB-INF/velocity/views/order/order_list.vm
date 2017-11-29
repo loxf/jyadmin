@@ -1,0 +1,99 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">订单名称</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="orderName" placeholder="订单名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="orderType" lay-search="">
+                <option value="">订单类型</option>
+                <option value="1">商品</option>
+                <option value="3">VIP服务</option>
+                <option value="5">活动</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="status">
+                <option value="">状态</option>
+                <option value="1">待支付</option>
+                <option value="3">已支付</option>
+                <option value="-3">支付失败</option>
+                <option value="9">已关闭</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="payType">
+                <option value="">支付方式</option>
+                <option value="1">微信支付</option>
+                <option value="3">余额支付</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">联系方式</label>
+            <div class="layui-input-inline">
+                <input type="text" name="contact" placeholder="客户手机/邮箱" class="layui-input">
+            </div>
+        </div>
+        #*<div class="layui-inline layui-col-lg2">
+            <div class="layui-input-inline">
+                <input type="text" name="custName" placeholder="客户昵称" class="layui-input">
+            </div>
+        </div>*#
+        <div class="layui-inline layui-col-lg2">
+            <div class="layui-input-inline">
+                <input type="text" name="rangDate" placeholder="创建时间" id="createdAt" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+
+<script type="text/html" id="orderTypeTpl">
+    {{#  if(d.orderType===1){ }}
+    商品
+    {{#  } else if(d.orderType===3){ }}
+    VIP服务
+    {{#  } else if(d.orderType===5){ }}
+    活动
+    {{#  } else { }}
+    未知
+    {{#  } }}
+</script>
+
+<script type="text/html" id="statusTpl">
+    {{#  if(d.status===1){ }}
+    待支付
+    {{#  } else if(d.status===3){ }}
+    已支付
+    {{#  } else if(d.status===-3){ }}
+    支付失败
+    {{#  } else if(d.status===9){ }}
+    已关闭
+    {{#  } else { }}
+    未知
+    {{#  } }}
+</script>
+
+<script type="text/html" id="payTypeTpl">
+    {{#  if(d.payType===1){ }}
+    微信支付
+    {{#  } else if(d.payType==='3'){ }}
+    余额支付
+    {{#  } else { }}
+    未知
+    {{#  } }}
+</script>
+
+<script src="${rc.contextPath}/static/jingyi/order/order.js"></script>

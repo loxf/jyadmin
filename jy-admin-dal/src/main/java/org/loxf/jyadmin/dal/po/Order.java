@@ -27,6 +27,8 @@ public class Order extends BaseModel {
 
     private String custId;
 
+    private String custName;
+
     public String getOrderId() {
         return orderId;
     }
@@ -115,4 +117,11 @@ public class Order extends BaseModel {
         this.custId = custId == null ? null : custId.trim();
     }
 
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
+    }
 }

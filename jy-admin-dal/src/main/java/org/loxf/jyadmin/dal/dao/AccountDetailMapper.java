@@ -22,6 +22,6 @@ public interface AccountDetailMapper {
      * @param type 1：收入 3：支出
      * @return
      */
-    int sumByType(@Param("custId") String custId, @Param("dayBefore") Integer dayBefore, Integer type);
+    int sumByType(@Param("custId") String custId, @Param("dayBefore") Integer dayBefore, @Param("type") Integer type);
 
 }

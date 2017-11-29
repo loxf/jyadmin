@@ -2,16 +2,17 @@ package org.loxf.jyadmin.dal.dao;
 
 import org.loxf.jyadmin.dal.po.Order;
 
-public interface OrderMapper {
-    int deleteByPrimaryKey(Long id);
+import java.util.List;
 
+public interface OrderMapper {
     int insert(Order record);
 
-    int insertSelective(Order record);
+    Order selectByOrderId(String orderId);
 
-    Order selectByPrimaryKey(Long id);
+    int updateByOrderId(Order record);
 
-    int updateByPrimaryKeySelective(Order record);
+    int count(Order record);
 
-    int updateByPrimaryKey(Order record);
+    List<Order> list(Order record);
+
 }

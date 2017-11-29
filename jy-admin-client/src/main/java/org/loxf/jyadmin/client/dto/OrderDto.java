@@ -25,6 +25,10 @@ public class OrderDto extends BaseModel {
 
     private String custId;
 
+    private String custName;
+
+    private String contact;
+
     public String getOrderId() {
         return orderId;
     }
@@ -113,4 +117,19 @@ public class OrderDto extends BaseModel {
         this.custId = custId == null ? null : custId.trim();
     }
 
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
 }

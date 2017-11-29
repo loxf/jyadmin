@@ -25,7 +25,7 @@ var menu = {
     ORDER: [
         {
             menuName: '全部订单',
-            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
+            menuHref: contextPath + '/admin/order/index.html'
         },
         {
             menuName: '余额管理',
