@@ -54,7 +54,7 @@
       is_lock = 0,
       updated_at = now()
     </set>
-    where cust_id = #{custId,jdbcType=VARCHAR} and lock = 1
+    where cust_id = #{custId,jdbcType=VARCHAR} and is_lock = 1
   </update>
 
   <update id="setPayPassword">

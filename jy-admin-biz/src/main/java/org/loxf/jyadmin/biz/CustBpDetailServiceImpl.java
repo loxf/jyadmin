@@ -15,6 +15,7 @@ import org.loxf.jyadmin.dal.po.Order;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +24,6 @@ import java.util.List;
 public class CustBpDetailServiceImpl implements CustBpDetailService {
     @Autowired
     private CustBpDetailMapper custBpDetailMapper;
-
-    @Override
-    public BaseResult<Boolean> insert(CustBpDetailDto custBpDetailDto) {
-        if(custBpDetailDto==null){
-            return new BaseResult<>(BaseConstant.FAILED, "参数为空");
-        }
-        CustBpDetail custBpDetail = new CustBpDetail();
-        BeanUtils.copyProperties(custBpDetailDto, custBpDetail);
-        return new BaseResult<>(custBpDetailMapper.insert(custBpDetail)>0);
-    }
 
     @Override
     public PageResult<CustBpDetailDto> pager(CustBpDetailDto custBpDetailDto) {

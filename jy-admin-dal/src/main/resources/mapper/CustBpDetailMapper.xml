@@ -8,13 +8,14 @@
     <result column="detail_name" property="detailName" jdbcType="VARCHAR" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="bp_balance" property="bpBalance" jdbcType="DECIMAL" />
-    <result column="change_balance" property="changeBalance" jdbcType="INTEGER" />
+    <result column="change_balance" property="changeBalance" jdbcType="DECIMAL" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     a.id, a.cust_id, (select nick_name from tb_cust t where t.cust_id = a.cust_id) as cust_name, a.detail_name, a.`type`,
-    a.bp_balance, a.change_balance, a.created_at, a.updated_at
+    a.bp_balance, a.change_balance, a.order_id, a.created_at, a.updated_at
   </sql>
   <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
     select count(1)
@@ -43,10 +44,10 @@
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustBpDetail" >
     insert into tb_cust_bp_detail (id, cust_id, detail_name, 
-      `type`, bp_balance, change_balance,
+      `type`, bp_balance, change_balance, order_id,
       created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{detailName,jdbcType=VARCHAR}, 
-      #{type,jdbcType=INTEGER}, #{bpBalance,jdbcType=DECIMAL}, #{changeBalance,jdbcType=INTEGER}, now(), now())
+      #{type,jdbcType=INTEGER}, #{bpBalance,jdbcType=DECIMAL}, #{changeBalance,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, now(), now())
   </insert>
 
   <sql id="WHERE_SQL">

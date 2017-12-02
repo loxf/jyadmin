@@ -8,8 +8,10 @@ import org.loxf.jyadmin.client.service.AccountService;
 import org.loxf.jyadmin.client.service.VerifyCodeService;
 import org.loxf.jyadmin.dal.dao.AccountDetailMapper;
 import org.loxf.jyadmin.dal.dao.AccountMapper;
+import org.loxf.jyadmin.dal.dao.CustBpDetailMapper;
 import org.loxf.jyadmin.dal.po.Account;
 import org.loxf.jyadmin.dal.po.AccountDetail;
+import org.loxf.jyadmin.dal.po.CustBpDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,8 @@ public class AccountServiceImpl implements AccountService {
     private AccountMapper accountMapper;
     @Autowired
     private AccountDetailMapper accountDetailMapper;
+    @Autowired
+    private CustBpDetailMapper custBpDetailMapper;
     @Autowired
     private VerifyCodeService verifyCodeService;
 
@@ -73,7 +77,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public BaseResult<Boolean> reduce(String custId, String password, BigDecimal money, String orderId, String detailName) {
+    public BaseResult<Boolean> reduce(String custId, String password, BigDecimal money, BigDecimal bp, String orderId, String detailName) {
         // 账户锁定
         if(accountMapper.lockAccount(custId)<=0) {
             return new BaseResult<>(BaseConstant.FAILED, "账户锁定失败");
@@ -86,12 +90,22 @@ public class AccountServiceImpl implements AccountService {
         if(money.compareTo(account.getBalance())>0){
             return new BaseResult<>(BaseConstant.FAILED, "余额不足");
         }
-        // 扣钱
+        // 扣钱/积分
         Account newAccountInfo = new Account();
-        newAccountInfo.setBalance(account.getBalance().subtract(money));
+        boolean insertDetail = false;
+        if(money.compareTo(BigDecimal.ZERO)>0) {
+            // 账户明细
+            newAccountInfo.setBalance(account.getBalance().subtract(money));
+            insertDetail = accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money, orderId, detailName, 3))>0;
+        }
+        if(bp.compareTo(BigDecimal.ZERO)>0) {
+            // 积分明细
+            newAccountInfo.setBp(account.getBp().subtract(bp));
+            insertDetail = custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBalance(), bp, orderId, detailName, 3))>0;
+        }
         newAccountInfo.setCustId(custId);
         // 记录账户明细
-        if(accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money, orderId, detailName, 3))>0){
+        if(insertDetail){
             if(accountMapper.updateBalanceOrBp(newAccountInfo)<=0){
                 throw new RuntimeException("扣减账户余额失败");
             }
@@ -103,19 +117,28 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public BaseResult<Boolean> increase(String custId, BigDecimal money, String orderId, String detailName) {
+    public BaseResult<Boolean> increase(String custId, BigDecimal money, BigDecimal bp, String orderId, String detailName) {
         // 账户锁定
         if(accountMapper.lockAccount(custId)<=0) {
             return new BaseResult<>(BaseConstant.FAILED, "账户锁定失败");
         }
         // 获取账户信息
         Account account = accountMapper.selectAccount(custId);
-        // 加钱
+        // 加钱/积分 记录账户明细
         Account newAccountInfo = new Account();
-        newAccountInfo.setBalance(account.getBalance().add(money));
+        boolean insertDetail = false;
+        if(money!=null && money.compareTo(BigDecimal.ZERO)>0) {
+            //账户明细
+            newAccountInfo.setBalance(account.getBalance().add(money));
+            insertDetail = accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money, detailName, orderId, 1)) > 0;
+        }
+        if(bp!=null && bp.compareTo(BigDecimal.ZERO)>0) {
+            // 积分明细
+            newAccountInfo.setBp(account.getBp().add(bp));
+            insertDetail = custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBp(), bp, detailName, orderId, 1)) > 0;
+        }
         newAccountInfo.setCustId(custId);
-        // 记录账户明细
-        if(accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money, orderId, detailName, 1))>0){
+        if(insertDetail){
             if(accountMapper.updateBalanceOrBp(newAccountInfo)<=0){
                 throw new RuntimeException("增加余额失败");
             }
@@ -158,5 +181,17 @@ public class AccountServiceImpl implements AccountService {
         accountDetail.setOrderId(orderId);
         accountDetail.setType(type);
         return accountDetail;
+    }
+
+    private CustBpDetail createBpDetail(String custId, BigDecimal balance, BigDecimal changeBp,
+                                              String detailName, String orderId, Integer type){
+        CustBpDetail custBpDetail = new CustBpDetail();
+        custBpDetail.setCustId(custId);
+        custBpDetail.setBpBalance(balance);
+        custBpDetail.setChangeBalance(changeBp);
+        custBpDetail.setDetailName(detailName);
+        custBpDetail.setOrderId(orderId);
+        custBpDetail.setType(type);
+        return custBpDetail;
     }
 }
