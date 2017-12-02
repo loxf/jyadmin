@@ -62,7 +62,9 @@ public class OfferServiceImpl implements OfferService {
                     BeanUtils.copyProperties(po, tmp);
                     if (po.getOfferType().equals("CLASS")) {
                         String videoId = po.getMainMedia();
-                        int times = watchRecordMapper.countByVideo(videoId);
+                        WatchRecord watchRecord = new WatchRecord();
+                        watchRecord.setVideoId(videoId);
+                        int times = watchRecordMapper.count(watchRecord);
                         tmp.setPlayTime(basePlay + times);
                     }
                     dtos.add(tmp);

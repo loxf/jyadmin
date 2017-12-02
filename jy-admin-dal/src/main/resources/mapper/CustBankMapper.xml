@@ -3,6 +3,7 @@
 <mapper namespace="org.loxf.jyadmin.dal.dao.CustBankMapper" >
   <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CustBank" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="card_id" property="cardId" jdbcType="VARCHAR" />
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="bank" property="bank" jdbcType="VARCHAR" />
     <result column="bank_no" property="bankNo" jdbcType="VARCHAR" />
@@ -16,7 +17,7 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, bank, bank_no, province, city, zh_name, user_name, phone, status, created_at, updated_at
+    id, card_id, cust_id, bank, bank_no, province, city, zh_name, user_name, phone, status, created_at, updated_at
   </sql>
 
   <select id="pager" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CustBank">
@@ -37,8 +38,8 @@
   </select>
 
   <sql id="WHERE_SQL">
-    <if test="id!=null">
-      and id = #{id,jdbcType=BIGINT}
+    <if test="cardId!=null and cardId!=''">
+      and card_id = #{cardId}
     </if>
     <if test="custId!=null and custId!=''">
       and cust_id = #{custId}
@@ -67,11 +68,11 @@
   </sql>
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustBank" >
-    insert into tb_cust_bank (id, cust_id, bank, 
+    insert into tb_cust_bank (id, card_id, cust_id, bank,
       bank_no, province, city, zh_name,
       user_name, phone, status, 
       created_at, updated_at)
-    values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{bank,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{cardId}, #{custId,jdbcType=VARCHAR}, #{bank,jdbcType=VARCHAR},
       #{bankNo,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{zhName,jdbcType=VARCHAR},
       #{userName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, now(), now())
   </insert>
@@ -102,13 +103,13 @@
       </if>
       updated_at = now()
     </set>
-    where id = #{id,jdbcType=BIGINT} and cust_id = #{custId,jdbcType=VARCHAR}
+    where card_id = #{cardId}
   </update>
 
-  <update id="unbind" >
+  <update id="unbind" parameterType="String">
     update tb_cust_bank
     set status = 0,
       updated_at = now()
-    where id = #{id,jdbcType=BIGINT} and cust_id = #{custId,jdbcType=VARCHAR}
+    where card_id = #{cardId}
   </update>
 </mapper>

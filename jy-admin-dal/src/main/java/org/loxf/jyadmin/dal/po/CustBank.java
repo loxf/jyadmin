@@ -5,6 +5,8 @@ import org.loxf.jyadmin.base.bean.BaseModel;
 import java.util.Date;
 
 public class CustBank extends BaseModel {
+    private String cardId;
+
     private String custId;
 
     private String bank;
@@ -22,6 +24,14 @@ public class CustBank extends BaseModel {
     private String phone;
 
     private Integer status;
+
+    public String getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(String cardId) {
+        this.cardId = cardId;
+    }
 
     public String getCustId() {
         return custId;

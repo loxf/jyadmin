@@ -3,37 +3,57 @@
 <mapper namespace="org.loxf.jyadmin.dal.dao.WatchRecordMapper" >
   <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.WatchRecord" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="watch_id" property="watchId" jdbcType="VARCHAR" />
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="cust_name" property="custName" jdbcType="VARCHAR" />
     <result column="video_id" property="videoId" jdbcType="VARCHAR" />
+    <result column="video_name" property="videoName" jdbcType="VARCHAR" />
     <result column="minutes" property="minutes" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, video_id, minutes, created_at, updated_at
+    id, watch_id, cust_id, video_id, minutes, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from tb_watch_record
-    where id = #{id,jdbcType=BIGINT}
+    where watch_id = #{watchId}
   </select>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.WatchRecord" >
-    insert into tb_watch_record (id, cust_id, video_id, 
+    insert into tb_watch_record (id, watch_id, cust_id, video_id, minutes,
       created_at, updated_at)
-    values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{videoId,jdbcType=VARCHAR}, 
-      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+    values (#{id,jdbcType=BIGINT}, #{watchId,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, #{videoId,jdbcType=VARCHAR}, 0, now(), now())
   </insert>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.WatchRecord" >
+
+  <update id="updateMinutes" parameterType="String" >
     update tb_watch_record
-    set cust_id = #{custId,jdbcType=VARCHAR},
-      video_id = #{videoId,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+    set minutes = minutes + 1,
+      updated_at = now()
+    where watch_id = #{watchId}
   </update>
 
-  <select id="countByVideo" resultType="java.lang.Integer">
-    select count(1) from tb_watch_record where video_id = #{videoId}
+  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.WatchRecord">
+    select count(1) from tb_watch_record a where 1=1
+    <include refid="WHERE_SQL"/>
   </select>
+
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.WatchRecord">
+    select b.nick_name, d.video_name, a.* from tb_watch_record a, tb_cust b, tb_video_config d where a.cust_id = b.cust_id and a.video_id = d.video_id
+    <include refid="WHERE_SQL"/>
+    order by created_at desc
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+
+  <sql id="WHERE_SQL">
+    <if test="videoId!=null and videoId!=''">
+      and a.video_id = #{videoId}
+    </if>
+    <if test="custId!=null and custId!=''">
+      and a.cust_id = #{custId}
+    </if>
+  </sql>
 </mapper>

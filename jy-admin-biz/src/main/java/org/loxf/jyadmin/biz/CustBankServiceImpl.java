@@ -1,9 +1,11 @@
 package org.loxf.jyadmin.biz;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.client.dto.CustBankDto;
 import org.loxf.jyadmin.client.service.CustBankService;
 import org.loxf.jyadmin.dal.dao.CustBankMapper;
@@ -48,17 +50,23 @@ public class CustBankServiceImpl implements CustBankService {
         if (custBankDto == null) {
             return new BaseResult(BaseConstant.FAILED, "参数不全");
         }
+        String cardId = IdGenerator.generate("CARD");
         CustBank custBank = new CustBank();
         BeanUtils.copyProperties(custBankDto, custBank);
-        return new BaseResult(custBankMapper.insert(custBank) > 0);
+        custBank.setCardId(cardId);
+        if(custBankMapper.insert(custBank) > 0) {
+            return new BaseResult(cardId);
+        } else {
+            return new BaseResult(BaseConstant.FAILED, "新增银行卡失败");
+        }
     }
 
     @Override
-    public BaseResult unBind(String custId, Long id) {
-        if (custId == null || id == null) {
+    public BaseResult unBind(String cardId) {
+        if (StringUtils.isBlank(cardId)) {
             return new BaseResult(BaseConstant.FAILED, "参数不全");
         }
-        return new BaseResult(custBankMapper.unbind(custId, id) > 0);
+        return new BaseResult(custBankMapper.unbind(cardId) > 0);
     }
 
     @Override

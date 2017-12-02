@@ -5,18 +5,40 @@ import org.loxf.jyadmin.base.bean.BaseModel;
 import java.util.Date;
 
 public class WatchRecord extends BaseModel {
+    private String watchId;
+
     private String custId;
+
+    private String custName;
 
     private String videoId;
 
+    private String videoName;
+
     private Integer minutes;
+
+    public String getWatchId() {
+        return watchId;
+    }
+
+    public void setWatchId(String watchId) {
+        this.watchId = watchId;
+    }
 
     public String getCustId() {
         return custId;
     }
 
     public void setCustId(String custId) {
-        this.custId = custId == null ? null : custId.trim();
+        this.custId = custId;
+    }
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public void setCustName(String custName) {
+        this.custName = custName;
     }
 
     public String getVideoId() {
@@ -24,7 +46,15 @@ public class WatchRecord extends BaseModel {
     }
 
     public void setVideoId(String videoId) {
-        this.videoId = videoId == null ? null : videoId.trim();
+        this.videoId = videoId;
+    }
+
+    public String getVideoName() {
+        return videoName;
+    }
+
+    public void setVideoName(String videoName) {
+        this.videoName = videoName;
     }
 
     public Integer getMinutes() {

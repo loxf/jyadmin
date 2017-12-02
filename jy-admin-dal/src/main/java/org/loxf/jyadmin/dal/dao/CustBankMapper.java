@@ -14,5 +14,5 @@ public interface CustBankMapper {
 
     int update(CustBank record);
 
-    int unbind(@Param("custId") String custId, @Param("id") Long id);
+    int unbind(String cardId);
 }

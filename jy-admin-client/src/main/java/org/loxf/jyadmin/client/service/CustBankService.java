@@ -9,7 +9,7 @@ public interface CustBankService {
 
     BaseResult addBankCard(CustBankDto custBankDto);
 
-    BaseResult unBind(String custId, Long id);
+    BaseResult unBind(String cardId);
 
     BaseResult update(CustBankDto custBankDto);
 }
