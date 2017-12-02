@@ -55,7 +55,7 @@ public class CustBpDetailServiceImpl implements CustBpDetailService {
                 }
             }
         }
-        int page = count / custBpDetailDto.getPager().getSize() + count % custBpDetailDto.getPager().getSize() > 0 ? 1 : 0;
+        int page = count / custBpDetailDto.getPager().getSize() + (count % custBpDetailDto.getPager().getSize() > 0 ? 1 : 0);
         return new PageResult<>(page, custBpDetailDto.getPager().getPage(), count, result);
     }
 }

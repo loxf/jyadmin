@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
                 }
             }
         }
-        int page = count / orderDto.getPager().getSize() + count % orderDto.getPager().getSize() > 0 ? 1 : 0;
+        int page = count / orderDto.getPager().getSize() + (count % orderDto.getPager().getSize() > 0 ? 1 : 0);
         return new PageResult<>(page, orderDto.getPager().getPage(), count, result);
     }
 }
