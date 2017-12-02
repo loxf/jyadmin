@@ -67,8 +67,11 @@
   </update>
 
   <select id="selectBpTop10" resultType="java.util.HashMap">
-    select b.nick_name, a.bp, @i := @i + 1 AS `order`
-        from tb_account a, tb_cust b,(SELECT @i := 0) AS it where a.cust_id = b.cust_id order by bp desc limit 0, 10
+    select nick_name, bp , @i := @i + 1 AS `order` from (
+    SELECT
+	b.nick_name, a.bp FROM tb_account a, tb_cust b
+	WHERE a.cust_id = b.cust_id ORDER BY  a.bp DESC, b.id LIMIT 0, 10) cc,
+	(SELECT @i := 0) AS it
   </select>
 
   <select id="queryBpRankingByCustId" resultType="int" parameterType="String">
