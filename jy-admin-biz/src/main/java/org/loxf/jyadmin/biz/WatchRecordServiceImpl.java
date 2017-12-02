@@ -1,11 +1,16 @@
 package org.loxf.jyadmin.biz;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
+import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.client.dto.WatchRecordDto;
+import org.loxf.jyadmin.client.service.AccountService;
 import org.loxf.jyadmin.client.service.WatchRecordService;
 import org.loxf.jyadmin.dal.dao.WatchRecordMapper;
+import org.loxf.jyadmin.dal.po.Account;
 import org.loxf.jyadmin.dal.po.WatchRecord;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +24,22 @@ public class WatchRecordServiceImpl implements WatchRecordService {
     @Autowired
     private WatchRecordMapper watchRecordMapper;
     @Override
-    public BaseResult<Boolean> insert(WatchRecordDto watchRecordDto) {
-        WatchRecord watchRecord = new WatchRecord();
-        BeanUtils.copyProperties(watchRecordDto, watchRecord);
-        return new BaseResult<>(watchRecordMapper.insert(watchRecord)>0);
+    public BaseResult<String> watch(WatchRecordDto watchRecordDto) {
+        if(StringUtils.isBlank(watchRecordDto.getWatchId())) {
+            WatchRecord watchRecord = new WatchRecord();
+            BeanUtils.copyProperties(watchRecordDto, watchRecord);
+            String watchId = IdGenerator.generate("WATCH");
+            watchRecord.setWatchId(watchId);
+            if (watchRecordMapper.insert(watchRecord) > 0) {
+                return new BaseResult(watchId);
+            } else {
+                return new BaseResult<>(BaseConstant.FAILED, "新增观看记录失败");
+            }
+        } else {
+            // TODO 需要一个定时任务执行5分钟未更新的观看记录，进行加积分
+            watchRecordMapper.updateMinutes(watchRecordDto.getWatchId());
+            return new BaseResult<>(watchRecordDto.getWatchId());
+        }
     }
 
     @Override

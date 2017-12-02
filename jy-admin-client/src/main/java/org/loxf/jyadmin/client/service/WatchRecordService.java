@@ -5,7 +5,7 @@ import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.client.dto.WatchRecordDto;
 
 public interface WatchRecordService {
-    BaseResult<Boolean> insert(WatchRecordDto watchRecordDto);
+    BaseResult<String> watch(WatchRecordDto watchRecordDto);
     PageResult<WatchRecordDto> pager(WatchRecordDto watchRecordDto);
 
 }
