@@ -72,11 +72,11 @@ public class ActiveServiceImpl implements ActiveService {
     }
 
     @Override
-    public ActiveDto queryActive(String activeId) {
+    public BaseResult<ActiveDto> queryActive(String activeId) {
         Active active = activeMapper.selectByActiveId(activeId);
         ActiveDto dto = new ActiveDto();
         BeanUtils.copyProperties(active, dto);
-        return dto;
+        return new BaseResult<>(dto);
     }
 
     @Override

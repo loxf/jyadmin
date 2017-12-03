@@ -15,5 +15,7 @@ public interface ActiveCustListMapper {
 
     int countByCustId(String custId);
 
+    int hasJoin(@Param("activeId") String activeId, @Param("custId") String custId);
+
     List<ActiveCustList> queryListByCustId(@Param("custId") String custId, @Param("start") int start, @Param("size") int size);
 }

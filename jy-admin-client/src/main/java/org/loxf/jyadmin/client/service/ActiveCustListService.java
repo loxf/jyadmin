@@ -8,6 +8,8 @@ import java.util.List;
 public interface ActiveCustListService {
     BaseResult<List<ActiveCustListDto>> queryList(String activeId);
 
-    public BaseResult addCustByActive(ActiveCustListDto activeCustListDto);
+    Boolean hasJoin(String activeId, String custId);
+
+    BaseResult addCustByActive(ActiveCustListDto activeCustListDto);
 
 }

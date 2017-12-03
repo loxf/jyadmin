@@ -37,6 +37,11 @@ public class ActiveCustListServiceImpl implements ActiveCustListService {
     }
 
     @Override
+    public Boolean hasJoin(String activeId, String custId) {
+        return activeCustListMapper.hasJoin(activeId, custId)>0;
+    }
+
+    @Override
     @Transactional
     public BaseResult addCustByActive(ActiveCustListDto activeCustListDto) {
         ActiveCustList tmp = new ActiveCustList();

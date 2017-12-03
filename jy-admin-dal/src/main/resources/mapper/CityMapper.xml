@@ -10,7 +10,7 @@
   <sql id="Base_Column_List" >
     id, cityid, city, provinceid
   </sql>
-  <select id="selectList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectList" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.City" >
     select 
     <include refid="Base_Column_List" />
     from city

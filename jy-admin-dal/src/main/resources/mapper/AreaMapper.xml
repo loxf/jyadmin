@@ -10,7 +10,7 @@
   <sql id="Base_Column_List" >
     id, areaid, area, cityid
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectList" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Area" >
     select 
     <include refid="Base_Column_List" />
     from area
@@ -24,5 +24,12 @@
     <if test="cityid!=null and cityid!=''">
       and cityid = #{cityid}
     </if>
+  </select>
+
+  <select id="selectArea" parameterType="String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from area
+    where areaid = #{areaid}
   </select>
 </mapper>

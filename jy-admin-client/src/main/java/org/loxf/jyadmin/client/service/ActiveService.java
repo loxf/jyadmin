@@ -6,7 +6,7 @@ import org.loxf.jyadmin.client.dto.ActiveDto;
 
 public interface ActiveService {
     PageResult<ActiveDto> pager(ActiveDto activeDto);
-    ActiveDto queryActive(String activeId);
+    BaseResult<ActiveDto> queryActive(String activeId);
     BaseResult newActive(ActiveDto activeDto);
     BaseResult updateActive(ActiveDto activeDto);
     BaseResult deleteActive(String activeId);

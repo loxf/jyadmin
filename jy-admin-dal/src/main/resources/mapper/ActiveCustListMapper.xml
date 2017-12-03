@@ -55,4 +55,8 @@
     select b.active_ticket_no, a.* from tb_active a, tb_active_cust_list b where b.cust_id = #{custId} and a.active_id = b.active_id
      limit #{start}, #{size}
   </select>
+
+  <select id="hasJoin" parameterType="String" resultType="java.lang.Integer">
+    select count(1) from tb_active_cust_list where active_id = #{activeId} and cust_id = #{custId}
+  </select>
 </mapper>

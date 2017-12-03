@@ -2,6 +2,7 @@ package org.loxf.jyadmin.biz;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.commons.collections.CollectionUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
@@ -31,6 +32,20 @@ public class ProvinceAndCityServiceImpl implements ProvinceAndCityService {
     private CityMapper cityMapper;
     @Autowired
     private AreaMapper areaMapper;
+
+    @Override
+    public BaseResult<String> query(String type, String id) {
+        if(type==null || (!type.equals("P")&&!type.equals("C")&&!type.equals("A"))){
+            return new BaseResult(BaseConstant.FAILED, "获取地域的类型不正确");
+        }
+        if(type.equals("P")){
+            return new BaseResult(provinceMapper.selectProvince(id).getProvince());
+        } else if(type.equals("C")){
+            return new BaseResult(cityMapper.selectCity(id).getCity());
+        } else {
+            return new BaseResult(areaMapper.selectArea(id).getArea());
+        }
+    }
 
     @Override
     public BaseResult<List<ProvinceDto>> queryProvince(ProvinceDto provinceDto) {

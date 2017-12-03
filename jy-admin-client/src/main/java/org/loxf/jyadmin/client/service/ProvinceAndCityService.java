@@ -11,6 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 
 public interface ProvinceAndCityService {
+    /**
+     * @param type P:省 C:市 A:区
+     * @param id
+     * @return
+     */
+    BaseResult<String> query(String type, String id);
     BaseResult<List<ProvinceDto>> queryProvince(ProvinceDto provinceDto);
     BaseResult<List<CityDto>> queryCity(CityDto cityDto);
     BaseResult<List<AreaDto>> queryArea(AreaDto areaDto);

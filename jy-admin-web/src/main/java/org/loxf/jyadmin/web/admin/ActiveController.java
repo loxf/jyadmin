@@ -54,7 +54,7 @@ public class ActiveController extends BaseControl<ActiveDto> {
     @RequestMapping("/toEditActive")
     public String toEditActive(String activeId, Model model){
         // 获取商品
-        ActiveDto activeDto = activeService.queryActive(activeId);
+        ActiveDto activeDto = activeService.queryActive(activeId).getData();
         if(activeDto!=null && activeDto.getStatus()!=1) {
             model.addAttribute("active", activeDto);
             BaseResult<List<ProvinceDto>> baseResultProvince = provinceAndCityService.queryProvince(null);
