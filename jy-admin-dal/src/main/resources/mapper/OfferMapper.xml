@@ -166,12 +166,12 @@
 
   <select id="showOfferByOfferIdAndRelType" resultMap="BaseResultMap">
     select a.sort, (select cc.CATALOG_NAME from tb_offer_catalog cc where cc.CATALOG_id = b.CATALOG_id) as `CATALOG_NAME`,
-    b.offer_name,b.offer_id,b.offer_type,b.sale_money,b.buy_privi,b.created_at
+    b.offer_name,b.offer_id,b.offer_type,b.sale_money,b.buy_privi, b.main_media, b.created_at
     from tb_offer_rel a, tb_offer b
     where a.rel_id = b.offer_id and a.offer_type &lt;&gt;'ACTIVE' and a.offer_id = #{offerId} and  a.rel_type = #{relType}
     union all
     select a.sort, '' as `CATALOG_NAME`, c.active_name AS offer_name,c.active_id AS offer_id,'ACTIVE' AS offer_type,
-    c.price AS sale_money,c.active_privi AS buy_privi,c.created_at
+    c.price AS sale_money,c.active_privi AS buy_privi, null, c.created_at
     from tb_offer_rel a, tb_active c
     where a.rel_id = c.active_id and a.offer_type='ACTIVE' and a.offer_id = #{offerId} and  a.rel_type = #{relType}
     order by sort

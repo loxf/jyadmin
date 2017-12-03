@@ -2,16 +2,13 @@ package org.loxf.jyadmin.dal.dao;
 
 import org.loxf.jyadmin.dal.po.PurchasedVideo;
 
+import java.util.List;
+
 public interface PurchasedVideoMapper {
-    int deleteByPrimaryKey(Long id);
+    Integer count(PurchasedVideo record);
+
+    List<PurchasedVideo> list(PurchasedVideo record);
 
     int insert(PurchasedVideo record);
 
-    int insertSelective(PurchasedVideo record);
-
-    PurchasedVideo selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(PurchasedVideo record);
-
-    int updateByPrimaryKey(PurchasedVideo record);
 }

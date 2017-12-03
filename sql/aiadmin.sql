@@ -283,15 +283,15 @@ create table tb_order
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*==============================================================*/
-/* Table: tb_purchased_vedio                                    */
+/* Table: tb_purchased_video                                    */
 /*==============================================================*/
-create table tb_purchased_vedio
+create table tb_purchased_video
 (
    `id` bigint(20) NOT NULL AUTO_INCREMENT,
    cust_id              varchar(64) comment '客户',
    nick_name            varchar(200) comment '客户昵称',
-   vedio_id             varchar(64) comment '视频ID',
-   vedio_name           varchar(64) comment '视频名称',
+   video_id             varchar(64) comment '视频ID',
+   video_name           varchar(64) comment '视频名称',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

@@ -7,9 +7,11 @@ public class PurchasedVideoDto extends BaseModel {
 
     private String nickName;
 
-    private String vedioId;
+    private String offerId;
 
-    private String vedioName;
+    private String videoId;
+
+    private String videoName;
 
     public String getCustId() {
         return custId;
@@ -23,24 +25,32 @@ public class PurchasedVideoDto extends BaseModel {
         return nickName;
     }
 
+    public String getOfferId() {
+        return offerId;
+    }
+
+    public void setOfferId(String offerId) {
+        this.offerId = offerId;
+    }
+
     public void setNickName(String nickName) {
         this.nickName = nickName == null ? null : nickName.trim();
     }
 
-    public String getVedioId() {
-        return vedioId;
+    public String getVideoId() {
+        return videoId;
     }
 
-    public void setVedioId(String vedioId) {
-        this.vedioId = vedioId == null ? null : vedioId.trim();
+    public void setVideoId(String videoId) {
+        this.videoId = videoId == null ? null : videoId.trim();
     }
 
-    public String getVedioName() {
-        return vedioName;
+    public String getVideoName() {
+        return videoName;
     }
 
-    public void setVedioName(String vedioName) {
-        this.vedioName = vedioName == null ? null : vedioName.trim();
+    public void setVideoName(String videoName) {
+        this.videoName = videoName == null ? null : videoName.trim();
     }
 
 }

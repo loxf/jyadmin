@@ -5,113 +5,51 @@
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
-    <result column="vedio_id" property="vedioId" jdbcType="VARCHAR" />
-    <result column="vedio_name" property="vedioName" jdbcType="VARCHAR" />
+    <result column="video_id" property="videoId" jdbcType="VARCHAR" />
+    <result column="video_name" property="videoName" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, nick_name, vedio_id, vedio_name, created_at, updated_at
+    id, cust_id, nick_name, video_id, video_name, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.PurchasedVideo" >
+    select count(1)
+    from tb_purchased_video
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.PurchasedVideo" >
+    select
     <include refid="Base_Column_List" />
     from tb_purchased_video
-    where id = #{id,jdbcType=BIGINT}
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by created_at DESC
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from tb_purchased_video
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+
+  <sql id="WHERE_SQL">
+    <if test="custId!=null and custId!=''">
+      and cust_id = #{custId}
+    </if>
+    <if test="videoId!=null and videoId!=''">
+      and video_id = #{videoId}
+    </if>
+    <if test="offerId!=null and offerId!=''">
+      and offer_id = #{offerId}
+    </if>
+  </sql>
+
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.PurchasedVideo" >
     insert into tb_purchased_video (id, cust_id, nick_name, 
-      vedio_id, vedio_name, created_at, 
+      video_id, video_name, created_at, 
       updated_at)
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, 
-      #{vedioId,jdbcType=VARCHAR}, #{vedioName,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
-      #{updatedAt,jdbcType=TIMESTAMP})
+      #{videoId,jdbcType=VARCHAR}, #{videoName,jdbcType=VARCHAR}, now(), now())
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.PurchasedVideo" >
-    insert into tb_purchased_video
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="custId != null" >
-        cust_id,
-      </if>
-      <if test="nickName != null" >
-        nick_name,
-      </if>
-      <if test="vedioId != null" >
-        vedio_id,
-      </if>
-      <if test="vedioName != null" >
-        vedio_name,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="custId != null" >
-        #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="nickName != null" >
-        #{nickName,jdbcType=VARCHAR},
-      </if>
-      <if test="vedioId != null" >
-        #{vedioId,jdbcType=VARCHAR},
-      </if>
-      <if test="vedioName != null" >
-        #{vedioName,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.PurchasedVideo" >
-    update tb_purchased_video
-    <set >
-      <if test="custId != null" >
-        cust_id = #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="nickName != null" >
-        nick_name = #{nickName,jdbcType=VARCHAR},
-      </if>
-      <if test="vedioId != null" >
-        vedio_id = #{vedioId,jdbcType=VARCHAR},
-      </if>
-      <if test="vedioName != null" >
-        vedio_name = #{vedioName,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.PurchasedVideo" >
-    update tb_purchased_video
-    set cust_id = #{custId,jdbcType=VARCHAR},
-      nick_name = #{nickName,jdbcType=VARCHAR},
-      vedio_id = #{vedioId,jdbcType=VARCHAR},
-      vedio_name = #{vedioName,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+
 </mapper>

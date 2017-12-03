@@ -76,11 +76,11 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public OfferDto queryOffer(String offerId){
+    public BaseResult<OfferDto> queryOffer(String offerId){
         Offer offer = offerMapper.selectByOfferId(offerId);
         OfferDto dto = new OfferDto();
         BeanUtils.copyProperties(offer, dto);
-        return dto;
+        return new BaseResult<>(dto);
     }
 
     @Override

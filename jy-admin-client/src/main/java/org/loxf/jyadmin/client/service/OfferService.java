@@ -14,7 +14,7 @@ public interface OfferService {
      * @return
      */
     PageResult<OfferDto> pager(OfferDto offerDto, Integer appType);
-    OfferDto queryOffer(String offerId);
+    BaseResult<OfferDto> queryOffer(String offerId);
     BaseResult newOffer(OfferDto offerDto, List<OfferRelDto> offerRelDtos);
     BaseResult updateOffer(OfferDto offerDto, List<OfferRelDto> offerRelDtos);
     BaseResult deleteOffer(String offerId);

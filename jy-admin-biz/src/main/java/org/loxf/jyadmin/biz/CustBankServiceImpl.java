@@ -1,11 +1,13 @@
 package org.loxf.jyadmin.biz;
 
+import com.alibaba.fastjson.JSONArray;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.IdGenerator;
+import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.client.dto.CustBankDto;
 import org.loxf.jyadmin.client.service.CustBankService;
 import org.loxf.jyadmin.dal.dao.CustBankMapper;
@@ -77,5 +79,15 @@ public class CustBankServiceImpl implements CustBankService {
         CustBank custBank = new CustBank();
         BeanUtils.copyProperties(custBankDto, custBank);
         return new BaseResult(custBankMapper.update(custBank) > 0);
+    }
+
+    @Override
+    public BaseResult<String[]> queryBankList() {
+        String bankStr = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY, "PAY_BANK_LIST", "").getConfigValue();
+        if(StringUtils.isNotBlank(bankStr)){
+            String [] bankArr = bankStr.split(",");
+            return new BaseResult<>(bankArr);
+        }
+        return new BaseResult<>(BaseConstant.FAILED, "配置PAY_BANK_LIST缺失");
     }
 }

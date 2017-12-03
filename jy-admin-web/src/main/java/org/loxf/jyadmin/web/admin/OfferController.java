@@ -65,7 +65,7 @@ public class OfferController extends BaseControl<OfferDto> {
     @RequestMapping("/toEditOffer")
     public String toEditOffer(String offerId, Model model){
         // 获取商品
-        OfferDto offerDto = offerService.queryOffer(offerId);
+        OfferDto offerDto = offerService.queryOffer(offerId).getData();
         if(offerDto!=null && offerDto.getStatus()!=1) {
             model.addAttribute("catalogDtos", initOfferCatalog());
             model.addAttribute("offer", offerDto);
