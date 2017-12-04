@@ -1,5 +1,8 @@
 package org.loxf.jyadmin.biz;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
@@ -23,9 +26,10 @@ import java.util.List;
 public class WatchRecordServiceImpl implements WatchRecordService {
     @Autowired
     private WatchRecordMapper watchRecordMapper;
+
     @Override
     public BaseResult<String> watch(WatchRecordDto watchRecordDto) {
-        if(StringUtils.isBlank(watchRecordDto.getWatchId())) {
+        if (StringUtils.isBlank(watchRecordDto.getWatchId())) {
             WatchRecord watchRecord = new WatchRecord();
             BeanUtils.copyProperties(watchRecordDto, watchRecord);
             String watchId = IdGenerator.generate("WATCH");
@@ -46,7 +50,8 @@ public class WatchRecordServiceImpl implements WatchRecordService {
     public PageResult<WatchRecordDto> pager(WatchRecordDto watchRecordDto) {
         WatchRecord watchRecord = new WatchRecord();
         BeanUtils.copyProperties(watchRecordDto, watchRecord);
-        int count = watchRecordMapper.count(watchRecord);List<WatchRecordDto> result = null;
+        int count = watchRecordMapper.count(watchRecord);
+        List<WatchRecordDto> result = null;
         if (count > 0) {
             List<WatchRecord> list = watchRecordMapper.list(watchRecord);
             if (CollectionUtils.isNotEmpty(list)) {
@@ -54,6 +59,22 @@ public class WatchRecordServiceImpl implements WatchRecordService {
                 for (WatchRecord tmp : list) {
                     WatchRecordDto dto = new WatchRecordDto();
                     BeanUtils.copyProperties(tmp, dto);
+                    String metaData = tmp.getMetaData();
+                    if (StringUtils.isNotBlank(metaData)) {
+                        JSONObject metaDataJson = JSON.parseObject(metaData);
+                        JSONArray teachers = metaDataJson.getJSONArray("TEACHER");
+                        String teacherStr = "";
+                        if (CollectionUtils.isNotEmpty(teachers)) {
+                            for (Object teacher : teachers) {
+                                if(StringUtils.isNotBlank(teacherStr)){
+                                    teacherStr += ",";
+                                }
+                                teacherStr += ((JSONObject)teacher).get("name");
+                            }
+                        }
+                        dto.setTeachers(teacherStr);
+                        dto.setVideoName(dto.getOfferName());
+                    }
                     result.add(dto);
                 }
             }

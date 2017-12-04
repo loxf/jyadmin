@@ -9,9 +9,19 @@ public class WatchRecordDto extends BaseModel {
 
     private String custName;
 
+    private String offerId;
+
+    private String offerName;
+
+    private String pic;
+
     private String videoId;
 
     private String videoName;
+
+    private String metaData;
+
+    private String teachers;
 
     private Integer minutes;
 
@@ -61,5 +71,45 @@ public class WatchRecordDto extends BaseModel {
 
     public void setMinutes(Integer minutes) {
         this.minutes = minutes;
+    }
+
+    public String getOfferId() {
+        return offerId;
+    }
+
+    public void setOfferId(String offerId) {
+        this.offerId = offerId;
+    }
+
+    public String getOfferName() {
+        return offerName;
+    }
+
+    public void setOfferName(String offerName) {
+        this.offerName = offerName;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
+    public String getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
+    }
+
+    public String getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(String teachers) {
+        this.teachers = teachers;
     }
 }

@@ -2,11 +2,15 @@ package org.loxf.jyadmin.base.util.weixin;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.wxpay.sdk.WXPay;
+import com.github.wxpay.sdk.WXPayUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.HttpUtil;
 import org.loxf.jyadmin.base.util.HttpsUtil;
 import org.loxf.jyadmin.base.util.weixin.bean.AccessToken;
+import org.loxf.jyadmin.base.util.weixin.bean.JsTicket;
 import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
 import org.loxf.jyadmin.base.util.weixin.bean.WXUserInfo;
 import org.slf4j.Logger;
@@ -15,6 +19,12 @@ import org.springframework.beans.BeanUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Formatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class WeixinUtil {
     private static Logger logger = LoggerFactory.getLogger(WeixinUtil.class);
@@ -54,6 +64,55 @@ public class WeixinUtil {
         return (WXUserInfo)commonGet(String.format(BaseConstant.USER_INFO_URL, access_token, openId), WXUserInfo.class);
     }
 
+    public static JsTicket queryJsTicket(String access_token){
+        return (JsTicket)commonGet(String.format(BaseConstant.JS_TICKET_URL, access_token), JsTicket.class);
+    }
+
+    public static Map<String, String> signJsTicket(String jsapi_ticket, String url) {
+        Map<String, String> ret = new HashMap<String, String>();
+        String nonce_str = create_nonce_str();
+        String timestamp = System.currentTimeMillis() + "";
+        String string1;
+        String signature = "";
+
+        //注意这里参数名必须全部小写，且必须有序
+        string1 = "jsapi_ticket=" + jsapi_ticket +
+                "&noncestr=" + nonce_str +
+                "&timestamp=" + timestamp +
+                "&url=" + url;
+        // System.out.println(string1);
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(string1.getBytes("UTF-8"));
+            signature = byteToHex(crypt.digest());
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("js_ticket sign failed", e);
+        } catch (UnsupportedEncodingException e) {
+            logger.error("js_ticket sign failed", e);
+        }
+        ret.put("url", url);
+        ret.put("jsapiTicket", jsapi_ticket);
+        ret.put("nonceStr", nonce_str);
+        ret.put("timestamp", timestamp);
+        ret.put("signature", signature);
+        return ret;
+    }
+
+    private static String create_nonce_str() {
+        return UUID.randomUUID().toString();
+    }
+    private static String byteToHex(final byte[] hash) {
+        Formatter formatter = new Formatter();
+        for (byte b : hash)
+        {
+            formatter.format("%02x", b);
+        }
+        String result = formatter.toString();
+        formatter.close();
+        return result;
+    }
+
     private static String commonGet(String url){
         try {
             String result = HttpsUtil.doHttpsGet(url, null, null);
@@ -85,5 +144,21 @@ public class WeixinUtil {
             logger.error("微信接口异常", e);
         }
         return null;
+    }
+
+    public static BaseResult<Map<String, String>> payNotifySign(String notifyData) throws Exception {
+        Map<String, String> notifyMap = WXPayUtil.xmlToMap(notifyData);  // 转换成map
+        if(notifyMap.get("result_code").equals("SUCCESS")) {
+            WeixinPayConfig config = new WeixinPayConfig();
+            WXPay wxpay = new WXPay(config);
+            if (wxpay.isPayResultNotifySignatureValid(notifyMap)) {
+                // 签名正确
+                return new BaseResult<>(notifyMap);
+            } else {
+                return new BaseResult<>(BaseConstant.FAILED, "签名校验失败:" + notifyMap.get("err_code"));
+            }
+        } else {
+            return new BaseResult<>(BaseConstant.FAILED, "微信端返回err_code:" + notifyMap.get("err_code"));
+        }
     }
 }

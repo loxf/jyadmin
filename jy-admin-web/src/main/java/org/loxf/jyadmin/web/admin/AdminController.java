@@ -61,7 +61,7 @@ public class AdminController {
     public BaseResult modifyPassword(HttpServletRequest request, String oldPassword, String password){
         AdminDto admin = CookieUtil.getAdmin(request);
         if(admin==null){
-            return new BaseResult(BaseConstant.FAILED, "用户未登录");
+            return new BaseResult(BaseConstant.NOT_LOGIN, "用户未登录");
         }
         return adminService.modifyPassword(admin.getUserName(), password, oldPassword);
     }

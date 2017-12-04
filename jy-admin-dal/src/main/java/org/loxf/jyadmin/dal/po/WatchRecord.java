@@ -11,6 +11,14 @@ public class WatchRecord extends BaseModel {
 
     private String custName;
 
+    private String offerId;
+
+    private String pic;
+
+    private String offerName;
+
+    private String metaData;
+
     private String videoId;
 
     private String videoName;
@@ -41,6 +49,14 @@ public class WatchRecord extends BaseModel {
         this.custName = custName;
     }
 
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
+    }
+
     public String getVideoId() {
         return videoId;
     }
@@ -63,5 +79,29 @@ public class WatchRecord extends BaseModel {
 
     public void setMinutes(Integer minutes) {
         this.minutes = minutes;
+    }
+
+    public String getOfferId() {
+        return offerId;
+    }
+
+    public void setOfferId(String offerId) {
+        this.offerId = offerId;
+    }
+
+    public String getOfferName() {
+        return offerName;
+    }
+
+    public void setOfferName(String offerName) {
+        this.offerName = offerName;
+    }
+
+    public String getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
     }
 }

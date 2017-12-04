@@ -60,7 +60,7 @@
   <update id="setPayPassword">
     update tb_account
     <set >
-      password = #{password}
+      password = #{password},
       updated_at = now()
     </set>
     where cust_id = #{custId}

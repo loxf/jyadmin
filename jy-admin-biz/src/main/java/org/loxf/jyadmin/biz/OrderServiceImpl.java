@@ -31,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public BaseResult<String> createOrder(OrderDto orderDto) {
+        // todo 订单签名
         if (orderDto == null) {
             return new BaseResult(BaseConstant.FAILED, "参数为空");
         }
@@ -46,6 +47,11 @@ public class OrderServiceImpl implements OrderService {
         } else {
             return new BaseResult<>(BaseConstant.FAILED, "新建订单失败");
         }
+    }
+
+    @Override
+    public BaseResult<String> completeOrder(OrderDto orderDto) {
+        return null;
     }
 
     @Override

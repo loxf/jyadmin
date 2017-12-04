@@ -6,6 +6,7 @@ import org.loxf.jyadmin.client.dto.OrderDto;
 
 public interface OrderService {
     BaseResult<String> createOrder(OrderDto orderDto);
+    BaseResult<String> completeOrder(OrderDto orderDto);
     BaseResult<OrderDto> queryOrder(String orderId);
     PageResult<OrderDto> pager(OrderDto orderDto);
 }

@@ -15,12 +15,13 @@
     <result column="pay_type" property="payType" jdbcType="INTEGER" />
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="nick_name" property="custName" jdbcType="VARCHAR" />
+    <result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, order_id, order_name, order_type, order_money, bp, total_money, discount, obj_id, 
-    status, pay_type, cust_id, created_at, updated_at
+    status, pay_type, cust_id, out_trade_no, created_at, updated_at
   </sql>
   <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -32,12 +33,12 @@
     insert into tb_order (id, order_id, order_name, 
       order_type, order_money, bp, 
       total_money, discount, obj_id, 
-      status, pay_type, cust_id, 
+      status, pay_type, cust_id, out_trade_no,
       created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=VARCHAR}, #{orderName,jdbcType=VARCHAR}, 
       #{orderType,jdbcType=INTEGER}, #{orderMoney,jdbcType=DECIMAL}, #{bp,jdbcType=DECIMAL}, 
       #{totalMoney,jdbcType=DECIMAL}, #{discount,jdbcType=DECIMAL}, #{objId,jdbcType=VARCHAR}, 
-      1, #{payType,jdbcType=INTEGER}, #{custId,jdbcType=VARCHAR}, now(), now())
+      1, #{payType,jdbcType=INTEGER}, #{custId,jdbcType=VARCHAR}, #{outTradeNo,jdbcType=VARCHAR}, now(), now())
   </insert>
   <update id="updateByOrderId" parameterType="org.loxf.jyadmin.dal.po.Order" >
     update tb_order

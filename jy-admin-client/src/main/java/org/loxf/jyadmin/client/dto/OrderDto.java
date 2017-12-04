@@ -2,6 +2,8 @@ package org.loxf.jyadmin.client.dto;
 
 import org.loxf.jyadmin.base.bean.BaseModel;
 
+import java.math.BigDecimal;
+
 public class OrderDto extends BaseModel {
     private String orderId;
 
@@ -9,11 +11,11 @@ public class OrderDto extends BaseModel {
 
     private Integer orderType;
 
-    private Long orderMoney;
+    private BigDecimal orderMoney;
 
-    private Long bp;
+    private BigDecimal bp;
 
-    private Long totalMoney;
+    private BigDecimal totalMoney;
 
     private Long discount;
 
@@ -28,6 +30,8 @@ public class OrderDto extends BaseModel {
     private String custName;
 
     private String contact;
+
+    private String outTradeNo;
 
     public String getOrderId() {
         return orderId;
@@ -53,27 +57,27 @@ public class OrderDto extends BaseModel {
         this.orderType = orderType;
     }
 
-    public Long getOrderMoney() {
+    public BigDecimal getOrderMoney() {
         return orderMoney;
     }
 
-    public void setOrderMoney(Long orderMoney) {
+    public void setOrderMoney(BigDecimal orderMoney) {
         this.orderMoney = orderMoney;
     }
 
-    public Long getBp() {
+    public BigDecimal getBp() {
         return bp;
     }
 
-    public void setBp(Long bp) {
+    public void setBp(BigDecimal bp) {
         this.bp = bp;
     }
 
-    public Long getTotalMoney() {
+    public BigDecimal getTotalMoney() {
         return totalMoney;
     }
 
-    public void setTotalMoney(Long totalMoney) {
+    public void setTotalMoney(BigDecimal totalMoney) {
         this.totalMoney = totalMoney;
     }
 
@@ -131,5 +135,13 @@ public class OrderDto extends BaseModel {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public String getOutTradeNo() {
+        return outTradeNo;
+    }
+
+    public void setOutTradeNo(String outTradeNo) {
+        this.outTradeNo = outTradeNo;
     }
 }
