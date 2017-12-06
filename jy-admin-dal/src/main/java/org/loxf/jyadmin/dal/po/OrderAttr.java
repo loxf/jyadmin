@@ -2,7 +2,11 @@ package org.loxf.jyadmin.dal.po;
 
 import java.util.Date;
 
-public class OrderAttr extends OrderAttrKey {
+public class OrderAttr {
+    private Long id;
+
+    private String orderId;
+
     private String attrCode;
 
     private String attrName;
@@ -12,6 +16,22 @@ public class OrderAttr extends OrderAttrKey {
     private Date createdAt;
 
     private Date updatedAt;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId == null ? null : orderId.trim();
+    }
 
     public String getAttrCode() {
         return attrCode;

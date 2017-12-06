@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.dal.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.Order;
 
 import java.util.List;
@@ -9,10 +10,12 @@ public interface OrderMapper {
 
     Order selectByOrderId(String orderId);
 
-    int updateByOrderId(Order record);
+    int updateByOrderId(@Param("orderId") String orderId, @Param("status")Integer status, @Param("msg")String msg);
 
     int count(Order record);
 
     List<Order> list(Order record);
+
+    List<Order> queryTimeoutOrder();
 
 }

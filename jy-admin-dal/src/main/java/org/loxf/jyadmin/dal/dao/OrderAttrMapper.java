@@ -1,18 +1,13 @@
 package org.loxf.jyadmin.dal.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.OrderAttr;
-import org.loxf.jyadmin.dal.po.OrderAttrKey;
+
+import java.util.List;
 
 public interface OrderAttrMapper {
-    int deleteByPrimaryKey(OrderAttrKey key);
 
-    int insert(OrderAttr record);
+    int insertList(@Param("attrList") List<OrderAttr> attrList, @Param("orderId")String orderId);
 
-    int insertSelective(OrderAttr record);
-
-    OrderAttr selectByPrimaryKey(OrderAttrKey key);
-
-    int updateByPrimaryKeySelective(OrderAttr record);
-
-    int updateByPrimaryKey(OrderAttr record);
+    List<OrderAttr> selectByOrderId(String orderId);
 }

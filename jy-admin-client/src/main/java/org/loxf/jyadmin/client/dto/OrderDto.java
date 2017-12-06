@@ -33,6 +33,8 @@ public class OrderDto extends BaseModel {
 
     private String outTradeNo;
 
+    private String msg;
+
     public String getOrderId() {
         return orderId;
     }
@@ -143,5 +145,13 @@ public class OrderDto extends BaseModel {
 
     public void setOutTradeNo(String outTradeNo) {
         this.outTradeNo = outTradeNo;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
     }
 }

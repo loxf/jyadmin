@@ -1,18 +1,16 @@
 package org.loxf.jyadmin.dal.dao;
 
+import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.Trade;
-import org.loxf.jyadmin.dal.po.TradeKey;
+
+import java.util.List;
 
 public interface TradeMapper {
-    int deleteByPrimaryKey(TradeKey key);
-
     int insert(Trade record);
 
-    int insertSelective(Trade record);
+    Trade selectByOrderId(String orderId);
 
-    Trade selectByPrimaryKey(TradeKey key);
+    List<Trade> selectList(@Param("status") Integer status, @Param("size") Integer size);
 
-    int updateByPrimaryKeySelective(Trade record);
-
-    int updateByPrimaryKey(Trade record);
+    int updateByOrderId(@Param("orderId") String orderId, @Param("status")Integer status, @Param("msg")String msg);
 }

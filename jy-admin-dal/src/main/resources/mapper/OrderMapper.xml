@@ -16,6 +16,7 @@
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="nick_name" property="custName" jdbcType="VARCHAR" />
     <result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" />
+    <result column="msg" property="msg" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -23,6 +24,13 @@
     id, order_id, order_name, order_type, order_money, bp, total_money, discount, obj_id, 
     status, pay_type, cust_id, out_trade_no, created_at, updated_at
   </sql>
+
+  <select id="queryTimeoutOrder" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from TB_ORDER a where created_at + INTERVAL 15 MINUTE &lt; SYSDATE() and status=1
+  </select>
+
   <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
@@ -40,15 +48,18 @@
       #{totalMoney,jdbcType=DECIMAL}, #{discount,jdbcType=DECIMAL}, #{objId,jdbcType=VARCHAR}, 
       1, #{payType,jdbcType=INTEGER}, #{custId,jdbcType=VARCHAR}, #{outTradeNo,jdbcType=VARCHAR}, now(), now())
   </insert>
-  <update id="updateByOrderId" parameterType="org.loxf.jyadmin.dal.po.Order" >
+  <update id="updateByOrderId">
     update tb_order
     <set >
       <if test="status != null" >
-        status = #{status,jdbcType=INTEGER},
+        status = #{status},
+      </if>
+      <if test="msg!=null and msg!=''">
+        msg = #{msg}
       </if>
         updated_at = now()
     </set>
-    where order_id = #{orderId,jdbcType=VARCHAR}
+    where order_id = #{orderId}
   </update>
 
   <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.Order">

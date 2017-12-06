@@ -1,15 +1,18 @@
-package org.loxf.jyadmin.dal.po;
+package org.loxf.jyadmin.client.dto;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Trade {
+public class OrderAttrDto implements Serializable {
     private Long id;
 
     private String orderId;
 
-    private Integer state;
+    private String attrCode;
 
-    private String msg;
+    private String attrName;
+
+    private String attrValue;
 
     private Date createdAt;
 
@@ -31,20 +34,28 @@ public class Trade {
         this.orderId = orderId == null ? null : orderId.trim();
     }
 
-    public Integer getState() {
-        return state;
+    public String getAttrCode() {
+        return attrCode;
     }
 
-    public void setState(Integer state) {
-        this.state = state;
+    public void setAttrCode(String attrCode) {
+        this.attrCode = attrCode == null ? null : attrCode.trim();
     }
 
-    public String getMsg() {
-        return msg;
+    public String getAttrName() {
+        return attrName;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg == null ? null : msg.trim();
+    public void setAttrName(String attrName) {
+        this.attrName = attrName == null ? null : attrName.trim();
+    }
+
+    public String getAttrValue() {
+        return attrValue;
+    }
+
+    public void setAttrValue(String attrValue) {
+        this.attrValue = attrValue == null ? null : attrValue.trim();
     }
 
     public Date getCreatedAt() {

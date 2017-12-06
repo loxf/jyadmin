@@ -3,7 +3,7 @@
 <mapper namespace="org.loxf.jyadmin.dal.dao.OrderAttrMapper" >
   <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.OrderAttr" >
     <id column="id" property="id" jdbcType="BIGINT" />
-    <id column="order_id" property="orderId" jdbcType="VARCHAR" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
     <result column="attr_code" property="attrCode" jdbcType="VARCHAR" />
     <result column="attr_name" property="attrName" jdbcType="VARCHAR" />
     <result column="attr_value" property="attrValue" jdbcType="VARCHAR" />
@@ -13,105 +13,19 @@
   <sql id="Base_Column_List" >
     id, order_id, attr_code, attr_name, attr_value, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.OrderAttrKey" >
+  <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from tb_order_attr
-    where id = #{id,jdbcType=BIGINT}
-      and order_id = #{orderId,jdbcType=VARCHAR}
+    where order_id = #{orderId}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.OrderAttrKey" >
-    delete from tb_order_attr
-    where id = #{id,jdbcType=BIGINT}
-      and order_id = #{orderId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.OrderAttr" >
-    insert into tb_order_attr (id, order_id, attr_code, 
-      attr_name, attr_value, created_at, 
-      updated_at)
-    values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=VARCHAR}, #{attrCode,jdbcType=VARCHAR}, 
-      #{attrName,jdbcType=VARCHAR}, #{attrValue,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
-      #{updatedAt,jdbcType=TIMESTAMP})
+
+  <insert id="insertList">
+    insert into tb_order_attr (order_id, attr_code,
+      attr_name, attr_value, created_at, updated_at)
+    values
+    <foreach collection="attrList" item="item" separator=",">
+    (#{orderId}, #{item.attrCode}, #{item.attrName}, #{item.attrValue}, now(), now())
+    </foreach>
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.OrderAttr" >
-    insert into tb_order_attr
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="orderId != null" >
-        order_id,
-      </if>
-      <if test="attrCode != null" >
-        attr_code,
-      </if>
-      <if test="attrName != null" >
-        attr_name,
-      </if>
-      <if test="attrValue != null" >
-        attr_value,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="orderId != null" >
-        #{orderId,jdbcType=VARCHAR},
-      </if>
-      <if test="attrCode != null" >
-        #{attrCode,jdbcType=VARCHAR},
-      </if>
-      <if test="attrName != null" >
-        #{attrName,jdbcType=VARCHAR},
-      </if>
-      <if test="attrValue != null" >
-        #{attrValue,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.OrderAttr" >
-    update tb_order_attr
-    <set >
-      <if test="attrCode != null" >
-        attr_code = #{attrCode,jdbcType=VARCHAR},
-      </if>
-      <if test="attrName != null" >
-        attr_name = #{attrName,jdbcType=VARCHAR},
-      </if>
-      <if test="attrValue != null" >
-        attr_value = #{attrValue,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-      and order_id = #{orderId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.OrderAttr" >
-    update tb_order_attr
-    set attr_code = #{attrCode,jdbcType=VARCHAR},
-      attr_name = #{attrName,jdbcType=VARCHAR},
-      attr_value = #{attrValue,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-      and order_id = #{orderId,jdbcType=VARCHAR}
-  </update>
 </mapper>

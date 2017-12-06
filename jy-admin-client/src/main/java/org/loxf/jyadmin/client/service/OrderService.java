@@ -2,13 +2,15 @@ package org.loxf.jyadmin.client.service;
 
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
+import org.loxf.jyadmin.client.dto.OrderAttrDto;
 import org.loxf.jyadmin.client.dto.OrderDto;
 
+import java.util.List;
 import java.util.Map;
 
 public interface OrderService {
-    BaseResult<Map<String, String>> createOrder(OrderDto orderDto);
-    BaseResult<String> completeOrder(OrderDto orderDto);
+    BaseResult<Map<String, String>> createOrder(OrderDto orderDto, List<OrderAttrDto> orderAttrDtoList);
+    BaseResult<String> completeOrder(String orderId, Integer status, String msg);
     BaseResult<OrderDto> queryOrder(String orderId);
     PageResult<OrderDto> pager(OrderDto orderDto);
 
