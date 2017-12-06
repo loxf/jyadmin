@@ -4,16 +4,16 @@ import org.loxf.jyadmin.base.bean.BaseModel;
 
 import java.util.Date;
 
-public class PurchasedVideo extends BaseModel {
+public class PurchasedInfo extends BaseModel {
     private String custId;
+
+    private String orderId;
 
     private String nickName;
 
     private String offerId;
 
-    private String videoId;
-
-    private String videoName;
+    private Integer type;
 
     public String getCustId() {
         return custId;
@@ -21,6 +21,14 @@ public class PurchasedVideo extends BaseModel {
 
     public void setCustId(String custId) {
         this.custId = custId == null ? null : custId.trim();
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 
     public String getNickName() {
@@ -39,20 +47,11 @@ public class PurchasedVideo extends BaseModel {
         this.offerId = offerId;
     }
 
-    public String getVideoId() {
-        return videoId;
+    public Integer getType() {
+        return type;
     }
 
-    public void setVideoId(String videoId) {
-        this.videoId = videoId == null ? null : videoId.trim();
+    public void setType(Integer type) {
+        this.type = type;
     }
-
-    public String getVideoName() {
-        return videoName;
-    }
-
-    public void setVideoName(String videoName) {
-        this.videoName = videoName == null ? null : videoName.trim();
-    }
-
 }

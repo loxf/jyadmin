@@ -16,4 +16,5 @@ public interface CustService {
     public PageResult<CustDto> queryChildList(int type, String custId, int page, int size);
     public BaseResult delCust(String custId);
     public BaseResult updateRecommend(String custId , String recommend);
+    public BaseResult unvalidVip(String custId);
 }

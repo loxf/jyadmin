@@ -56,10 +56,9 @@
         <bean class="org.loxf.jyadmin.interceptor.BaseInterceptor" />
     </mvc:interceptors>
 
-    <import resource="classpath:jy-admin-biz.xml"/>
     <import resource="classpath:jy-admin-base.xml"/>
+    <import resource="classpath:jy-admin-biz.xml"/>
 
     <import resource="spring/dubbo-provider.xml"/>
     <import resource="spring/velocity.xml"/>
-    <import resource="spring/job.xml"/>
 </beans>

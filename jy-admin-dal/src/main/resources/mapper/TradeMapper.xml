@@ -24,7 +24,7 @@
     <include refid="Base_Column_List" />
     from tb_trade
     where status = #{status}
-    order by created_at
+    order by updated_at
     limit 0, #{size}
   </select>
 
@@ -33,7 +33,7 @@
     msg, created_at, updated_at
     )
     values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER},
-    #{msg,jdbcType=VARCHAR}, now(), now()  )
+    #{msg,jdbcType=VARCHAR}, now(), now())
   </insert>
 
   <update id="updateByOrderId">

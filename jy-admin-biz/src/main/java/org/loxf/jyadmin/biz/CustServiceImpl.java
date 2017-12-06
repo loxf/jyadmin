@@ -11,9 +11,11 @@ import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.dal.dao.AccountMapper;
 import org.loxf.jyadmin.dal.dao.CustMapper;
+import org.loxf.jyadmin.dal.dao.VipInfoMapper;
 import org.loxf.jyadmin.dal.dao.WxUserTokenMapper;
 import org.loxf.jyadmin.dal.po.Account;
 import org.loxf.jyadmin.dal.po.Cust;
+import org.loxf.jyadmin.dal.po.VipInfo;
 import org.loxf.jyadmin.dal.po.WxUserToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,8 @@ public class CustServiceImpl implements CustService {
     private WxUserTokenMapper wxUserTokenMapper ;
     @Autowired
     private AccountMapper accountMapper;
+    @Autowired
+    private VipInfoMapper vipInfoMapper;
 
     @Override
     @Transactional
@@ -159,6 +163,20 @@ public class CustServiceImpl implements CustService {
         custMapper.updateByCustIdOrOpenid(tmp);
         // 更新推荐人的信息
         updateRecommendChildNbr(recommend, 1);
+        return new BaseResult();
+    }
+
+    @Override
+    @Transactional
+    public BaseResult unvalidVip(String custId) {
+        // 更新客户信息表
+        VipInfo vipInfo = new VipInfo();
+        vipInfo.setCustId(custId);
+        vipInfo.setStatus(3);
+        vipInfoMapper.updateByCustId(vipInfo);
+        Cust cust = new Cust();
+        cust.setCustId(custId);
+        cust.setUserLevel("NONE");
         return new BaseResult();
     }
 

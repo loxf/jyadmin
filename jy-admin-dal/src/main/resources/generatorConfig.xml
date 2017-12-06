@@ -206,7 +206,7 @@
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
         </table>
-        <table tableName="tb_purchased_video" domainObjectName="PurchasedVideo"
+        <table tableName="tb_purchased_video" domainObjectName="PurchasedInfo"
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">

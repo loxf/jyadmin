@@ -1,4 +1,4 @@
-package org.loxf.jyadmin.thread.task;
+package org.loxf.jyadmin.biz.thread.task;
 
 import java.util.concurrent.Callable;
 

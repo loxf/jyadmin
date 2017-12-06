@@ -15,14 +15,8 @@ import org.loxf.jyadmin.biz.weixin.WeixinPayUtil;
 import org.loxf.jyadmin.client.dto.OrderAttrDto;
 import org.loxf.jyadmin.client.dto.OrderDto;
 import org.loxf.jyadmin.client.service.OrderService;
-import org.loxf.jyadmin.dal.dao.CustMapper;
-import org.loxf.jyadmin.dal.dao.OrderAttrMapper;
-import org.loxf.jyadmin.dal.dao.OrderMapper;
-import org.loxf.jyadmin.dal.dao.TradeMapper;
-import org.loxf.jyadmin.dal.po.Cust;
-import org.loxf.jyadmin.dal.po.Order;
-import org.loxf.jyadmin.dal.po.OrderAttr;
-import org.loxf.jyadmin.dal.po.Trade;
+import org.loxf.jyadmin.dal.dao.*;
+import org.loxf.jyadmin.dal.po.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -48,9 +42,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private TradeMapper tradeMapper;
     @Autowired
+    private PurchasedInfoMapper purchasedInfoMapper;
+    @Autowired
     private JedisUtil jedisUtil;
-
-    // TODO 超时订单处理
 
     @Override
     @Transactional
@@ -232,15 +226,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public BaseResult hasBuy(String custId, int type, String obj) {
-        if (type == 1) {
+    public BaseResult<Boolean> hasBuy(String custId, int type, String obj) {
+        if (type == 1 || type == 5) {
             // 查看购买记录
-        } else if (type == 3) {
-            // 查看VIP INFO
-
-        } else if (type == 5) {
-            // 查看活动名单信息
+            PurchasedInfo purchasedInfo = new PurchasedInfo();
+            purchasedInfo.setCustId(custId);
+            purchasedInfo.setType(type);
+            purchasedInfo.setOfferId(obj);
+            return new BaseResult<>(purchasedInfoMapper.count(purchasedInfo)>0);
         }
-        return null;
+        return new BaseResult(BaseConstant.FAILED, "无需校验");
     }
 }

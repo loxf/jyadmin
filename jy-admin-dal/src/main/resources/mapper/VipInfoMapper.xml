@@ -13,35 +13,35 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, status, type, meta_data, eff_date, exp_date, created_at, updated_at
+    id, cust_id, status, `type`, meta_data, eff_date, exp_date, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="queryExpireInfo" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_vip_info
+    where exp_date &lt; now() and status = 1
+  </select>
+
+  <select id="selectByCustId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from tb_vip_info
-    where id = #{id,jdbcType=BIGINT}
+    where cust_id = #{custId}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from tb_vip_info
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.VipInfo" >
     insert into tb_vip_info (id, cust_id, status, meta_data,
       type, eff_date, exp_date, 
       created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{metaData,jdbcType=VARCHAR},
-      #{type,jdbcType=VARCHAR}, #{effDate,jdbcType=TIMESTAMP}, #{expDate,jdbcType=TIMESTAMP}, 
-      #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP})
+      #{type,jdbcType=VARCHAR}, #{effDate,jdbcType=TIMESTAMP}, #{expDate,jdbcType=TIMESTAMP}, now(), now())
   </insert>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.VipInfo" >
+  <update id="updateByCustId" parameterType="org.loxf.jyadmin.dal.po.VipInfo" >
     update tb_vip_info
-    set cust_id = #{custId,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
+    set status = #{status,jdbcType=INTEGER},
       type = #{type,jdbcType=VARCHAR},
       eff_date = #{effDate,jdbcType=TIMESTAMP},
       exp_date = #{expDate,jdbcType=TIMESTAMP},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+      updated_at = now()
+    where cust_id = #{custId}
   </update>
 </mapper>

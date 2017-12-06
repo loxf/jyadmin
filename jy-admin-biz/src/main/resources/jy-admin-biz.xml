@@ -37,4 +37,6 @@
         </property>
     </bean>
     <tx:annotation-driven/>
+
+    <import resource="job.xml"/>
 </beans>

@@ -22,7 +22,8 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, order_id, order_name, order_type, order_money, bp, total_money, discount, obj_id, 
-    status, pay_type, cust_id, out_trade_no, created_at, updated_at
+    status, pay_type, cust_id, (select t.nick_name from tb_cust t where t.cust_id = a.cust_id) as nick_name,
+    out_trade_no, created_at, updated_at
   </sql>
 
   <select id="queryTimeoutOrder" resultMap="BaseResultMap" >

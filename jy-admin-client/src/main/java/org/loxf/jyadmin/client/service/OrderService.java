@@ -21,5 +21,5 @@ public interface OrderService {
      * @param obj
      * @return
      */
-    BaseResult hasBuy(String custId, int type, String obj);
+    BaseResult<Boolean> hasBuy(String custId, int type, String obj);
 }

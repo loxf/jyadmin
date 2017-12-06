@@ -1,4 +1,4 @@
-package org.loxf.jyadmin.thread;
+package org.loxf.jyadmin.biz.thread;
 
 import java.util.concurrent.ExecutorService;
 

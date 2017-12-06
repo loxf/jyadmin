@@ -2,16 +2,14 @@ package org.loxf.jyadmin.dal.dao;
 
 import org.loxf.jyadmin.dal.po.VipInfo;
 
-public interface VipInfoMapper {
-    int deleteByPrimaryKey(Long id);
+import java.util.List;
 
+public interface VipInfoMapper {
     int insert(VipInfo record);
 
-    int insertSelective(VipInfo record);
+    VipInfo selectByCustId(String custId);
 
-    VipInfo selectByPrimaryKey(Long id);
+    int updateByCustId(VipInfo record);
 
-    int updateByPrimaryKeySelective(VipInfo record);
-
-    int updateByPrimaryKey(VipInfo record);
+    List<VipInfo> queryExpireInfo();
 }
