@@ -2,6 +2,8 @@ package org.loxf.jyadmin.biz;
 
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.base.util.ImageUtil;
+import org.loxf.jyadmin.base.util.MatrixToImageWriter;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.client.dto.ShareDto;
 import org.loxf.jyadmin.client.service.AccountService;
@@ -11,10 +13,16 @@ import org.loxf.jyadmin.dal.dao.ShareMapper;
 import org.loxf.jyadmin.dal.po.Config;
 import org.loxf.jyadmin.dal.po.Share;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("shareService")
 public class ShareServiceImpl implements ShareService {
@@ -22,6 +30,37 @@ public class ShareServiceImpl implements ShareService {
     private ShareMapper shareMapper;
     @Autowired
     private AccountService accountService;
+    @Value("#{configProperties['IMAGE.SERVER.PATH']}")
+    private String IMG_SERVER_PATH;
+
+    @Override
+    public BaseResult<String> createQR(String nickName, String custId){
+        String path = IMG_SERVER_PATH ;
+        if (!new File(path + File.separator + "QR").exists()) {
+            new File(path + File.separator + "QR").mkdir();
+        }
+        String qrFilePath = File.separator + "QR" + File.separator + "QR" + custId + ".jpg";
+        if(!new File(IMG_SERVER_PATH + qrFilePath).exists()) {
+            String text = "http://www.jingyizaixian.com?recommend=" + custId; // 二维码内容
+            MatrixToImageWriter.createQR(text, "jpg", IMG_SERVER_PATH + qrFilePath);
+        }
+        String shareFilePath = File.separator + "QR" + File.separator + "SHARE" + custId + ".jpg";
+        List<Map> infoList = new ArrayList<>();
+        Map map1 = new HashMap();
+        map1.put("value", "我是" + nickName);
+        map1.put("posX", 190);
+        map1.put("posY", 940);
+        Map map2 = new HashMap();
+        map2.put("value", "我为静怡雅学文化代言.");
+        map2.put("posX", 190);
+        map2.put("posY", 980);
+        infoList.add(map1);
+        infoList.add(map2);
+        String bgFilePath = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "SHARE_BG_PIC").getConfigValue();
+        ImageUtil.overlapImage(new File(IMG_SERVER_PATH + bgFilePath), new File(IMG_SERVER_PATH + qrFilePath), new int[]{0, -170},
+                infoList, IMG_SERVER_PATH + shareFilePath);
+        return new BaseResult<>(shareFilePath);
+    }
 
     /**
      * @param custId

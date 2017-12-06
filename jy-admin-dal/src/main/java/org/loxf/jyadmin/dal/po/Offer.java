@@ -2,6 +2,7 @@ package org.loxf.jyadmin.dal.po;
 
 import org.loxf.jyadmin.base.bean.BaseModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class Offer extends BaseModel{
@@ -15,7 +16,7 @@ public class Offer extends BaseModel{
 
     private String offerType;
 
-    private Long saleMoney;
+    private BigDecimal saleMoney;
 
     private String offerPic;
 
@@ -69,11 +70,11 @@ public class Offer extends BaseModel{
         this.offerType = offerType == null ? null : offerType.trim();
     }
 
-    public Long getSaleMoney() {
+    public BigDecimal getSaleMoney() {
         return saleMoney;
     }
 
-    public void setSaleMoney(Long saleMoney) {
+    public void setSaleMoney(BigDecimal saleMoney) {
         this.saleMoney = saleMoney;
     }
 

@@ -99,7 +99,7 @@ public class WeixinUtil {
         return ret;
     }
 
-    private static String create_nonce_str() {
+    public static String create_nonce_str() {
         return UUID.randomUUID().toString();
     }
     private static String byteToHex(final byte[] hash) {
@@ -136,7 +136,12 @@ public class WeixinUtil {
         try {
             String result = HttpUtil.handleGet(url);
             if(result.indexOf("errcode")>-1) {
-                logger.error("微信接口返回错误: {}", result);
+                JSONObject json = JSON.parseObject(result);
+                if(json.getIntValue("errcode")==0){
+                    return JSON.parseObject(result, clazz);
+                } else {
+                    logger.error("微信接口返回错误: {}", result);
+                }
             } else {
                 return JSON.parseObject(result, clazz);
             }
