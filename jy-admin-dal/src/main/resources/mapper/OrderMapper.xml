@@ -55,7 +55,7 @@
         status = #{status},
       </if>
       <if test="msg!=null and msg!=''">
-        msg = #{msg}
+        msg = #{msg},
       </if>
         updated_at = now()
     </set>

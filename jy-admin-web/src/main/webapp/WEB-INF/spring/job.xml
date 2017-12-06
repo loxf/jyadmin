@@ -6,12 +6,12 @@
     <bean class="org.loxf.jyadmin.thread.JOBStart" init-method="init">
         <constructor-arg name="jobList">
             <list>
-                <ref bean="wxAccessTokenFreshJob"></ref>
+                <ref bean="cancelOrderJob"></ref>
             </list>
         </constructor-arg>
     </bean>
     <!-- JOB -->
-    <bean id="wxAccessTokenFreshJob" class="org.loxf.jyadmin.thread.CancelOrderJob">
+    <bean id="cancelOrderJob" class="org.loxf.jyadmin.thread.CancelOrderJob">
         <constructor-arg name="expireLockMSecd" value="60" /><!-- 锁失效时间 -->
         <constructor-arg name="lockTimeout" value="10" /><!-- 获取锁的等待时间 -->
         <constructor-arg name="period" value="60000" /><!-- 业务执行间隔时间 milliseconds -->
