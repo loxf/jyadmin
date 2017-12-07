@@ -16,7 +16,7 @@
   </sql>
   <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.PurchasedInfo" >
     select count(1)
-    from tb_purchased_video
+    from tb_purchased_info
     where 1=1
     <include refid="WHERE_SQL"/>
   </select>
@@ -24,7 +24,7 @@
   <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.PurchasedInfo" >
     select
     <include refid="Base_Column_List" />
-    from tb_purchased_video
+    from tb_purchased_info
     where 1=1
     <include refid="WHERE_SQL"/>
     order by created_at DESC
@@ -49,7 +49,7 @@
   </sql>
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.PurchasedInfo" >
-    insert into tb_purchased_video (id, cust_id, order_id, nick_name, offer_id,
+    insert into tb_purchased_info (id, cust_id, order_id, nick_name, offer_id,
       `type`, created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
       #{offerId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, now(), now())
