@@ -10,7 +10,7 @@ public interface TradeMapper {
 
     Trade selectByOrderId(String orderId);
 
-    List<Trade> selectList(@Param("status") Integer status, @Param("size") Integer size);
+    List<Trade> selectList(@Param("state") Integer state, @Param("size") Integer size);
 
-    int updateByOrderId(@Param("orderId") String orderId, @Param("status")Integer status, @Param("msg")String msg);
+    int updateByOrderId(@Param("orderId") String orderId, @Param("state")Integer state, @Param("msg")String msg);
 }
