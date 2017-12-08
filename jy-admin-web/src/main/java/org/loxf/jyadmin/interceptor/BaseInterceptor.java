@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 
 public class BaseInterceptor extends HandlerInterceptorAdapter {
     private static Logger logger = LoggerFactory.getLogger(BaseInterceptor.class);
-    private static String [] excludeUrl = {"/static/*", "/admin/login.html", "/admin/weixin/api_access.html", "/"};
+    private static String [] excludeUrl = {"/static/*", "/admin/login.html", "/"};
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         if(needFilter(request.getRequestURI())){

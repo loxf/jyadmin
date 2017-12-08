@@ -38,4 +38,14 @@ public class BaseConstant {
     public static String ACTIVE_DETAIL_URL =  "https://www.jingyizaixian.com/activityDetail?id=%s";
     // 课程详情
     public static String CLASS_DETAIL_URL =  "https://www.jingyizaixian.com/lessonDetail?id=%s";
+
+    // 微信菜单
+    // 创建
+    public static String WEIXIN_MENU_CREATE = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s";
+    // 自定义菜单查询接口
+    public static String WEIXIN_MENU_GET = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=%s";
+    // 自定义菜单删除接口
+    public static String WEIXIN_MENU_DEL = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=%s";
+    // 获取自定义菜单配置接口
+    public static String WEIXIN_MENU_SELFMENU = "https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=%s";
 }

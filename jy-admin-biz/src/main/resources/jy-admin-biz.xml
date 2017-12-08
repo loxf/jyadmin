@@ -12,7 +12,7 @@
 
     <bean id="jedisUtil" class="org.loxf.jyadmin.base.util.JedisUtil" >
         <constructor-arg index="0" ref="jedisPool"/>
-        <constructor-arg index="1" value="${env}"/>
+        <constructor-arg index="1" value="online"/>
     </bean>
 
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">

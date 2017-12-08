@@ -6,7 +6,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -28,10 +30,12 @@ import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.loxf.jyadmin.base.exception.JyException;
 
 /**
  * http工具类
@@ -95,6 +99,41 @@ public final class HttpsUtil {
 		}
 	}
 
+	/**
+	 * 携带一个params数据发送Post请求到指Url
+	 */
+	public static String handlePost(String url, String jsonStr, Map<String, Object> headerMap) throws Exception {
+		if (headerMap == null) {
+			headerMap = new HashMap<String, Object>();
+		}
+
+		HttpPost httpPost = new HttpPost(url);
+		CloseableHttpClient httpClient = buildHttpClient();
+
+		// 设置请求和传输超时时间
+		RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(Integer.valueOf(defaultTimeOut) * 1000).setConnectTimeout(Integer.valueOf(defaultTimeOut) * 1000).build();
+		httpPost.setConfig(requestConfig);
+
+		StringEntity param = new StringEntity(jsonStr, "UTF-8");
+		param.setContentType("application/json");//发送json数据需要设置contentType
+		httpPost.setEntity(param);
+
+		CloseableHttpResponse response = httpClient.execute(httpPost);
+		String result = null;
+		try {
+			if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+				//把响应结果转成String
+				result = EntityUtils.toString(response.getEntity(), "UTF-8");
+			} else {
+				throw new JyException(response.getStatusLine().getReasonPhrase());
+			}
+			return result;
+		} finally {
+			if (response != null) {
+				response.close();
+			}
+		}
+	}
 	/**
 	 * get请求
 	 *
