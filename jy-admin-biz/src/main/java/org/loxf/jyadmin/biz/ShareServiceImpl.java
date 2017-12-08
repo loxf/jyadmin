@@ -35,14 +35,16 @@ public class ShareServiceImpl implements ShareService {
 
     @Override
     public BaseResult<String> createQR(String nickName, String custId){
-        String path = IMG_SERVER_PATH ;
+         String path = IMG_SERVER_PATH ;
         if (!new File(path + File.separator + "QR").exists()) {
             new File(path + File.separator + "QR").mkdir();
         }
         String qrFilePath = File.separator + "QR" + File.separator + "QR" + custId + ".jpg";
         if(!new File(IMG_SERVER_PATH + qrFilePath).exists()) {
             String text = "http://www.jingyizaixian.com?recommend=" + custId; // 二维码内容
-            MatrixToImageWriter.createQR(text, "jpg", IMG_SERVER_PATH + qrFilePath);
+            String logoPath = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_COM, "COMPANY_LOGO",
+                    "/CONFIG/0a94a6ec6695491c805ca0cd22741077.jpeg").getConfigValue();
+            MatrixToImageWriter.createQR(text, "jpg", IMG_SERVER_PATH + qrFilePath, IMG_SERVER_PATH + logoPath);
         }
         String shareFilePath = File.separator + "QR" + File.separator + "SHARE" + custId + ".jpg";
         List<Map> infoList = new ArrayList<>();

@@ -21,7 +21,8 @@ public class ImageUtil {
         String text = "http://www.jingyizaixian.com?recommend=CUSTIJHSFG89235UW4IDGI2H5JF298S5"; // 二维码内容
         String format = "jpg";// 二维码的图片格式
         String filePath = "C:\\Users\\lenovo\\Desktop\\ss\\qr.jpg";
-        MatrixToImageWriter.createQR(text, format, filePath);
+        String logoPath = "C:\\Users\\lenovo\\Desktop\\ss\\logo.jpg";
+        MatrixToImageWriter.createQR(text, format, filePath, logoPath);
         List<Map> infoList = new ArrayList<>();
         Map map1 = new HashMap();
         map1.put("value", "我是Face.");

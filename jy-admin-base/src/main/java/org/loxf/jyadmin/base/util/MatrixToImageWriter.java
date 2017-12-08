@@ -27,16 +27,17 @@ public class MatrixToImageWriter {
         String text = "http://www.jingyizaixian.com?recommend=CUSTIJHSFG89235UW4IDGI2H5JF298S5"; // 二维码内容
         String format = "jpg";// 二维码的图片格式
         String filePath = "C:\\Users\\lenovo\\Desktop\\ss\\qr.jpg";
-        createQR(text, format, filePath);
+        String logoPath = "C:\\Users\\lenovo\\Desktop\\ss\\logo.jpg";
+        createQR(text, format, filePath, logoPath);
     }
 
-    public static void createQR(String text, String format, String filePath){
+    public static void createQR(String text, String format, String filePath, String logoFile){
         Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");   // 内容所使用字符集编码
 
         try {
             BitMatrix matrix = new MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, width, height, hints);
-            File logo = new File("C:\\Users\\lenovo\\Desktop\\ss\\logo.jpg");
+            File logo = new File(logoFile);
             BufferedImage qrImage = toBufferedImage(matrix); //读取图片
             BufferedImage logoImage = ImageIO.read(logo); //读取图片
             logoImage = ImageUtil.zoomImage(logoImage, 50, 50);
