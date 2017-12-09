@@ -165,7 +165,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
-    void dealCompleteOrder(String orderId, Integer status, String msg){
+    public void dealCompleteOrder(String orderId, Integer status, String msg){
         orderMapper.updateByOrderId(orderId, status, msg);
         // 如果是成功完成订单，触发交易
         if (status.intValue() == 3) {

@@ -68,7 +68,7 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Transactional
-    void dealTrade(String orderId, int status, String msg, Order order){
+    public void dealTrade(String orderId, int status, String msg, Order order){
         if(status==3) {
             // 增加购买记录
             PurchasedInfo purchasedInfo = new PurchasedInfo();

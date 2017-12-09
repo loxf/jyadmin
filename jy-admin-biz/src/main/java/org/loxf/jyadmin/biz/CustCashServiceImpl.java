@@ -122,7 +122,7 @@ public class CustCashServiceImpl implements CustCashService {
     }
 
     @Transactional
-    BaseResult<Boolean> dealTaskCash(CustCashDto custCashDto, String password) {
+    public BaseResult<Boolean> dealTaskCash(CustCashDto custCashDto, String password) {
         // 扣减余额
         BaseResult<Boolean> reduce = accountService.reduce(custCashDto.getCustId(),
                 password, custCashDto.getCmmsAmt().add(custCashDto.getFactBalance()), null, null, "提现");

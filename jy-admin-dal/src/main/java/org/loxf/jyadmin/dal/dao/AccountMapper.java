@@ -16,6 +16,8 @@ public interface AccountMapper {
 
     int lockAccount(String custId);
 
+    int unlockAccount(String custId);
+
     int updateBalanceOrBp(Account record);
 
     int setPayPassword(@Param("custId") String custId, @Param("password")String password);

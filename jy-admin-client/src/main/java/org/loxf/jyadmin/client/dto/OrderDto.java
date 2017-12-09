@@ -3,6 +3,7 @@ package org.loxf.jyadmin.client.dto;
 import org.loxf.jyadmin.base.bean.BaseModel;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class OrderDto extends BaseModel {
     private String orderId;
@@ -34,6 +35,8 @@ public class OrderDto extends BaseModel {
     private String outTradeNo;
 
     private String msg;
+
+    private List<OrderAttrDto> attrList;
 
     public String getOrderId() {
         return orderId;
@@ -153,5 +156,13 @@ public class OrderDto extends BaseModel {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public List<OrderAttrDto> getAttrList() {
+        return attrList;
+    }
+
+    public void setAttrList(List<OrderAttrDto> attrList) {
+        this.attrList = attrList;
     }
 }

@@ -91,35 +91,35 @@ public class AccountServiceImpl implements AccountService {
         if(accountMapper.lockAccount(custId)<=0) {
             return new BaseResult<>(BaseConstant.FAILED, "账户锁定失败");
         }
-        // 获取账户信息
-        Account account = accountMapper.selectAccount(custId);
-        if(StringUtils.isBlank(password)||account.getPassword()==null || !password.equals(account.getPassword())){
-            return new BaseResult<>(BaseConstant.FAILED, "支付密码错误");
-        }
-        if(money!=null && money.compareTo(account.getBalance())>0){
-            return new BaseResult<>(BaseConstant.FAILED, "余额不足");
-        }
-        // 扣钱/积分
-        Account newAccountInfo = new Account();
-        boolean insertDetail = false;
-        if(money!=null && money.compareTo(BigDecimal.ZERO)>0) {
-            // 账户明细
-            newAccountInfo.setBalance(account.getBalance().subtract(money));
-            insertDetail = accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money, orderId, detailName, 3))>0;
-        }
-        if(bp!=null && bp.compareTo(BigDecimal.ZERO)>0) {
-            // 积分明细
-            newAccountInfo.setBp(account.getBp().subtract(bp));
-            insertDetail = custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBalance(), bp, orderId, detailName, 3))>0;
-        }
-        newAccountInfo.setCustId(custId);
-        // 记录账户明细
-        if(insertDetail){
-            if(accountMapper.updateBalanceOrBp(newAccountInfo)<=0){
-                throw new RuntimeException("扣减账户余额失败");
+        try {
+            // 获取账户信息
+            Account account = accountMapper.selectAccount(custId);
+            if (StringUtils.isBlank(password) || account.getPassword() == null || !password.equals(account.getPassword())) {
+                return new BaseResult<>(BaseConstant.FAILED, "支付密码错误");
             }
-        } else {
-            return new BaseResult<>(BaseConstant.FAILED, "记录账户明细失败");
+            if (money != null && money.compareTo(account.getBalance()) > 0) {
+                return new BaseResult<>(BaseConstant.FAILED, "余额不足");
+            }
+            // 扣钱/积分
+            Account newAccountInfo = new Account();
+            if (money != null && money.compareTo(BigDecimal.ZERO) > 0) {
+                // 账户明细
+                newAccountInfo.setBalance(account.getBalance().subtract(money));
+                accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money, orderId, detailName, 3));
+            }
+            if (bp != null && bp.compareTo(BigDecimal.ZERO) > 0) {
+                // 积分明细
+                newAccountInfo.setBp(account.getBp().subtract(bp));
+                custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBalance(), bp, orderId, detailName, 3));
+            }
+            newAccountInfo.setCustId(custId);
+            // 记录账户明细
+            accountMapper.updateBalanceOrBp(newAccountInfo);
+        } catch (Exception e){
+            logger.error("支付异常", e);
+            throw new RuntimeException(e);
+        } finally {
+            accountMapper.unlockAccount(custId);
         }
         return new BaseResult(true);
     }

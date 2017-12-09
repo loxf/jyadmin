@@ -39,7 +39,11 @@
   </select>
 
   <update id="lockAccount" parameterType="java.lang.String" >
-    update tb_account set is_lock = 1 where cust_id = #{custId}
+    update tb_account set is_lock = 1 where cust_id = #{custId} and is_lock=0
+  </update>
+
+  <update id="unlockAccount" parameterType="java.lang.String" >
+    update tb_account set is_lock = 0 where cust_id = #{custId} and  is_lock=1
   </update>
 
   <update id="updateBalanceOrBp" parameterType="org.loxf.jyadmin.dal.po.Account" >
