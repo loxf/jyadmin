@@ -2,6 +2,7 @@ package org.loxf.jyadmin.client.dto;
 
 import org.loxf.jyadmin.base.bean.BaseModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class ActiveDto extends BaseModel {
@@ -9,7 +10,7 @@ public class ActiveDto extends BaseModel {
 
     private String activeName;
 
-    private Long price;
+    private BigDecimal price;
 
     private String activePrivi;
 
@@ -75,11 +76,11 @@ public class ActiveDto extends BaseModel {
         this.city = city;
     }
 
-    public Long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

@@ -76,7 +76,7 @@ var menu = {
             menuHref: contextPath + '/admin/friendLink/index.html'
         },
         {
-            menuName: '支付设置',
+            menuName: '支付/会员设置',
             menuHref: contextPath + '/admin/config/index.html?catalog=PAY'
         },
         {
