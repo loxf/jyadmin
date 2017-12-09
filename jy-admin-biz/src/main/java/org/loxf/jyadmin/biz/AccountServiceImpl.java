@@ -36,6 +36,15 @@ public class AccountServiceImpl implements AccountService {
     private VerifyCodeService verifyCodeService;
 
     @Override
+    public BaseResult<BigDecimal> queryBalance(String custId) {
+        Account account = accountMapper.selectAccount(custId);
+        if(account==null){
+            return new BaseResult<>(BaseConstant.FAILED, "客户不存在");
+        }
+        return new BaseResult<>(account.getBalance());
+    }
+
+    @Override
     public BaseResult<JSONObject> queryAccount(String custId) {
         Account account = accountMapper.selectAccount(custId);
         if(account==null){
@@ -87,18 +96,18 @@ public class AccountServiceImpl implements AccountService {
         if(StringUtils.isBlank(password)||account.getPassword()==null || !password.equals(account.getPassword())){
             return new BaseResult<>(BaseConstant.FAILED, "支付密码错误");
         }
-        if(money.compareTo(account.getBalance())>0){
+        if(money!=null && money.compareTo(account.getBalance())>0){
             return new BaseResult<>(BaseConstant.FAILED, "余额不足");
         }
         // 扣钱/积分
         Account newAccountInfo = new Account();
         boolean insertDetail = false;
-        if(money.compareTo(BigDecimal.ZERO)>0) {
+        if(money!=null && money.compareTo(BigDecimal.ZERO)>0) {
             // 账户明细
             newAccountInfo.setBalance(account.getBalance().subtract(money));
             insertDetail = accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money, orderId, detailName, 3))>0;
         }
-        if(bp.compareTo(BigDecimal.ZERO)>0) {
+        if(bp!=null && bp.compareTo(BigDecimal.ZERO)>0) {
             // 积分明细
             newAccountInfo.setBp(account.getBp().subtract(bp));
             insertDetail = custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBalance(), bp, orderId, detailName, 3))>0;

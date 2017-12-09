@@ -22,6 +22,7 @@
                 <option value="1">待打款</option>
                 <option value="3">已打款</option>
                 <option value="-3">拒绝打款</option>
+                <option value="-9">系统异常</option>
             </select>
         </div>
     </div>

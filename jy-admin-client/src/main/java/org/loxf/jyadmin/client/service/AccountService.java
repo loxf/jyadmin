@@ -6,6 +6,7 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import java.math.BigDecimal;
 
 public interface AccountService {
+    BaseResult<BigDecimal> queryBalance(String custId);
     BaseResult<JSONObject> queryAccount(String custId);
     BaseResult<JSONObject> queryBasicInfo(String custId);
     BaseResult<Boolean> reduce(String custId, String password, BigDecimal money, BigDecimal bp, String orderId, String detailName);

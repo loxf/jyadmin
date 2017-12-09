@@ -34,7 +34,7 @@ public class AccountController extends BaseControl {
 
     @RequestMapping("/pendingCustCash")
     @ResponseBody
-    public BaseResult pendingCustCash(Long id, Integer status, String remark){
-        return custCashService.pendingCustCashRecord(id, status, remark);
+    public BaseResult pendingCustCash(String orderId, Integer status, String remark){
+        return custCashService.pendingCustCashRecord(orderId, status, remark);
     }
 }

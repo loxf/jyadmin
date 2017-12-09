@@ -5,17 +5,43 @@ import org.loxf.jyadmin.base.bean.BaseModel;
 import java.math.BigDecimal;
 
 public class CustCashDto extends BaseModel {
+    private String orderId;
+
     private String custId;
 
     private String custName;
 
     private BigDecimal balance;
 
+    private BigDecimal factBalance;
+
+    private BigDecimal cmmsAmt;
+
     private Integer type;
 
     private String objId;
 
     private Integer status;
+
+    private Integer remark;
+
+    private Integer lock;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public BigDecimal getCmmsAmt() {
+        return cmmsAmt;
+    }
+
+    public void setCmmsAmt(BigDecimal cmmsAmt) {
+        this.cmmsAmt = cmmsAmt;
+    }
 
     public String getCustId() {
         return custId;
@@ -39,6 +65,14 @@ public class CustCashDto extends BaseModel {
 
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
+    }
+
+    public BigDecimal getFactBalance() {
+        return factBalance;
+    }
+
+    public void setFactBalance(BigDecimal factBalance) {
+        this.factBalance = factBalance;
     }
 
     public Integer getType() {
@@ -65,4 +99,19 @@ public class CustCashDto extends BaseModel {
         this.status = status;
     }
 
+    public Integer getRemark() {
+        return remark;
+    }
+
+    public void setRemark(Integer remark) {
+        this.remark = remark;
+    }
+
+    public Integer getLock() {
+        return lock;
+    }
+
+    public void setLock(Integer lock) {
+        this.lock = lock;
+    }
 }

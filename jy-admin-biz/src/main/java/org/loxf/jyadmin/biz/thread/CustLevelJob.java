@@ -20,7 +20,6 @@ import java.util.Timer;
  */
 public class CustLevelJob extends JOB {
     private static Logger logger = LoggerFactory.getLogger(CustLevelJob.class);
-    private static String LOCK = "LOCK-CustLevelJob";
 
     private int expireLockMSecd = 60000;
     private int lockTimeout;
@@ -44,7 +43,7 @@ public class CustLevelJob extends JOB {
 
     public void start() {
         Timer timer = new Timer();
-        timer.schedule(new Task(LOCK, expireLockMSecd, lockTimeout, new Runnable() {
+        timer.schedule(new Task(prefix + this.getClass().getName(), expireLockMSecd, lockTimeout, new Runnable() {
             @Override
             public void run() {
                 // 获取交易订单

@@ -18,13 +18,22 @@ public interface CustCashService {
      * @param password 支付密码
      * @return
      */
-    BaseResult<Boolean> addCustCashRecord(CustCashDto custCashDto, String password);
+    BaseResult<Boolean> addCustCashRecord(CustCashDto custCashDto, String password, String sign);
 
     /**
      * 提现审核
-     * @param recordId
+     * @param orderId
      * @param status
      * @return
      */
-    BaseResult<Boolean> pendingCustCashRecord(Long recordId, Integer status, String remark);
+    BaseResult<Boolean> pendingCustCashRecord(String orderId, Integer status, String remark);
+
+    /**
+     * 提现交易
+     * @param custCashDto
+     * @return
+     */
+    BaseResult<Boolean> takeCashDeal(CustCashDto custCashDto);
+
+
 }

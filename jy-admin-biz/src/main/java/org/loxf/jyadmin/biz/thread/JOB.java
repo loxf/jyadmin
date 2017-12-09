@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
  * Created by luohj on 2017/4/28.
  */
 public abstract class JOB {
+    protected static String prefix = "LOCK-";
     protected ExecutorService executor ;
     public abstract void start();
 

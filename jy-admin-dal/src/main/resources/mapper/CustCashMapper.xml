@@ -3,19 +3,24 @@
 <mapper namespace="org.loxf.jyadmin.dal.dao.CustCashMapper" >
   <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CustCash" >
     <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="cust_name" property="custName" jdbcType="VARCHAR" />
     <result column="balance" property="balance" jdbcType="DECIMAL" />
+    <result column="fact_balance" property="factBalance" jdbcType="DECIMAL" />
+    <result column="cmms_amt" property="cmmsAmt" jdbcType="DECIMAL" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="obj_id" property="objId" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="obj_id" property="objId" jdbcType="VARCHAR" />
     <result column="remark" property="remark" jdbcType="TIMESTAMP" />
+    <result column="lock" property="lock" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, (select real_name from tb_cust b where b.cust_id = a.cust_id) as cust_name,  balance, `type`, obj_id, status, remark, created_at, updated_at
+    id, order_id, cust_id, (select real_name from tb_cust b where b.cust_id = a.cust_id) as cust_name,  balance, fact_balance, cmms_amt,
+    `type`, obj_id, status, remark, `lock`, created_at, updated_at
   </sql>
   <select id="count" resultType="java.lang.Integer">
     select count(1)
@@ -35,6 +40,9 @@
   </select>
 
   <sql id="WHERE_SQL">
+    <if test="orderId!=null and orderId!=''">
+      and order_id = #{orderId}
+    </if>
     <if test="custId!=null and custId!=''">
       and cust_id = #{custId}
     </if>
@@ -56,24 +64,27 @@
     <if test="endDate != null and endDate!=''">
       and created_at &lt; date_add(#{endDate}, INTERVAL 1 DAY)
     </if>
+    <if test="lock != null">
+      and `lock` = #{lock}
+    </if>
   </sql>
 
-  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from tb_cust_cash a
-    where id = #{id,jdbcType=BIGINT}
+    where order_id = #{orderId}
   </select>
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustCash" >
-    insert into tb_cust_cash (id, cust_id, balance, 
-      `type`, obj_id, status, remark,
+    insert into tb_cust_cash (id, order_id, cust_id, balance, fact_balance, cmms_amt,
+      `type`, obj_id, status, `lock`, remark,
       created_at, updated_at)
-    values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{balance,jdbcType=DECIMAL}, 
-      #{type,jdbcType=INTEGER}, #{objId,jdbcType=VARCHAR}, 1, null, now(), now() )
+    values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, #{balance,jdbcType=DECIMAL}, #{factBalance,jdbcType=DECIMAL},
+       #{cmmsAmt,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER}, #{objId,jdbcType=VARCHAR}, 1, 0,  #{remark}, now(), now() )
   </insert>
 
-  <update id="pendingCustCash" >
+  <update id="update" >
     update tb_cust_cash
     <set >
       <if test="remark!=null and remark!='' ">
@@ -82,7 +93,18 @@
       status = #{status},
       updated_at = now()
     </set>
-    where id = #{id}
+    where order_id = #{orderId}
   </update>
 
+  <update id="lock">
+    update tb_cust_cash set `lock` = 1,
+      updated_at = now()
+    where order_id = #{orderId} and `lock` = 0
+  </update>
+
+  <update id="unlock">
+    update tb_cust_cash set `lock` = 0,
+    updated_at = now()
+    where order_id = #{orderId} and `lock` = 1
+  </update>
 </mapper>
