@@ -8,14 +8,18 @@ public class BaseConstant {
     public static final String FAILED_MSG = "操作失败!";
     public static String USER_COOKIE_NAME = "JY_TOKEN";
     public static String JY_CUST_ID = "JY_CUST_ID";
+    public static String WX_BODYPREFIX = "静怡雅学馆";
     public static String ADMIN_COOKIE_NAME = "JYADMIN_TOKEN";
     public static String LOGIN_URL = "https://www.jingyizaixian.com/api/loginByWx?targetUrl=%s";
     public static String WX_TOKEN = "jyzx2015weixin";
     public static String WX_APPSECRET = "8a51e801fcc89fc9aab671737560b4ed";
     public static String WX_APPID = "wxf45ae0ff3e1bd94e";
+    public static String WX_MCHID = "1243841702";
+    public static String WX_MCH_KEY = "198842500kaikaikaikaikaikaikaika";
     public static String WX_EncodingAESKey = "OTHx0cgmgNyHHJFxyuKeVQz7Ovzntifve1k6HJUWE1P";
     public static String WX_ACCESS_TOKEN = "WX_ACCESS_TOKEN";
     public static String WX_JS_TICKET = "WX_JS_TICKET";
+    public static String WX_MCH_SCURET = "jingyizaixianPay1988425";
 
     public static String CONFIG_TYPE_RUNTIME = "RUNTIME";
     public static String CONFIG_TYPE_PAY = "PAY";
@@ -48,4 +52,9 @@ public class BaseConstant {
     public static String WEIXIN_MENU_DEL = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=%s";
     // 获取自定义菜单配置接口
     public static String WEIXIN_MENU_SELFMENU = "https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=%s";
+
+    // 微信付款-微信
+    public static String WEIXIN_PAY_OPENID = "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
+    // 微信付款-银行
+    public static String WEIXIN_PAY_BANK = "https://api.mch.weixin.qq.com/mmpaysptrans/pay_bank";
 }

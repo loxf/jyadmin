@@ -5,7 +5,12 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.client.dto.CustBankDto;
 
+import java.util.List;
+import java.util.Map;
+
 public interface CustBankService {
+    BaseResult<CustBankDto> queryBank(String cardId);
+
     PageResult<CustBankDto> pager(CustBankDto bankDto);
 
     BaseResult addBankCard(CustBankDto custBankDto);
@@ -14,5 +19,5 @@ public interface CustBankService {
 
     BaseResult update(CustBankDto custBankDto);
 
-    BaseResult<String[]> queryBankList();
+    BaseResult<List<Map<String, String>>> queryBankList();
 }

@@ -17,12 +17,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("custBankService")
 public class CustBankServiceImpl implements CustBankService {
     @Autowired
     private CustBankMapper custBankMapper;
+
+    @Override
+    public BaseResult<CustBankDto> queryBank(String cardId) {
+        CustBank custBank = custBankMapper.queryCard(cardId);
+        if(custBank==null){
+            return new BaseResult<>(BaseConstant.FAILED, "不存在此卡");
+        }
+        CustBankDto custBankDto = new CustBankDto();
+        BeanUtils.copyProperties(custBank, custBankDto);
+        return new BaseResult<>(custBankDto);
+    }
 
     @Override
     public PageResult<CustBankDto> pager(CustBankDto bankDto) {
@@ -82,11 +95,21 @@ public class CustBankServiceImpl implements CustBankService {
     }
 
     @Override
-    public BaseResult<String[]> queryBankList() {
+    public BaseResult<List<Map<String, String>>> queryBankList() {
         String bankStr = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY, "PAY_BANK_LIST", "").getConfigValue();
         if(StringUtils.isNotBlank(bankStr)){
             String [] bankArr = bankStr.split(",");
-            return new BaseResult<>(bankArr);
+            List<Map<String, String>> result = new ArrayList<>();
+            for(String tmp : bankArr){
+                String[] nameAndCode = tmp.split(":");
+                String name = nameAndCode[0];
+                String code = nameAndCode[1];
+                Map<String, String> map = new HashMap<>();
+                map.put("name", name);
+                map.put("code", code);
+                result.add(map);
+            }
+            return new BaseResult<>(result);
         }
         return new BaseResult<>(BaseConstant.FAILED, "配置PAY_BANK_LIST缺失");
     }

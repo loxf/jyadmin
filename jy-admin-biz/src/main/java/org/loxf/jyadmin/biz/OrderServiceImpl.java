@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public BaseResult<Map<String, String>> createOrder(OrderDto orderDto, List<OrderAttrDto> orderAttrDtoList) {
+    public BaseResult<Map<String, String>> createOrder(String openid, String ip, OrderDto orderDto, List<OrderAttrDto> orderAttrDtoList) {
         if (orderDto == null) {
             return new BaseResult(BaseConstant.FAILED, "参数为空");
         }
@@ -58,15 +58,15 @@ public class OrderServiceImpl implements OrderService {
         }
         String lockKey = "CREATE_ORDER_" + orderDto.getCustId();
         if (jedisUtil.setnx(lockKey, "true", 60) > 0) {
+            orderDto.setOrderId(IdGenerator.generate(prefix));
             Order order = new Order();
             BeanUtils.copyProperties(orderDto, order);
-            order.setOrderId(IdGenerator.generate(prefix));
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("orderType", orderDto.getOrderType());
             try {
                 if (orderDto.getPayType() == 1) {
                     // 微信支付
-                    BaseResult<OrderDto> orderDtoBaseResult = WeixinPayUtil.createOrder("", "", orderDto, jsonObject.toJSONString());
+                    BaseResult<OrderDto> orderDtoBaseResult = WeixinPayUtil.createOrder(openid, ip, orderDto, jsonObject.toJSONString());
                     if (orderDtoBaseResult.getCode() == BaseConstant.SUCCESS) {
                         if (orderMapper.insert(order) > 0) {
                             // 插入订单属性
@@ -121,10 +121,10 @@ public class OrderServiceImpl implements OrderService {
         result.put("appId", BaseConstant.WX_APPID);
         result.put("nonceStr", WeixinUtil.create_nonce_str());
         result.put("package", "prepay_id=" + prepay_id);
-        result.put("timeStamp", System.currentTimeMillis() + "");
-        String sign = WXPayUtil.generateSignature(result, BaseConstant.WX_EncodingAESKey);
-        result.put("paySign", sign);
+        result.put("timeStamp", (System.currentTimeMillis()/1000) + "");
         result.put("signType", "MD5");
+        String sign = WXPayUtil.generateSignature(result, BaseConstant.WX_MCH_KEY);
+        result.put("paySign", sign);
         return result;
     }
 
@@ -152,6 +152,7 @@ public class OrderServiceImpl implements OrderService {
                     return new BaseResult<>(BaseConstant.FAILED, "当前订单状态不正确");
                 }
                 dealCompleteOrder(orderId, status, msg);
+                return new BaseResult();
             } catch (Exception e){
                 logger.error("完成订单失败：", e);
                 throw new BizException("完成订单失败");
@@ -161,7 +162,6 @@ public class OrderServiceImpl implements OrderService {
         } else {
             return new BaseResult<>(BaseConstant.FAILED, "当前订单正在处理");
         }
-        return null;
     }
 
     @Transactional
@@ -233,8 +233,12 @@ public class OrderServiceImpl implements OrderService {
             purchasedInfo.setCustId(custId);
             purchasedInfo.setType(type);
             purchasedInfo.setOfferId(obj);
-            return new BaseResult<>(purchasedInfoMapper.count(purchasedInfo)>0);
+            if(purchasedInfoMapper.count(purchasedInfo)>0) {
+                return new BaseResult<>(BaseConstant.FAILED, "已购买商品");
+            } else {
+                return new BaseResult<>(true);
+            }
         }
-        return new BaseResult(BaseConstant.FAILED, "无需校验");
+        return new BaseResult(BaseConstant.SUCCESS, "无需校验");
     }
 }

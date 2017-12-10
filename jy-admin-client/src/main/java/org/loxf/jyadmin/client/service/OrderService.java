@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface OrderService {
-    BaseResult<Map<String, String>> createOrder(OrderDto orderDto, List<OrderAttrDto> orderAttrDtoList);
+    BaseResult<Map<String, String>> createOrder(String openid, String ip, OrderDto orderDto, List<OrderAttrDto> orderAttrDtoList);
     BaseResult<String> completeOrder(String orderId, Integer status, String msg);
     BaseResult<OrderDto> queryOrder(String orderId);
     PageResult<OrderDto> pager(OrderDto orderDto);

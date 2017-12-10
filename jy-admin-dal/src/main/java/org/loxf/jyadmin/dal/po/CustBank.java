@@ -11,6 +11,8 @@ public class CustBank extends BaseModel {
 
     private String bank;
 
+    private String bankCode;
+
     private String bankNo;
 
     private String province;
@@ -39,6 +41,14 @@ public class CustBank extends BaseModel {
 
     public void setCustId(String custId) {
         this.custId = custId == null ? null : custId.trim();
+    }
+
+    public String getBankCode() {
+        return bankCode;
+    }
+
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
     }
 
     public String getBank() {

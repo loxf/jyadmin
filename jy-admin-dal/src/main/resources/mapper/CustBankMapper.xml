@@ -6,6 +6,7 @@
     <result column="card_id" property="cardId" jdbcType="VARCHAR" />
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="bank" property="bank" jdbcType="VARCHAR" />
+    <result column="bank_code" property="bankCode" jdbcType="VARCHAR" />
     <result column="bank_no" property="bankNo" jdbcType="VARCHAR" />
     <result column="province" property="province" jdbcType="VARCHAR" />
     <result column="city" property="city" jdbcType="VARCHAR" />
@@ -17,8 +18,14 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, card_id, cust_id, bank, bank_no, province, city, zh_name, user_name, phone, status, created_at, updated_at
+    id, card_id, cust_id, bank, bank_code, bank_no, province, city, zh_name, user_name, phone, status, created_at, updated_at
   </sql>
+  <select id="queryCard" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from tb_cust_bank
+    where card_id = #{cardId}
+  </select>
 
   <select id="pager" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CustBank">
     select
@@ -50,6 +57,9 @@
     <if test="bank!=null and bank!=''">
       and bank = #{bank}
     </if>
+    <if test="bankCode!=null and bankCode!=''">
+      and bank_code = #{bankCode}
+    </if>
     <if test="bankNo!=null and bankNo!=''">
       and bank_no = #{bankNo}
     </if>
@@ -68,11 +78,11 @@
   </sql>
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustBank" >
-    insert into tb_cust_bank (id, card_id, cust_id, bank,
+    insert into tb_cust_bank (id, card_id, cust_id, bank, bank_code,
       bank_no, province, city, zh_name,
       user_name, phone, status, 
       created_at, updated_at)
-    values (#{id,jdbcType=BIGINT}, #{cardId}, #{custId,jdbcType=VARCHAR}, #{bank,jdbcType=VARCHAR},
+    values (#{id,jdbcType=BIGINT}, #{cardId}, #{custId,jdbcType=VARCHAR}, #{bank,jdbcType=VARCHAR}, #{bankCode,jdbcType=VARCHAR},
       #{bankNo,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{zhName,jdbcType=VARCHAR},
       #{userName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 1, now(), now())
   </insert>
@@ -80,25 +90,28 @@
   <update id="update" parameterType="org.loxf.jyadmin.dal.po.CustBank" >
     update tb_cust_bank
     <set >
-      <if test="bank != null" >
+      <if test="bank != null and bank!=''" >
         bank = #{bank,jdbcType=VARCHAR},
       </if>
-      <if test="bankNo != null" >
+      <if test="bankCode != null and bankCode!=''" >
+        bank_code = #{bankCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNo != null and bankNo!=''" >
         bank_no = #{bankNo,jdbcType=VARCHAR},
       </if>
-      <if test="province != null" >
+      <if test="province != null and province!=''" >
         province = #{province,jdbcType=VARCHAR},
       </if>
-      <if test="city != null" >
+      <if test="city != null and city!=''" >
         city = #{city,jdbcType=VARCHAR},
       </if>
-      <if test="zhName != null" >
+      <if test="zhName != null and zhName!=''" >
         zh_name = #{zhName,jdbcType=VARCHAR},
       </if>
-      <if test="userName != null" >
+      <if test="userName != null and userName!=''" >
         user_name = #{userName,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null" >
+      <if test="phone != null and phone!=''" >
         phone = #{phone,jdbcType=VARCHAR},
       </if>
       updated_at = now()

@@ -10,6 +10,8 @@ import org.loxf.jyadmin.biz.util.RandomUtils;
 import org.loxf.jyadmin.client.service.TradeService;
 import org.loxf.jyadmin.dal.dao.*;
 import org.loxf.jyadmin.dal.po.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.UUID;
 
 @Service("tradeService")
 public class TradeServiceImpl implements TradeService {
+    private Logger logger = LoggerFactory.getLogger(TradeServiceImpl.class);
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
@@ -34,6 +37,8 @@ public class TradeServiceImpl implements TradeService {
     @Autowired
     private OrderAttrMapper orderAttrMapper;
     @Autowired
+    private CustMapper custMapper;
+    @Autowired
     private JedisUtil jedisUtil;
 
     @Override
@@ -46,22 +51,29 @@ public class TradeServiceImpl implements TradeService {
         }
         String key = "COMPLETE_TRADE_" + orderId;
         if(jedisUtil.setnx(key, "true", 60)>0){
-            Order orderAgain = orderMapper.selectByOrderId(orderId);
-            if (orderAgain == null) {
-                return new BaseResult<>(BaseConstant.FAILED, "订单不存在");
+            try {
+                Order orderAgain = orderMapper.selectByOrderId(orderId);
+                if (orderAgain == null) {
+                    return new BaseResult<>(BaseConstant.FAILED, "订单不存在");
+                }
+                if (orderAgain.getStatus().intValue() != 3) {
+                    return new BaseResult<>(BaseConstant.FAILED, "当前订单状态不正确");
+                }
+                Trade trade = tradeMapper.selectByOrderId(orderId);
+                if (trade == null) {
+                    return new BaseResult<>(BaseConstant.FAILED, "交易不存在");
+                }
+                if (trade.getState().intValue() != 1) {
+                    return new BaseResult<>(BaseConstant.FAILED, "当前交易状态不正确");
+                }
+                dealTrade(orderId, status, msg, orderAgain);
+                return new BaseResult<>();
+            } catch (Exception e){
+                logger.error("交易失败", e);
+                return new BaseResult(BaseConstant.FAILED, "交易失败");
+            } finally {
+                jedisUtil.del(key);
             }
-            if (orderAgain.getStatus().intValue() != 3) {
-                return new BaseResult<>(BaseConstant.FAILED, "当前订单状态不正确");
-            }
-            Trade trade = tradeMapper.selectByOrderId(orderId);
-            if(trade==null){
-                return new BaseResult<>(BaseConstant.FAILED, "交易不存在");
-            }
-            if (trade.getState().intValue() != 1) {
-                return new BaseResult<>(BaseConstant.FAILED, "当前交易状态不正确");
-            }
-            dealTrade(orderId, status, msg, orderAgain);
-            return new BaseResult<>();
         } else {
             return new BaseResult<>(BaseConstant.FAILED, "当前订单正在处理");
         }
@@ -90,7 +102,7 @@ public class TradeServiceImpl implements TradeService {
         tradeMapper.updateByOrderId(orderId, status, msg);
     }
 
-    private void dealActive(Order order){
+    public void dealActive(Order order){
         ActiveCustList activeCustList = new ActiveCustList();
         activeCustList.setActiveTicketNo(DateUtils.format(new Date(), "yyMMddHHmmss") + RandomUtils.getRandomStr(4));
         activeCustList.setActiveId(order.getObjId());
@@ -108,7 +120,7 @@ public class TradeServiceImpl implements TradeService {
         activeCustListMapper.insert(activeCustList);
     }
 
-    private void dealVip(String custId, String vipType){
+    public void dealVip(String custId, String vipType){
         VipInfo vipInfo = vipInfoMapper.selectByCustId(custId);
         if(vipInfo==null){
             // 增加/修改VIP INFO，延长VIP期限
@@ -147,9 +159,13 @@ public class TradeServiceImpl implements TradeService {
                 }
             }
         }
+        // 更新user_info
+        Cust cust = new Cust();
+        cust.setUserLevel(vipType);
+        custMapper.updateByCustIdOrOpenid(cust);
     }
 
-    private int getValidDay(String vipType){
+    public int getValidDay(String vipType){
         int validDay = 0;
         if(vipType.equals("VIP")) {
             validDay = Integer.valueOf(ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY,

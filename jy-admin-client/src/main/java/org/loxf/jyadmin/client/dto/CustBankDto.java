@@ -7,6 +7,8 @@ public class CustBankDto extends BaseModel {
 
     private String custId;
 
+    private String bankCode;
+
     private String bank;
 
     private String bankNo;
@@ -45,6 +47,14 @@ public class CustBankDto extends BaseModel {
 
     public void setBank(String bank) {
         this.bank = bank == null ? null : bank.trim();
+    }
+
+    public String getBankCode() {
+        return bankCode;
+    }
+
+    public void setBankCode(String bankCode) {
+        this.bankCode = bankCode;
     }
 
     public String getBankNo() {

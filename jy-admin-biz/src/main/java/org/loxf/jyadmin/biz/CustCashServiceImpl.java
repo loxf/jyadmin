@@ -9,10 +9,15 @@ import org.loxf.jyadmin.base.exception.BizException;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.util.MD5;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
+import org.loxf.jyadmin.biz.weixin.WeixinPayUtil;
 import org.loxf.jyadmin.client.dto.ConfigDto;
+import org.loxf.jyadmin.client.dto.CustBankDto;
 import org.loxf.jyadmin.client.dto.CustCashDto;
+import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.AccountService;
+import org.loxf.jyadmin.client.service.CustBankService;
 import org.loxf.jyadmin.client.service.CustCashService;
+import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.dal.dao.CustCashMapper;
 import org.loxf.jyadmin.dal.po.CustCash;
 import org.slf4j.Logger;
@@ -33,6 +38,10 @@ public class CustCashServiceImpl implements CustCashService {
     private CustCashMapper custCashMapper;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private CustService custService;
+    @Autowired
+    private CustBankService custBankService;
 
     @Override
     public PageResult<CustCashDto> queryCustCash(CustCashDto custCashDto) {
@@ -68,8 +77,8 @@ public class CustCashServiceImpl implements CustCashService {
         if (StringUtils.isBlank(custCashDto.getObjId())) {
             return new BaseResult<>(BaseConstant.FAILED, "提现对象为空");
         }
-        int cash_min_nbr = Integer.valueOf(ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY,
-                "CASH_MIN_NBR", "100").getConfigValue());
+        String cash_min_nbr = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY,
+                "CASH_MIN_NBR", "100").getConfigValue();
         if (custCashDto.getBalance().compareTo(new BigDecimal(cash_min_nbr))<0 ) {
             return new BaseResult<>(BaseConstant.FAILED, "最低提现" + cash_min_nbr + "元");
         }
@@ -173,11 +182,21 @@ public class CustCashServiceImpl implements CustCashService {
         // 锁定提现
         if (custCashMapper.lock(custCashDto.getOrderId()) > 0) {
             try {
+                CustDto custDto = custService.queryCustByCustId(custCashDto.getCustId()).getData();
                 if (custCashDto.getType() == 1) {
-                    // TODO 微信提现
-                    // 微信提现 OBJID是custId
+                    // 微信提现
+                    WeixinPayUtil.payForWeixin(custDto.getOpenid(), custCashDto.getOrderId(),
+                            custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue());
                 } else {
                     // 银行卡提现
+                    BaseResult<CustBankDto> bankDtoBaseResult = custBankService.queryBank(custCashDto.getObjId());
+                    if(bankDtoBaseResult.getCode()==BaseConstant.FAILED){
+                        return new BaseResult<>(BaseConstant.FAILED, bankDtoBaseResult.getMsg());
+                    }
+                    CustBankDto custBankDto = bankDtoBaseResult.getData();
+                    WeixinPayUtil.payForBank(custCashDto.getOrderId(), custBankDto.getBankNo(), custBankDto.getUserName(),
+                            custBankDto.getBankCode(),
+                            custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue());
                 }
                 custCashMapper.update(custCashDto.getOrderId(), 3, "成功");
                 return new BaseResult<>();

@@ -6,6 +6,9 @@ import org.loxf.jyadmin.dal.po.CustBank;
 import java.util.List;
 
 public interface CustBankMapper {
+
+    CustBank queryCard(String cardId);
+
     int count(CustBank record);
 
     List<CustBank> pager(CustBank record);
