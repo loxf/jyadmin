@@ -91,7 +91,7 @@ public class ShareServiceImpl implements ShareService {
                 bp = "1";
             }
             // 新增积分
-            BaseResult baseResult = accountService.increase(custId, null, new BigDecimal(bp), null, detailName);
+            BaseResult baseResult = accountService.increase(custId, null, new BigDecimal(bp), null, detailName, null);
             if(baseResult.getCode()==BaseConstant.FAILED){
                 return baseResult;
             }

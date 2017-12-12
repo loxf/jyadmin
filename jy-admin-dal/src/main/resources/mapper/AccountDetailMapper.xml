@@ -10,12 +10,15 @@
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="balance" property="balance" jdbcType="DECIMAL" />
     <result column="change_balance" property="changeBalance" jdbcType="DECIMAL" />
+    <result column="source_cust_id" property="sourceCustId" jdbcType="VARCHAR" />
+    <result column="source_cust_name" property="sourceCustName" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, cust_id, (select real_name from tb_cust b where b.cust_id = a.cust_id) as cust_name,
-    order_id, detail_name, `type`, balance, change_balance, created_at, updated_at
+    order_id, detail_name, `type`, balance, change_balance, source_cust_id,
+    (select real_name from tb_cust bb where bb.cust_id = a.source_cust_id) as source_cust_name, created_at, updated_at
   </sql>
 
   <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -49,6 +52,9 @@
     <if test="custName!=null and custName!=''">
       and cust_id in (select cust_id from tb_cust t where t.real_name = #{custName})
     </if>
+    <if test="sourceCustName!=null and sourceCustName!=''">
+      and source_cust_id in (select cust_id from tb_cust t where t.real_name = #{sourceCustName})
+    </if>
     <if test="type!=null and type!=''">
       and `type` = #{type}
     </if>
@@ -63,11 +69,11 @@
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.AccountDetail" >
     insert into tb_account_detail (id, cust_id, order_id, 
       detail_name, `type`, balance,
-      change_balance, created_at, updated_at
+      change_balance, source_cust_id, created_at, updated_at
       )
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR}, 
       #{detailName,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, #{balance,jdbcType=DECIMAL}, 
-      #{changeBalance,jdbcType=DECIMAL}, now(), now()
+      #{changeBalance,jdbcType=DECIMAL}, #{sourceCustId,jdbcType=DECIMAL}, now(), now()
       )
   </insert>
 

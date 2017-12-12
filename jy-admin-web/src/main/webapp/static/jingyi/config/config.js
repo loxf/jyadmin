@@ -21,17 +21,17 @@ table.render({ //其它参数在此省略
         {
             field: 'configName',
             title: '配置名称',
-            width: 220
+            width: 350
         },
         {
             field: 'configCode',
             title: '配置编码',
-            width: 210
+            width: 250
         },
         {
             field: 'configValue',
             title: '值',
-            width: 260
+            width: 150
         },
         {
             field: 'detail',
@@ -48,13 +48,13 @@ table.render({ //其它参数在此省略
         {
             field: 'status',
             title: '状态',
-            width: 120 ,
+            width: 100 ,
             templet : '#statusTpl'
         },
         {
             field: 'configId',
             title: '操作',
-            width: 280,
+            width: 260,
             fixed: 'right',
             align: 'center',
             toolbar: '#barTable'

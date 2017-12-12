@@ -13,7 +13,7 @@
     <result column="obj_id" property="objId" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
     <result column="obj_id" property="objId" jdbcType="VARCHAR" />
-    <result column="remark" property="remark" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
     <result column="lock" property="lock" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />

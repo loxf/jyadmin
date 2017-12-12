@@ -1,0 +1,76 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">客户名称</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="nickName" placeholder="客户姓名/昵称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <div class="layui-input-inline" >
+                <input type="text" name="contact" placeholder="客户手机/邮箱" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="userLevel">
+                <option value="">客户等级</option>
+                <option value="NONE">普通</option>
+                <option value="VIP">VIP</option>
+                <option value="SVIP">SVIP</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <select name="isAgent">
+                <option value="">代理等级</option>
+                <option value="0">无</option>
+                <option value="1">代理商</option>
+                <option value="2">合伙人</option>
+                <option value="3">分公司</option>
+            </select>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+
+<script type="text/html" id="vipTpl">
+    {{#  if(d.userLevel==='NONE'){ }}
+    普通
+    {{#  } else { }}
+    {{ d.userLevel }}
+    {{#  } }}
+</script>
+<!-- 联系方式 -->
+<script type="text/html" id="phoneOrEmailTpl">
+    {{#  if(d.isChinese===1){ }}
+    {{ d.phone }}
+    {{#  } else if(d.isChinese===2) { }}
+    {{ d.email }}
+    {{#  } else if(d.phone) { }}
+    {{ d.phone }}
+    {{#  } else if(d.email) { }}
+    {{ d.email }}
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+<script type="text/html" id="agentTpl">
+    {{#  if(d.isAgent===0){ }}
+    无
+    {{#  } else if(d.isAgent===1){ }}
+    代理商
+    {{#  } else if(d.isAgent===2){ }}
+    合伙人
+    {{#  } else if(d.isAgent===3){ }}
+    分公司
+    {{#  } }}
+</script>
+
+<script src="${rc.contextPath}/static/jingyi/account/custBalance.js"></script>

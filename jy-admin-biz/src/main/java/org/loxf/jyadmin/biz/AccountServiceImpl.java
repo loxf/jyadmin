@@ -1,9 +1,13 @@
 package org.loxf.jyadmin.biz;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
+import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.client.dto.ActiveCustListDto;
+import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.AccountService;
 import org.loxf.jyadmin.client.service.VerifyCodeService;
 import org.loxf.jyadmin.dal.dao.AccountDetailMapper;
@@ -11,14 +15,17 @@ import org.loxf.jyadmin.dal.dao.AccountMapper;
 import org.loxf.jyadmin.dal.dao.CustBpDetailMapper;
 import org.loxf.jyadmin.dal.po.Account;
 import org.loxf.jyadmin.dal.po.AccountDetail;
+import org.loxf.jyadmin.dal.po.Cust;
 import org.loxf.jyadmin.dal.po.CustBpDetail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,6 +41,19 @@ public class AccountServiceImpl implements AccountService {
     private CustBpDetailMapper custBpDetailMapper;
     @Autowired
     private VerifyCodeService verifyCodeService;
+
+    @Override
+    public PageResult<JSONObject> queryBalanceList(CustDto custDto) {
+        Cust cust = new Cust();
+        BeanUtils.copyProperties(custDto, cust);
+        int total = accountMapper.queryBalanceListCount(cust);
+        List<JSONObject> result = new ArrayList<>();
+        if(total>0){
+            result = accountMapper.queryBalanceList(cust);
+        }
+        int totalPage = total/custDto.getPager().getSize() + (total%custDto.getPager().getSize()==0?0:1);
+        return new PageResult<JSONObject>(totalPage, custDto.getPager().getPage(), total, result);
+    }
 
     @Override
     public BaseResult<BigDecimal> queryBalance(String custId) {
@@ -105,12 +125,13 @@ public class AccountServiceImpl implements AccountService {
             if (money != null && money.compareTo(BigDecimal.ZERO) > 0) {
                 // 账户明细
                 newAccountInfo.setBalance(account.getBalance().subtract(money));
-                accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money, orderId, detailName, 3));
+                accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money,
+                        detailName, orderId, 3, null));
             }
             if (bp != null && bp.compareTo(BigDecimal.ZERO) > 0) {
                 // 积分明细
                 newAccountInfo.setBp(account.getBp().subtract(bp));
-                custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBalance(), bp, orderId, detailName, 3));
+                custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBalance(), bp, detailName, orderId, 3));
             }
             newAccountInfo.setCustId(custId);
             // 记录账户明细
@@ -126,7 +147,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional
-    public BaseResult<Boolean> increase(String custId, BigDecimal money, BigDecimal bp, String orderId, String detailName) {
+    public BaseResult<Boolean> increase(String custId, BigDecimal money, BigDecimal bp, String orderId, String detailName, String sourceCustId) {
         // 账户锁定
         if(accountMapper.lockAccount(custId)<=0) {
             return new BaseResult<>(BaseConstant.FAILED, "账户锁定失败");
@@ -139,12 +160,14 @@ public class AccountServiceImpl implements AccountService {
         if(money!=null && money.compareTo(BigDecimal.ZERO)>0) {
             //账户明细
             newAccountInfo.setBalance(account.getBalance().add(money));
-            insertDetail = accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money, detailName, orderId, 1)) > 0;
+            insertDetail = accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money,
+                    detailName, orderId, 1, sourceCustId)) > 0;
         }
         if(bp!=null && bp.compareTo(BigDecimal.ZERO)>0) {
             // 积分明细
             newAccountInfo.setBp(account.getBp().add(bp));
-            insertDetail = custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBp(), bp, detailName, orderId, 1)) > 0;
+            insertDetail = custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBp(), bp, detailName,
+                    orderId, 1)) > 0;
         }
         newAccountInfo.setCustId(custId);
         if(insertDetail){
@@ -181,7 +204,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private AccountDetail createAccountDetail(String custId, BigDecimal balance, BigDecimal changeMoney,
-                                              String detailName, String orderId, Integer type){
+                                              String detailName, String orderId, Integer type, String sourceCustId){
         AccountDetail accountDetail = new AccountDetail();
         accountDetail.setCustId(custId);
         accountDetail.setBalance(balance);
@@ -189,6 +212,7 @@ public class AccountServiceImpl implements AccountService {
         accountDetail.setDetailName(detailName);
         accountDetail.setOrderId(orderId);
         accountDetail.setType(type);
+        accountDetail.setSourceCustId(sourceCustId);
         return accountDetail;
     }
 

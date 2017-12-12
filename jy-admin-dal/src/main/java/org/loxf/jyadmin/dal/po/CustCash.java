@@ -24,7 +24,7 @@ public class CustCash extends BaseModel {
 
     private Integer status;
 
-    private Integer remark;
+    private String remark;
 
     private Integer lock;
 
@@ -100,11 +100,11 @@ public class CustCash extends BaseModel {
         this.status = status;
     }
 
-    public Integer getRemark() {
+    public String getRemark() {
         return remark;
     }
 
-    public void setRemark(Integer remark) {
+    public void setRemark(String remark) {
         this.remark = remark;
     }
 

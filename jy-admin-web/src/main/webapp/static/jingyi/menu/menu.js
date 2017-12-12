@@ -29,7 +29,7 @@ var menu = {
         },
         {
             menuName: '余额管理',
-            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
+            menuHref: contextPath + '/admin/account/accountBalanceMgr.html'
         },
         {
             menuName: '积分管理',
@@ -37,7 +37,7 @@ var menu = {
         },
         {
             menuName: '银行卡管理',
-            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
+            menuHref: contextPath + '/admin/account/custBankcard.html'
         },
         {
             menuName: '提现管理',
@@ -45,11 +45,11 @@ var menu = {
         },
         {
             menuName: '公司收入',
-            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
+            menuHref: contextPath + '/admin/account/companyIncomeMgr.html'
         },
         {
             menuName: '用户收入',
-            menuHref: contextPath + '/admin/error.html?errorMsg=This page is not valid. Please wait!'
+            menuHref: contextPath + '/admin/account/userIncomeMgr.html'
         }
     ],
     OFFER: [

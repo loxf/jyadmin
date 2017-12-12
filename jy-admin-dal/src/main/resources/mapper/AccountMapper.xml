@@ -85,4 +85,44 @@
             ORDER BY bp DESC) t
     WHERE cust_id = #{custId}
   </select>
+
+  <select id="queryBalanceListCount" resultType="int" parameterType="org.loxf.jyadmin.dal.po.Cust">
+    SELECT count(1)
+    FROM TB_ACCOUNT A, tb_cust B
+    WHERE A.cust_id = B.cust_id
+    <include refid="WHERE_SQL"/>
+  </select>
+
+  <select id="queryBalanceList" resultType="com.alibaba.fastjson.JSONObject" parameterType="org.loxf.jyadmin.dal.po.Cust">
+    SELECT A.CUST_ID as custId, A.BALANCE as balance, A.BP as bp, B.NICK_NAME as nickName, B.REAL_NAME as realName,
+    B.USER_LEVEL as userLevel, B.PHONE as phone, B.EMAIL as email, B.IS_AGENT as isAgent
+    FROM TB_ACCOUNT A, tb_cust B
+    WHERE A.cust_id = B.cust_id
+    <include refid="WHERE_SQL"/>
+    order by a.id DESC
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+
+  <sql id="WHERE_SQL">
+    <if test="nickName!=null and nickName!=''">
+      and (b.nick_name like CONCAT('%', #{nickName},'%') or b.real_name like CONCAT('%', #{nickName},'%'))
+    </if>
+    <if test="userLevel!=null and userLevel!=''">
+      and b.user_level = #{userLevel}
+    </if>
+    <if test="phone!=null and phone!=''">
+      and b.phone = #{phone}
+    </if>
+    <if test="email!=null and email!=''">
+      and b.email = #{email}
+    </if>
+    <if test="isChinese!=null and isChinese!=-1">
+      and b.is_chinese = #{isChinese}
+    </if>
+    <if test="isAgent!=null and isAgent!=-1">
+      and b.is_agent = #{isAgent}
+    </if>
+  </sql>
 </mapper>

@@ -81,4 +81,7 @@
     <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
                    interface="org.loxf.jyadmin.client.service.VerifyCodeService" ref="verifyCodeService"/>
 
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.CompanyIncomeService" ref="companyIncomeService"/>
+
 </beans>

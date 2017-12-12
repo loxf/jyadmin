@@ -1,0 +1,40 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">受益人</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="custName" placeholder="受益客户姓名" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <div class="layui-input-inline" >
+                <input type="text" name="sourceCustName" placeholder="消费客户姓名" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">明细内容</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="detailName" placeholder="明细详情，支持模糊查询" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <div class="layui-input-inline">
+                <input type="text" name="rangDate" placeholder="受益时间" id="createdAt" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+
+
+<script src="${rc.contextPath}/static/jingyi/account/userIncome.js"></script>

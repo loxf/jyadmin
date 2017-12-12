@@ -19,6 +19,10 @@ public class AccountDetailDto extends BaseModel {
 
     private BigDecimal changeBalance;
 
+    private String sourceCustId;
+
+    private String sourceCustName;
+
     public String getCustId() {
         return custId;
     }
@@ -75,4 +79,19 @@ public class AccountDetailDto extends BaseModel {
         this.changeBalance = changeBalance;
     }
 
+    public String getSourceCustId() {
+        return sourceCustId;
+    }
+
+    public void setSourceCustId(String sourceCustId) {
+        this.sourceCustId = sourceCustId;
+    }
+
+    public String getSourceCustName() {
+        return sourceCustName;
+    }
+
+    public void setSourceCustName(String sourceCustName) {
+        this.sourceCustName = sourceCustName;
+    }
 }

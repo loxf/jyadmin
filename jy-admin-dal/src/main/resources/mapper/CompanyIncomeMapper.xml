@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.CompanyIncomeMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CompanyIncome" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="detail_name" property="detailName" jdbcType="VARCHAR" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="cust_name" property="custName" jdbcType="VARCHAR" />
+    <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, detail_name, cust_id, cust_name, amount, `type`, source, created_at, updated_at
+  </sql>
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CompanyIncome" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_company_income
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by id DESC
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.CompanyIncome" >
+    select count(1)
+    from tb_company_income
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by id DESC
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+
+  <sql id="WHERE_SQL">
+    <if test="custId!=null and custId!=''">
+      and cust_id = #{custId}
+    </if>
+    <if test="custName!=null and custName!=''">
+      and cust_name = #{custName}
+    </if>
+    <if test="type!=null and type>0">
+      and `type` = #{type}
+    </if>
+    <if test="source!=null and source!=''">
+      and source = #{source}
+    </if>
+  </sql>
+
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CompanyIncome" >
+    insert into tb_company_income (id, detail_name, cust_id, 
+      cust_name, amount, `type`,
+      source, created_at, updated_at
+      )
+    values (#{id,jdbcType=BIGINT}, #{detailName,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, 
+      #{custName,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER}, 
+      #{source,jdbcType=VARCHAR}, now(), now()
+      )
+  </insert>
+</mapper>

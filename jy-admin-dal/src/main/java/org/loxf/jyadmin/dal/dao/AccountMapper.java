@@ -1,7 +1,9 @@
 package org.loxf.jyadmin.dal.dao;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.Account;
+import org.loxf.jyadmin.dal.po.Cust;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,4 +27,8 @@ public interface AccountMapper {
     List<HashMap> selectBpTop10();
 
     int queryBpRankingByCustId(String custId);
+
+    int queryBalanceListCount(Cust cust);
+
+    List<JSONObject> queryBalanceList(Cust cust);
 }

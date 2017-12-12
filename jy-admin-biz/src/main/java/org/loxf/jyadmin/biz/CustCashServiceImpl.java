@@ -168,7 +168,7 @@ public class CustCashServiceImpl implements CustCashService {
         // 如果审核未通过，补余额
         if (status == -3) {
             BaseResult<Boolean> increase = accountService.increase(custCash.getCustId(),
-                    custCash.getBalance(), null, null, "拒绝提现退款");
+                    custCash.getBalance(), null, null, "拒绝提现退款", null);
             if (increase.getCode() == BaseConstant.FAILED || !increase.getData()) {
                 return new BaseResult<>(BaseConstant.FAILED, increase.getMsg());
             }
