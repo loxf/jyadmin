@@ -11,7 +11,7 @@
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, ip, page, os, position, created_at
+    id, cust_id, ip, page, os, `position`, created_at
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
@@ -25,60 +25,10 @@
   </delete>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.SystemLog" >
     insert into tb_system_log (id, cust_id, ip, 
-      page, os, position, 
+      page, os, `position`,
       created_at)
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
-      #{page,jdbcType=VARCHAR}, #{os,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, 
-      #{createdAt,jdbcType=TIMESTAMP})
-  </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.SystemLog" >
-    insert into tb_system_log
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="custId != null" >
-        cust_id,
-      </if>
-      <if test="ip != null" >
-        ip,
-      </if>
-      <if test="page != null" >
-        page,
-      </if>
-      <if test="os != null" >
-        os,
-      </if>
-      <if test="position != null" >
-        position,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="custId != null" >
-        #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="ip != null" >
-        #{ip,jdbcType=VARCHAR},
-      </if>
-      <if test="page != null" >
-        #{page,jdbcType=VARCHAR},
-      </if>
-      <if test="os != null" >
-        #{os,jdbcType=VARCHAR},
-      </if>
-      <if test="position != null" >
-        #{position,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
+      #{page,jdbcType=VARCHAR}, #{os,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, now())
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.SystemLog" >
     update tb_system_log
@@ -96,7 +46,7 @@
         os = #{os,jdbcType=VARCHAR},
       </if>
       <if test="position != null" >
-        position = #{position,jdbcType=VARCHAR},
+        `position` = #{position,jdbcType=VARCHAR},
       </if>
       <if test="createdAt != null" >
         created_at = #{createdAt,jdbcType=TIMESTAMP},
@@ -110,7 +60,7 @@
       ip = #{ip,jdbcType=VARCHAR},
       page = #{page,jdbcType=VARCHAR},
       os = #{os,jdbcType=VARCHAR},
-      position = #{position,jdbcType=VARCHAR},
+      `position` = #{position,jdbcType=VARCHAR},
       created_at = #{createdAt,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>

@@ -37,6 +37,8 @@ public class BaseConstant {
     public static String JS_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi";
 
     // 套餐详情
+    public static String JYZX_INDEX_URL =  "https://www.jingyizaixian.com?recommend=%s";
+    // 套餐详情
     public static String OFFER_DETAIL_URL =  "https://www.jingyizaixian.com/packageDetail?id=%s";
     // 活动详情
     public static String ACTIVE_DETAIL_URL =  "https://www.jingyizaixian.com/activityDetail?id=%s";
