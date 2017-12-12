@@ -117,6 +117,7 @@ public class TradeServiceImpl implements TradeService {
             if (order.getOrderType() == 3) {
                 String vipType = order.getObjId().equals("OFFER001") ? "VIP" : "SVIP";
                 detailName += "升级" + vipType;
+                // 处理VIP_INFO CUST_INFO
                 dealVip(order.getCustId(), vipType);
                 if (custFirst != null) {
                     firstScholarships = queryScholarshipsRate(custFirst, "STUDENT", 1);
@@ -285,6 +286,7 @@ public class TradeServiceImpl implements TradeService {
         // 更新user_info
         Cust cust = new Cust();
         cust.setUserLevel(vipType);
+        cust.setCustId(custId);
         custMapper.updateByCustIdOrOpenid(cust);
     }
 

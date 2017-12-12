@@ -29,4 +29,8 @@
     set updated_at = now()
     where type = #{type,jdbcType=VARCHAR} and obj_id = #{objId,jdbcType=VARCHAR}
   </update>
+
+  <delete id="delete">
+    delete from tb_index_recommend where `type` = #{type,jdbcType=VARCHAR} and obj_id = #{objId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

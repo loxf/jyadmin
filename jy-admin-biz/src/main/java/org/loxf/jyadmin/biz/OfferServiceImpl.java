@@ -123,7 +123,8 @@ public class OfferServiceImpl implements OfferService {
     @Override
     @Transactional
     public BaseResult deleteOffer(String offerId){
-        // TODO 删除推荐
+        Offer again = offerMapper.selectByOfferId(offerId);
+        indexRecommendMapper.delete(again.getOfferType(), again.getOfferId());
         return new BaseResult(offerMapper.deleteByOfferId(offerId));
     }
 
@@ -176,9 +177,9 @@ public class OfferServiceImpl implements OfferService {
             metaJSON = JSON.parseObject(metaData);
         }
         if(metaJSON.containsKey("INDEX")){
-            indexRecommendMapper.updateByPrimaryKey("OFFER", offerId);
+            indexRecommendMapper.updateByPrimaryKey(offer.getOfferType(), offerId);
         } else {
-            indexRecommendMapper.insert("OFFER", offerId);
+            indexRecommendMapper.insert(offer.getOfferType(), offerId);
             metaJSON.put("INDEX", "on");
             Offer offerRefresh = new Offer();
             offerRefresh.setOfferId(offerId);

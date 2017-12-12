@@ -11,4 +11,6 @@ public interface IndexRecommendMapper {
     List<IndexRecommend> selectShow();
 
     int updateByPrimaryKey(@Param("type") String type,@Param("objId") String objId);
+
+    int delete(@Param("type") String type,@Param("objId") String objId);
 }

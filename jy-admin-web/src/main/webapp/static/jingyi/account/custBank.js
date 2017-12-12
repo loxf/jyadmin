@@ -18,7 +18,7 @@ laydate.render({
 var table = layui.table;
 table.render({ //其它参数在此省略
     id: 'tableReload',
-    url: 'queryCashList.html',
+    url: 'queryBankcardList.html',
     method: 'POST',
     elem: '#dataTable', //指定原始表格元素选择器（推荐id选择器）
     height: 435, //容器高度

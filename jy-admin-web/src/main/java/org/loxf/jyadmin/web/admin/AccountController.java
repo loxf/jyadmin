@@ -4,16 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
-import org.loxf.jyadmin.client.dto.AccountDetailDto;
-import org.loxf.jyadmin.client.dto.CompanyIncomeDto;
-import org.loxf.jyadmin.client.dto.CustCashDto;
-import org.loxf.jyadmin.client.dto.CustDto;
-import org.loxf.jyadmin.client.service.AccountDetailService;
-import org.loxf.jyadmin.client.service.AccountService;
-import org.loxf.jyadmin.client.service.CompanyIncomeService;
-import org.loxf.jyadmin.client.service.CustCashService;
+import org.loxf.jyadmin.client.dto.*;
+import org.loxf.jyadmin.client.service.*;
 import org.loxf.jyadmin.dal.po.AccountDetail;
 import org.loxf.jyadmin.dal.po.CompanyIncome;
+import org.loxf.jyadmin.dal.po.CustBank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +24,8 @@ public class AccountController extends BaseControl {
     private AccountDetailService accountDetailService;
     @Autowired
     private CustCashService custCashService;
+    @Autowired
+    private CustBankService custBankService;
     @Autowired
     private CompanyIncomeService companyIncomeService;
 
@@ -104,6 +101,13 @@ public class AccountController extends BaseControl {
             custDto.setIsChinese(isChinese);
         }
         return accountService.queryBalanceList(custDto);
+    }
+
+    @RequestMapping("/queryBankcardList")
+    @ResponseBody
+    public PageResult<CustBankDto> queryBankcardList(CustBankDto custBankDto) {
+        initRangeDate(custBankDto);
+        return custBankService.pager(custBankDto);
     }
 
     @RequestMapping("/queryCashList")

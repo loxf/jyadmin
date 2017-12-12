@@ -9,7 +9,7 @@
                 <input type="text" name="userName" placeholder="客户名称" class="layui-input">
             </div>
         </div>
-        <div class="layui-inline layui-col-lg3">
+        <div class="layui-inline layui-col-lg2">
             <div class="layui-input-inline" >
                 <input type="text" name="bank" placeholder="银行" class="layui-input">
             </div>
@@ -39,7 +39,7 @@
                 </select>
             </div>
         </div>
-        <div class="layui-inline layui-col-lg3">
+        <div class="layui-inline layui-col-lg2">
             <select name="city" id="city" lay-search="">
                 <option value="">选择城市</option>
             </select>
