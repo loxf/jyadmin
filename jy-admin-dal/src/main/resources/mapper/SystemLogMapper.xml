@@ -13,16 +13,28 @@
   <sql id="Base_Column_List" >
     id, cust_id, ip, page, os, `position`, created_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectList" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.SystemLog" >
     select 
     <include refid="Base_Column_List" />
     from tb_system_log
-    where id = #{id,jdbcType=BIGINT}
+    where 1=1
+    <if test="custId!=null and custId!=''">
+      cust_id = #{custId}
+    </if>
+    <if test="os!=null and os!=''">
+      os = #{os}
+    </if>
+    <if test="ip!=null and ip!=''">
+      ip = #{ip}
+    </if>
+    <if test="page!=null and page!=''">
+      page = #{page}
+    </if>
+    <if test="position!=null and position!=''">
+      `position` = #{position}
+    </if>
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from tb_system_log
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.SystemLog" >
     insert into tb_system_log (id, cust_id, ip, 
       page, os, `position`,
@@ -30,38 +42,4 @@
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
       #{page,jdbcType=VARCHAR}, #{os,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, now())
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.SystemLog" >
-    update tb_system_log
-    <set >
-      <if test="custId != null" >
-        cust_id = #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="ip != null" >
-        ip = #{ip,jdbcType=VARCHAR},
-      </if>
-      <if test="page != null" >
-        page = #{page,jdbcType=VARCHAR},
-      </if>
-      <if test="os != null" >
-        os = #{os,jdbcType=VARCHAR},
-      </if>
-      <if test="position != null" >
-        `position` = #{position,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.SystemLog" >
-    update tb_system_log
-    set cust_id = #{custId,jdbcType=VARCHAR},
-      ip = #{ip,jdbcType=VARCHAR},
-      page = #{page,jdbcType=VARCHAR},
-      os = #{os,jdbcType=VARCHAR},
-      `position` = #{position,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
 </mapper>
