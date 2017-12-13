@@ -12,6 +12,13 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">活动描述</label>
+        <div class="layui-input-block">
+            <input type="text" name="activeDesc" value="$!{active.activeDesc}" autocomplete="off" placeholder="请输入活动描述，用于活动分享"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">活动时间</label>
         <div class="layui-input-block">
             <input type="text" name="startAndEnd" placeholder="活动开始-结束时间"
@@ -205,6 +212,7 @@
             data : {
                 activeId:data.field.activeId,
                 activeName:data.field.activeName,
+                activeDesc:data.field.activeDesc,
                 pic:data.field.pic,
                 activePrivi:JSON.stringify(activePrivi),
                 metaData:JSON.stringify(metaData),

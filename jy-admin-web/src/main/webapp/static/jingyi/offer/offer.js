@@ -77,6 +77,11 @@ table.render({ //其它参数在此省略
             templet : '#metaDataTpl'
         },
         {
+            field: 'offerDesc',
+            title: '商品描述',
+            width: 180
+        },
+        {
             field: 'htmlId',
             title: '详情',
             width: 80,

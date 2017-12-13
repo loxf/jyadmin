@@ -10,6 +10,8 @@ public class Offer extends BaseModel{
 
     private String offerName;
 
+    private String offerDesc;
+
     private String catalogId;
 
     private String catalogName;
@@ -44,6 +46,14 @@ public class Offer extends BaseModel{
 
     public void setOfferName(String offerName) {
         this.offerName = offerName == null ? null : offerName.trim();
+    }
+
+    public String getOfferDesc() {
+        return offerDesc;
+    }
+
+    public void setOfferDesc(String offerDesc) {
+        this.offerDesc = offerDesc;
     }
 
     public String getCatalogId() {

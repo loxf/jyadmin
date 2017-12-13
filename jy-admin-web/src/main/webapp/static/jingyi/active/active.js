@@ -107,6 +107,11 @@ table.render({ //其它参数在此省略
             templet : '#studentsTpl'
         },
         {
+            field: 'activeDesc',
+            title: '活动描述',
+            width: 180
+        },
+        {
             field: 'htmlId',
             title: '详情',
             width: 80,

@@ -10,6 +10,8 @@ public class ActiveDto extends BaseModel {
 
     private String activeName;
 
+    private String activeDesc;
+
     private BigDecimal price;
 
     private String activePrivi;
@@ -50,6 +52,14 @@ public class ActiveDto extends BaseModel {
 
     public void setActiveName(String activeName) {
         this.activeName = activeName == null ? null : activeName.trim();
+    }
+
+    public String getActiveDesc() {
+        return activeDesc;
+    }
+
+    public void setActiveDesc(String activeDesc) {
+        this.activeDesc = activeDesc;
     }
 
     public String getPic() {

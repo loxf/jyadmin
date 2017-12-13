@@ -5,6 +5,7 @@
         <id column="id" property="id" jdbcType="BIGINT"/>
         <result column="active_id" property="activeId" jdbcType="VARCHAR"/>
         <result column="active_name" property="activeName" jdbcType="VARCHAR"/>
+        <result column="active_desc" property="activeDesc" jdbcType="VARCHAR"/>
         <result column="price" property="price" jdbcType="DECIMAL"/>
         <result column="active_privi" property="activePrivi" jdbcType="VARCHAR"/>
         <result column="pic" property="pic" jdbcType="VARCHAR"/>
@@ -21,7 +22,7 @@
         <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, active_id, active_name, price, active_privi, pic, province, city, addr, active_start_time, active_end_time,
+        id, active_id, active_name, active_desc, price, active_privi, pic, province, city, addr, active_start_time, active_end_time,
         html_id, status, meta_data, is_deleted, created_at, updated_at
     </sql>
 
@@ -82,11 +83,11 @@
     </update>
 
     <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Active">
-        insert into tb_active (active_id, active_name,
+        insert into tb_active (active_id, active_name, active_desc,
           price, active_privi, pic, province, city, addr,
           active_start_time, active_end_time, html_id, meta_data,
           status, is_deleted, created_at, updated_at)
-        values (#{activeId,jdbcType=VARCHAR}, #{activeName,jdbcType=VARCHAR},
+        values (#{activeId,jdbcType=VARCHAR}, #{activeName,jdbcType=VARCHAR}, #{activeDesc,jdbcType=VARCHAR},
           #{price,jdbcType=DECIMAL}, #{activePrivi,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR},
           #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{addr,jdbcType=VARCHAR},
           #{activeStartTime,jdbcType=TIMESTAMP}, #{activeEndTime,jdbcType=TIMESTAMP}, #{htmlId,jdbcType=VARCHAR},
@@ -98,6 +99,9 @@
         <set>
             <if test="activeName != null and activeName != ''">
                 active_name = #{activeName,jdbcType=VARCHAR},
+            </if>
+            <if test="activeDesc != null and activeDesc != ''">
+                active_desc = #{activeDesc,jdbcType=VARCHAR},
             </if>
             <if test="price != null and price != ''">
                 price = #{price,jdbcType=DECIMAL},

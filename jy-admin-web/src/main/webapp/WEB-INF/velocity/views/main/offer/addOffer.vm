@@ -11,6 +11,13 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">套餐描述</label>
+        <div class="layui-input-block">
+            <input type="text" name="offerDesc" autocomplete="off" placeholder="请输入套餐描述，用于套餐分享"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <div class="layui-inline">
             <label class="layui-form-label">商品分类</label>
             <div class="layui-input-inline">
@@ -74,13 +81,6 @@
             <input type="checkbox" checked="" name="HOT" lay-skin="switch" lay-text="ON|OFF">
         </div>
     </div>
-    #*<div class="layui-form-item">
-        <label class="layui-form-label">首页展示</label>
-        <div class="layui-input-block">
-            <input type="checkbox" placeholder="首页展示最多5个，按设置时间倒序排列"
-                   name="INDEX" lay-skin="switch" lay-text="ON|OFF">
-        </div>
-    </div>*#
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">套餐详情</label>
         #parse("/views/common/editor.vm")
@@ -206,6 +206,7 @@
             url:"newOffer.html",
             data : {
                 offerName:data.field.offerName,
+                offerDesc:data.field.offerDesc,
                 catalogId:data.field.catalogId,
                 offerPic:data.field.offerPic,
                 buyPrivi:JSON.stringify(buyPrivi),
