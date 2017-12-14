@@ -180,12 +180,13 @@ public class CustCashServiceImpl implements CustCashService {
     @Transactional
     public BaseResult<Boolean> takeCashDeal(CustCashDto custCashDto) {
         // 锁定提现
+        String remark = "";
         if (custCashMapper.lock(custCashDto.getOrderId()) > 0) {
             try {
                 CustDto custDto = custService.queryCustByCustId(custCashDto.getCustId()).getData();
                 if (custCashDto.getType() == 1) {
                     // 微信提现
-                    WeixinPayUtil.payForWeixin(custDto.getOpenid(), custCashDto.getOrderId(),
+                    remark = WeixinPayUtil.payForWeixin(custDto.getOpenid(), custCashDto.getOrderId(),
                             custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue());
                 } else {
                     // 银行卡提现
@@ -194,15 +195,20 @@ public class CustCashServiceImpl implements CustCashService {
                         return new BaseResult<>(BaseConstant.FAILED, bankDtoBaseResult.getMsg());
                     }
                     CustBankDto custBankDto = bankDtoBaseResult.getData();
-                    WeixinPayUtil.payForBank(custCashDto.getOrderId(), custBankDto.getBankNo(), custBankDto.getUserName(),
+                    remark = WeixinPayUtil.payForBank(custCashDto.getOrderId(), custBankDto.getBankNo(), custBankDto.getUserName(),
                             custBankDto.getBankCode(),
                             custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue());
                 }
-                custCashMapper.update(custCashDto.getOrderId(), 3, "成功");
+                custCashMapper.update(custCashDto.getOrderId(), 3, remark);
                 return new BaseResult<>();
             } catch (Exception e) {
                 logger.error("提现失败", e);
-                custCashMapper.update(custCashDto.getOrderId(), -9, e.getMessage());
+                if(e instanceof BizException){
+                    remark = ((BizException) e).getCode() + ((BizException) e).getName();
+                } else {
+                    remark = e.getMessage();
+                }
+                custCashMapper.update(custCashDto.getOrderId(), -9, remark);
                 return new BaseResult<>(BaseConstant.FAILED, "提现失败");
             } finally {
                 // 解除锁定

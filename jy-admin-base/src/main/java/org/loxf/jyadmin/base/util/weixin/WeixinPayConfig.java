@@ -12,14 +12,16 @@ import java.security.KeyStore;
 
 public class WeixinPayConfig implements WXPayConfig {
     private static SSLContext sslContextWeixin;
+    // TODO 文件路径
+    // private static String certFilePath = "/home/jingyiweb/weixin_cert/apiclient_cert.p12";
+    private static String certFilePath = "C:\\Users\\lenovo\\Desktop\\apiclient_cert.p12";
 
     public WeixinPayConfig() throws Exception {
         initCert();
     }
 
     public void initCert() throws Exception {
-        String certPath = "/home/jingyiweb/weixin_cert/apiclient_cert.p12";
-        File file = new File(certPath);
+        File file = new File(certFilePath);
         InputStream certStream = new FileInputStream(file);
         this.certData = new byte[(int) file.length()];
         certStream.read(this.certData);
@@ -29,7 +31,6 @@ public class WeixinPayConfig implements WXPayConfig {
     public static SSLContext queryWeixinSSL() throws Exception {
         if(sslContextWeixin==null) {
             KeyStore keyStore = KeyStore.getInstance("PKCS12");
-            String certFilePath ="/home/jingyiweb/weixin_cert/apiclient_cert.p12";
             FileInputStream instream = new FileInputStream(new File(certFilePath));
             keyStore.load(instream, BaseConstant.WX_MCHID.toCharArray());
             instream.close();

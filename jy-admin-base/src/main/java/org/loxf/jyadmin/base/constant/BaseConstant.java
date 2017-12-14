@@ -35,6 +35,7 @@ public class BaseConstant {
     public static String USER_INFO_URL = "https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN";
     public static String CHECK_USER_ACCESS_TOKEN_URL = "https://api.weixin.qq.com/sns/auth?access_token=%s&openid=%s";
     public static String JS_TICKET_URL = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi";
+    public static String WEIXIN_RSA_API = "https://fraud.mch.weixin.qq.com/risk/getpublickey";
 
     // 套餐详情
     public static String JYZX_INDEX_URL =  "https://www.jingyizaixian.com?recommend=%s";

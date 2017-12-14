@@ -3,6 +3,7 @@ package org.loxf.jyadmin.biz.weixin;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
+import com.github.wxpay.sdk.WXPayConstants;
 import com.github.wxpay.sdk.WXPayUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
@@ -13,11 +14,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
+import org.bouncycastle.util.encoders.Base64;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.exception.BizException;
 import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.HttpsUtil;
+import org.loxf.jyadmin.base.util.RSAUtil;
 import org.loxf.jyadmin.base.util.weixin.WeixinPayConfig;
 import org.loxf.jyadmin.base.util.weixin.WeixinUtil;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
@@ -40,11 +43,17 @@ import java.util.Map;
 public class WeixinPayUtil {
     private static Logger logger = LoggerFactory.getLogger(WeixinPayUtil.class);
 
+    public static void main(String[] args) throws Exception {
+        BaseResult<String> rsaResult = queryRSA();
+    }
+
     /**
+     * 微信统一下单
+     *
      * @param openid
      * @param ip
      * @param orderDto
-     * @param attach  JSON透传
+     * @param attach   JSON透传
      * @throws Exception
      */
     public static BaseResult<OrderDto> createOrder(String openid, String ip, OrderDto orderDto, String attach) throws Exception {
@@ -57,7 +66,7 @@ public class WeixinPayUtil {
         data.put("out_trade_no", orderDto.getOrderId());
         data.put("device_info", "WX");// 微信支付
         data.put("fee_type", "CNY");
-        data.put("total_fee", orderDto.getOrderMoney().multiply(new BigDecimal(100)).longValue()+"");
+        data.put("total_fee", orderDto.getOrderMoney().multiply(new BigDecimal(100)).longValue() + "");
         data.put("spbill_create_ip", ip);
         data.put("notify_url", BaseConstant.WX_PAY_CALLBACK);
         data.put("trade_type", "JSAPI");  // JSAPI--公众号支付、NATIVE--原生扫码支付、APP--app支付，统一下单接口trade_type的传参可参考这里
@@ -69,15 +78,15 @@ public class WeixinPayUtil {
         calendar.add(Calendar.MINUTE, 15);
         data.put("time_expire", DateUtils.format(calendar.getTime(), "yyyyMMddHHmmss"));
         JSONObject attachJson = null;
-        if(StringUtils.isNotBlank(attach)){
+        if (StringUtils.isNotBlank(attach)) {
             data.put("attach", attach);
         }
 
         try {
             Map<String, String> resp = wxpay.unifiedOrder(data);
             logger.info("微信支付下单：{}", JSON.toJSONString(resp));
-            if(resp.get("return_code").equals("SUCCESS")){
-                if(resp.get("result_code").equals("SUCCESS")){
+            if (resp.get("return_code").equals("SUCCESS")) {
+                if (resp.get("result_code").equals("SUCCESS")) {
                     orderDto.setOutTradeNo(resp.get("prepay_id"));
                     return new BaseResult(orderDto);
                 } else {
@@ -112,7 +121,7 @@ public class WeixinPayUtil {
     /**
      * 支付到微信
      */
-    public static void payForWeixin(String openid, String orderId, long amount){
+    public static String payForWeixin(String openid, String orderId, long amount) throws Exception {
         Map<String, String> params = new HashMap();
         params.put("mch_appid", BaseConstant.WX_APPID);
         params.put("mchid", BaseConstant.WX_MCHID);
@@ -124,74 +133,131 @@ public class WeixinPayUtil {
         params.put("desc", "用户提现");// 企业付款操作说明信息。必填。
         params.put("spbill_create_ip", "118.31.18.166");//调用接口的机器Ip地址
         //
-        try {
-            String sign = WXPayUtil.generateSignature(params, BaseConstant.WX_EncodingAESKey);
-            params.put("sign", sign);
-            String result = HttpsUtil.handlePostWithSSL(BaseConstant.WEIXIN_PAY_OPENID, JSONObject.toJSONString(params),
-                    null,WeixinPayConfig.queryWeixinSSL());
-            JSONObject resultJson = JSON.parseObject(result);
-            if(resultJson.getString("return_code").equals("FAIL")){
-                logger.error("付款到微信失败：" + resultJson.getString("return_msg"));
-                throw new BizException(resultJson.getString("return_msg"));
+        String queryXML = WXPayUtil.generateSignedXml(params, BaseConstant.WX_MCH_KEY);
+        int retry = 0;
+        while (true) {
+            String resultStr = HttpsUtil.handlePostWithSSL(BaseConstant.WEIXIN_PAY_OPENID, queryXML,
+                    null, WeixinPayConfig.queryWeixinSSL());
+            System.out.println(resultStr);
+            Map<String, String> resultMap = WXPayUtil.xmlToMap(resultStr);
+            if (resultMap.get("return_code").equals("FAIL")) {
+                logger.error("付款到微信失败：" + resultMap.get("return_msg"));
+                throw new BizException(resultMap.get("return_msg"));
             }
-            String result_code = resultJson.getString("result_code");
-            if(result_code.equals("SUCCESS")) {
-                // TODO 对提现结果进行一些校验
-                resultJson.getString("mch_appid");
-                resultJson.getString("mchid");
-                resultJson.getString("nonce_str");
-                resultJson.getString("partner_trade_no");// 商户订单号
-                resultJson.getString("payment_no");// 微信订单号
-                resultJson.getString("payment_time");// 微信支付成功时间
+            String result_code = resultMap.get("result_code");
+            if (result_code.equals("SUCCESS")) {
+                // 对提现结果进行一些校验
+                if (resultMap.get("mch_appid").equals(BaseConstant.WX_APPID) && resultMap.get("mchid").equals(BaseConstant.WX_MCHID)
+                        && resultMap.get("partner_trade_no").equals(orderId)) {
+                    JSONObject result = new JSONObject();
+                    result.put("payment_no", resultMap.get("payment_no")); // 微信订单号
+                    result.put("payment_time", resultMap.get("payment_time")); // 微信支付成功时间
+                    return JSONObject.toJSONString(resultMap);
+                } else {
+                    throw new BizException("微信返回信息校验失败");
+                }
             } else {
-                resultJson.getString("err_code");
-                resultJson.getString("err_code_des");
+                if (resultMap.get("err_code").equals("INVALID_REQUEST") || resultMap.get("err_code").equals("SYSTEMERROR")
+                        || resultMap.get("err_code").equals("FREQUENCY_LIMITED")) {
+                    retry++;
+                    if (retry >= 3) {
+                        throw new BizException(resultMap.get("err_code_des"), resultMap.get("err_code"));
+                    }
+                } else {
+                    throw new BizException(resultMap.get("err_code_des"), resultMap.get("err_code"));
+                }
+                throw new BizException(resultMap.get("err_code_des"), resultMap.get("err_code"));
             }
-        } catch (Exception e) {
-            logger.error("付款到微信异常", e);
-            throw new RuntimeException("付款到微信异常" , e);
         }
     }
 
-
-    public static void payForBank(String orderId, String bankNo, String username, String bankCode, long amount){
+    /**
+     * 付款到银行卡
+     *
+     * @param orderId
+     * @param bankNo
+     * @param username
+     * @param bankCode
+     * @param amount
+     */
+    public static String payForBank(String orderId, String bankNo, String username, String bankCode, long amount) throws Exception {
         Map<String, String> params = new HashMap();
         params.put("mchid", BaseConstant.WX_MCHID);
         params.put("partner_trade_no", orderId);
         params.put("nonce_str", WeixinUtil.create_nonce_str());
-        params.put("enc_bank_no", bankNo); // 收款方银行卡号
-        params.put("enc_true_name", username);// TODO 收款方用户名 采用标准RSA算法，公钥由微信侧提供
         params.put("bank_code", bankCode);// 收款方开户行 银行卡所在开户行编号
         params.put("amount", amount + "");// 企业付款金额，单位为分
         params.put("desc", "用户提现");// 企业付款操作说明信息。必填。
-        try {
-            String sign = WXPayUtil.generateSignature(params, BaseConstant.WX_EncodingAESKey);
-            params.put("sign", sign);
-            String result = HttpsUtil.handlePostWithSSL(BaseConstant.WEIXIN_PAY_BANK, JSONObject.toJSONString(params),
+        String bankNoStr = new String(Base64.encode(RSAUtil.encryptByPublicKey(bankNo.getBytes())));
+        String realNameStr = new String(Base64.encode(RSAUtil.encryptByPublicKey(username.getBytes())));
+        params.put("enc_bank_no", bankNoStr); // 收款方银行卡号 采用标准RSA算法，公钥由微信侧提供
+        params.put("enc_true_name", realNameStr);// 收款方用户名 采用标准RSA算法，公钥由微信侧提供
+        String queryXml = WXPayUtil.generateSignedXml(params, BaseConstant.WX_MCH_KEY);
+        int retry = 0;
+        while (true) {
+            String resultStr = HttpsUtil.handlePostWithSSL(BaseConstant.WEIXIN_PAY_BANK, queryXml,
                     null, WeixinPayConfig.queryWeixinSSL());
-            JSONObject resultJson = JSON.parseObject(result);
-            if(resultJson.getString("return_code").equals("FAIL")){
-                logger.error("付款到银行异常：" + resultJson.getString("return_msg"));
-                throw new BizException(resultJson.getString("return_msg"));
+            System.out.println(resultStr);
+            Map<String, String> resultMap = WXPayUtil.xmlToMap(resultStr);
+            if (resultMap.get("return_code").equals("FAIL")) {
+                logger.error("付款到银行异常：" + resultMap.get("return_msg"));
+                throw new BizException(resultMap.get("return_msg"));
             }
-            String result_code = resultJson.getString("result_code");
-            if(result_code.equals("SUCCESS")) {
-                resultJson.getString("mchid");
-                resultJson.getString("partner_trade_no");// 商户订单号
-                resultJson.getString("amount");
-                resultJson.getString("nonce_str");
-                resultJson.getString("payment_no");// 微信订单号
-                resultJson.getString("cmms_amt");// 微信支付成功时间
-                resultJson.getString("sign");
+            String result_code = resultMap.get("result_code");
+            if (result_code.equals("SUCCESS")) {
+                if (resultMap.get("mchid").equals(BaseConstant.WX_MCHID)
+                        && resultMap.get("partner_trade_no").equals(orderId)) {
+                    JSONObject result = new JSONObject();
+                    result.put("payment_no", resultMap.get("payment_no")); // 微信订单号
+                    result.put("cmms_amt", resultMap.get("cmms_amt")); // 手续费
+                    return JSONObject.toJSONString(result);
+                } else {
+                    throw new BizException("微信返回信息校验失败");
+                }
             } else {
-                resultJson.getString("err_code");
-                resultJson.getString("err_code_des");
+                if (resultMap.get("err_code").equals("INVALID_REQUEST") || resultMap.get("err_code").equals("SYSTEMERROR")
+                        || resultMap.get("err_code").equals("FREQUENCY_LIMITED")) {
+                    retry++;
+                    if (retry >= 3) {
+                        throw new BizException(resultMap.get("err_code_des"), resultMap.get("err_code"));
+                    }
+                } else {
+                    throw new BizException(resultMap.get("err_code_des"), resultMap.get("err_code"));
+                }
             }
-        } catch (Exception e) {
-            logger.error("付款到银行异常", e);
-            throw new RuntimeException("付款到银行异常" , e);
         }
     }
 
+    /**
+     * 微信RSA api
+     *
+     * @throws Exception
+     */
+    public static BaseResult<String> queryRSA() throws Exception {
+        Map<String, String> reqData = new HashMap<>();
+        WeixinPayConfig config = new WeixinPayConfig();
+        reqData.put("mch_id", config.getMchID());
+        reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+        reqData.put("sign_type", "MD5");
+        String xml = WXPayUtil.generateSignedXml(reqData, config.getKey());
+        String resultStr = HttpsUtil.handlePostWithSSL(BaseConstant.WEIXIN_RSA_API, xml,
+                null, WeixinPayConfig.queryWeixinSSL());
+        System.out.println(resultStr);
+        Map<String, String> resultMap = WXPayUtil.xmlToMap(resultStr);
+        if (resultMap.get("return_code").equals("SUCCESS")) {
+            if (resultMap.get("result_code").equals("SUCCESS")) {
+                if (resultMap.get("mch_id").equals(config.getMchID())) {
+                    System.out.println(resultMap.get("pub_key"));
+                    return new BaseResult<>(resultMap.get("pub_key"));
+                } else {
+                    return new BaseResult<>(BaseConstant.FAILED, "商户ID不一致");
+                }
+            } else {
+                throw new BizException(resultMap.get("err_code_des"), resultMap.get("err_code"));
+            }
+        } else {
+            throw new BizException(resultMap.get("return_msg"));
+        }
+    }
 
 }

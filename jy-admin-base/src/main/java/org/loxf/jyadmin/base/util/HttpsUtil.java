@@ -104,7 +104,7 @@ public final class HttpsUtil {
         httpPost.setConfig(requestConfig);
 
         StringEntity param = new StringEntity(jsonStr, "UTF-8");
-        param.setContentType("application/json");//发送json数据需要设置contentType
+        // param.setContentType("application/json");//发送json数据需要设置contentType
         httpPost.setEntity(param);
 
         CloseableHttpResponse response = httpClient.execute(httpPost);
