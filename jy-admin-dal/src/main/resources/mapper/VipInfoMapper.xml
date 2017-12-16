@@ -37,10 +37,19 @@
   </insert>
   <update id="updateByCustId" parameterType="org.loxf.jyadmin.dal.po.VipInfo" >
     update tb_vip_info
-    set status = #{status,jdbcType=INTEGER},
+    set
+    <if test="status!=null">
+      status = #{status,jdbcType=INTEGER},
+    </if>
+    <if test="type!=null and type!=''">
       type = #{type,jdbcType=VARCHAR},
+    </if>
+    <if test="effDate!=null and effDate!=''">
       eff_date = #{effDate,jdbcType=TIMESTAMP},
+    </if>
+    <if test="expDate!=null and expDate!=''">
       exp_date = #{expDate,jdbcType=TIMESTAMP},
+    </if>
       updated_at = now()
     where cust_id = #{custId}
   </update>

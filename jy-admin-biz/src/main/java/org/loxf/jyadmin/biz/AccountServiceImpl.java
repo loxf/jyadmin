@@ -190,9 +190,6 @@ public class AccountServiceImpl implements AccountService {
         try {
             // 获取账户信息
             Account account = accountMapper.selectAccount(custId);
-            if (money != null && money.compareTo(account.getBalance()) > 0) {
-                return new BaseResult<>(BaseConstant.FAILED, "余额不足");
-            }
             if (money != null && money.compareTo(BigDecimal.ZERO) > 0) {
                 // 账户明细
                 accountDetailMapper.insert(createAccountDetail(custId, account.getBalance(), money,

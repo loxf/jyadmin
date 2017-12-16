@@ -220,10 +220,10 @@ public class TradeServiceImpl implements TradeService {
         }
         if(StringUtils.isNotBlank(firstAndSecondScholarships)){
             String[] tmp = firstAndSecondScholarships.split(",");
-            if(first<tmp.length){
+            if(first>tmp.length){
                 return "";
             }
-            return tmp[first];
+            return tmp[first-1];
         }
         return "";
     }
@@ -267,6 +267,7 @@ public class TradeServiceImpl implements TradeService {
                 updateVip.setStatus(1);
                 Date now = new Date();
                 updateVip.setEffDate(now);
+                updateVip.setType(vipType);
                 Date end = DateUtils.getAddTime(now, Calendar.DATE, getValidDay(vipType));
                 updateVip.setExpDate(DateUtils.getEndDate(end));
                 vipInfoMapper.updateByCustId(updateVip);
