@@ -126,7 +126,7 @@ public class TradeServiceImpl implements TradeService {
                     secondScholarships = queryScholarshipsRate(custSecond, "STUDENT", 2);
                 }
             } else if (order.getOrderType() == 5) {
-                detailName += "购买活动";
+                detailName += "参加活动";
                 // 增加活动名单信息
                 dealActive(order);
                 if (custFirst != null) {
@@ -136,7 +136,7 @@ public class TradeServiceImpl implements TradeService {
                     secondScholarships = queryScholarshipsRate(custSecond, "ACTIVE", 2);
                 }
             } else {
-                detailName += "购买课程/套餐";
+                detailName += "购买课程";
                 if (custFirst != null) {
                     firstScholarships = queryScholarshipsRate(custFirst, "OFFER", 1);
                 }
@@ -144,14 +144,14 @@ public class TradeServiceImpl implements TradeService {
                     secondScholarships = queryScholarshipsRate(custSecond, "OFFER", 2);
                 }
             }
-            // 分成计算
+            // 分成计算 TODO 代理商分成 如果是代理商，先检查是否有免费名额，如果有先用免费名额
             BigDecimal companyAmount = order.getOrderMoney();
             // TODO 模板消息接口 发送通知
             if(StringUtils.isNotBlank(firstScholarships)) {
                 BigDecimal first = order.getOrderMoney().multiply(new BigDecimal(firstScholarships)).
                         divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
                 BaseResult<Boolean> baseResult = accountService.increase(custFirst.getCustId(), first, null, orderId,
-                        "奖学金：直接会员" + userName + "，" + detailName, cust.getCustId());
+                        "奖：" + userName + "(1级)" + detailName, cust.getCustId());
                 if(baseResult.getCode()==BaseConstant.FAILED){
                     throw new BizException(baseResult.getMsg());
                 }
@@ -161,7 +161,7 @@ public class TradeServiceImpl implements TradeService {
                 BigDecimal second = order.getOrderMoney().multiply(new BigDecimal(secondScholarships)).
                         divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
                 BaseResult<Boolean> baseResult = accountService.increase(custSecond.getCustId(), second, null, orderId,
-                        "间接会员" + detailName + "，获得奖学金", cust.getCustId());
+                        "奖：" + userName + "(2级)" + detailName , cust.getCustId());
                 if(baseResult.getCode()==BaseConstant.FAILED){
                     throw new BizException(baseResult.getMsg());
                 }
