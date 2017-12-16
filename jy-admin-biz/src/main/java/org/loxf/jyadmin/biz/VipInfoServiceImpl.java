@@ -24,6 +24,9 @@ public class VipInfoServiceImpl implements VipInfoService {
     @Override
     public BaseResult<VipInfoDto> queryVipInfo(String custId) {
         VipInfo vipInfo = vipInfoMapper.selectByCustId(custId);
+        if(vipInfo==null){
+            return new BaseResult<>(BaseConstant.FAILED, "无VIP信息");
+        }
         VipInfoDto vipInfoDto = new VipInfoDto();
         BeanUtils.copyProperties(vipInfo, vipInfoDto);
         return new BaseResult<>(vipInfoDto);

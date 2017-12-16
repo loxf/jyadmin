@@ -248,8 +248,8 @@ public class OrderServiceImpl implements OrderService {
             if(obj.equals("OFFER001")) {
                 // 如果是SVIP还在有效期，不能购买VIP。其他都可以
                 BaseResult<VipInfoDto> baseResultVip = vipInfoService.queryVipInfo(custId);
-                VipInfoDto vipInfoDto = baseResultVip.getData();
-                if ( vipInfoDto != null) {
+                if ( baseResultVip.getCode()==BaseConstant.SUCCESS) {
+                    VipInfoDto vipInfoDto = baseResultVip.getData();
                     Date now = new Date();
                     if(vipInfoDto.getType().equals("SVIP") && vipInfoDto.getStatus()==1 &&
                             vipInfoDto.getEffDate().before(now) && vipInfoDto.getExpDate().after(now)){

@@ -146,6 +146,7 @@ public class TradeServiceImpl implements TradeService {
             }
             // 分成计算
             BigDecimal companyAmount = order.getOrderMoney();
+            // TODO 模板消息接口 发送通知
             if(StringUtils.isNotBlank(firstScholarships)) {
                 BigDecimal first = order.getOrderMoney().multiply(new BigDecimal(firstScholarships)).
                         divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
