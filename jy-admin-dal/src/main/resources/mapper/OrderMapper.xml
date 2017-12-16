@@ -29,7 +29,7 @@
   <select id="queryTimeoutOrder" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
-    from TB_ORDER a where created_at + INTERVAL 15 MINUTE &lt; SYSDATE() and status=1
+    from TB_ORDER a where created_at + INTERVAL 60 MINUTE &lt; SYSDATE() and status=1
   </select>
 
   <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >

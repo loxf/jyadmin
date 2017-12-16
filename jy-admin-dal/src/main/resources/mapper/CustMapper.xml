@@ -154,7 +154,10 @@
     update tb_cust
     set
     <if test="nickName!=null and nickName!=''">
-    nick_name = #{nickName,jdbcType=VARCHAR},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+    </if>
+    <if test="realName!=null and realName!=''">
+      real_name = #{realName,jdbcType=VARCHAR},
     </if>
     <if test="userLevel!=null and userLevel!=''">
       user_level = #{userLevel,jdbcType=VARCHAR},
