@@ -125,7 +125,7 @@ public class OrderServiceImpl implements OrderService {
         String appId = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_APPID").getConfigValue();
         String key = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_MCH_KEY").getConfigValue();
         result.put("appId", appId);
-        result.put("nonceStr", WeixinUtil.create_nonce_str());
+        result.put("nonceStr", WXPayUtil.generateNonceStr());
         result.put("package", "prepay_id=" + prepay_id);
         result.put("timeStamp", (System.currentTimeMillis()/1000) + "");
         result.put("signType", "MD5");

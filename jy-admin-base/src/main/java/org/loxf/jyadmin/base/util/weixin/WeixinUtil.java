@@ -69,7 +69,7 @@ public class WeixinUtil {
 
     public static Map<String, String> signJsTicket(String jsapi_ticket, String url) {
         Map<String, String> ret = new HashMap<String, String>();
-        String nonce_str = create_nonce_str();
+        String nonce_str = WXPayUtil.generateNonceStr();
         String timestamp = System.currentTimeMillis() + "";
         String string1;
         String signature = "";
@@ -98,9 +98,6 @@ public class WeixinUtil {
         return ret;
     }
 
-    public static String create_nonce_str() {
-        return UUID.randomUUID().toString();
-    }
     private static String byteToHex(final byte[] hash) {
         Formatter formatter = new Formatter();
         for (byte b : hash)
