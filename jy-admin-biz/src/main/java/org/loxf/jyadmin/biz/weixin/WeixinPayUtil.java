@@ -67,8 +67,9 @@ public class WeixinPayUtil {
         }
 
         try {
+            logger.info("微信支付下单请求：{}", JSON.toJSONString(data));
             Map<String, String> resp = wxpay.unifiedOrder(data);
-            logger.info("微信支付下单：{}", JSON.toJSONString(resp));
+            logger.info("微信支付下单返回：{}", JSON.toJSONString(resp));
             if (resp.get("return_code").equals("SUCCESS")) {
                 if (resp.get("result_code").equals("SUCCESS")) {
                     orderDto.setOutTradeNo(resp.get("prepay_id"));
