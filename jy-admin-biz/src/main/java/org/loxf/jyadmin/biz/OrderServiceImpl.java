@@ -11,10 +11,13 @@ import org.loxf.jyadmin.base.exception.BizException;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.util.JedisUtil;
 import org.loxf.jyadmin.base.util.weixin.WeixinUtil;
+import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.biz.weixin.WeixinPayUtil;
 import org.loxf.jyadmin.client.dto.OrderAttrDto;
 import org.loxf.jyadmin.client.dto.OrderDto;
+import org.loxf.jyadmin.client.dto.VipInfoDto;
 import org.loxf.jyadmin.client.service.OrderService;
+import org.loxf.jyadmin.client.service.VipInfoService;
 import org.loxf.jyadmin.dal.dao.*;
 import org.loxf.jyadmin.dal.po.*;
 import org.slf4j.Logger;
@@ -24,10 +27,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
@@ -43,6 +44,8 @@ public class OrderServiceImpl implements OrderService {
     private TradeMapper tradeMapper;
     @Autowired
     private PurchasedInfoMapper purchasedInfoMapper;
+    @Autowired
+    private VipInfoService vipInfoService;
     @Autowired
     private JedisUtil jedisUtil;
 
@@ -118,12 +121,14 @@ public class OrderServiceImpl implements OrderService {
 
     private Map createWxResult(String prepay_id) throws Exception {
         Map<String, String> result = new HashMap();
-        result.put("appId", BaseConstant.WX_APPID);
+        String appId = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_APPID").getConfigValue();
+        String key = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_MCH_KEY").getConfigValue();
+        result.put("appId", appId);
         result.put("nonceStr", WeixinUtil.create_nonce_str());
         result.put("package", "prepay_id=" + prepay_id);
         result.put("timeStamp", (System.currentTimeMillis()/1000) + "");
         result.put("signType", "MD5");
-        String sign = WXPayUtil.generateSignature(result, BaseConstant.WX_MCH_KEY);
+        String sign = WXPayUtil.generateSignature(result, key);
         result.put("paySign", sign);
         return result;
     }
@@ -134,7 +139,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public BaseResult<String> completeOrder(String orderId, Integer status, String msg) {
+    public BaseResult<String> completeOrder(String orderId, String partnerOrderId, Integer status, String msg) {
         if(StringUtils.isBlank(orderId)){
             return new BaseResult<>(BaseConstant.FAILED, "订单号为空");
         }
@@ -151,7 +156,7 @@ public class OrderServiceImpl implements OrderService {
                 if (orderAgain.getStatus().intValue() != 1) {
                     return new BaseResult<>(BaseConstant.FAILED, "当前订单状态不正确");
                 }
-                dealCompleteOrder(orderId, status, msg);
+                dealCompleteOrder(orderId, partnerOrderId, status, msg);
                 return new BaseResult();
             } catch (Exception e){
                 logger.error("完成订单失败：", e);
@@ -165,8 +170,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
-    public void dealCompleteOrder(String orderId, Integer status, String msg){
-        orderMapper.updateByOrderId(orderId, status, msg);
+    public void dealCompleteOrder(String orderId, String partnerOrderId, Integer status, String msg){
+        orderMapper.updateByOrderId(orderId, partnerOrderId, status, msg);
         // 如果是成功完成订单，触发交易
         if (status.intValue() == 3) {
             Trade trade = new Trade();
@@ -237,6 +242,19 @@ public class OrderServiceImpl implements OrderService {
                 return new BaseResult<>(BaseConstant.FAILED, "已购买商品");
             } else {
                 return new BaseResult<>(true);
+            }
+        } else {
+            if(obj.equals("OFFER001")) {
+                // 如果是SVIP还在有效期，不能购买VIP。其他都可以
+                BaseResult<VipInfoDto> baseResultVip = vipInfoService.queryVipInfo(custId);
+                VipInfoDto vipInfoDto = baseResultVip.getData();
+                if ( vipInfoDto != null) {
+                    Date now = new Date();
+                    if(vipInfoDto.getType().equals("SVIP") && vipInfoDto.getStatus()==1 &&
+                            vipInfoDto.getEffDate().before(now) && vipInfoDto.getExpDate().after(now)){
+                        return new BaseResult<>(BaseConstant.FAILED, "SVIP使用中，不能购买VIP");
+                    }
+                }
             }
         }
         return new BaseResult(BaseConstant.SUCCESS, "无需校验");

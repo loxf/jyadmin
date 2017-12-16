@@ -10,6 +10,7 @@
                 <ref bean="tradeJob"></ref>
                 <ref bean="custLevelJob"></ref>
                 <ref bean="takeCashJob"></ref>
+                <ref bean="watchRecordAddBpJob"></ref>
             </list>
         </constructor-arg>
     </bean>
@@ -34,5 +35,9 @@
         <constructor-arg name="lockTimeout" value="10" /><!-- 获取锁的等待时间 -->
         <constructor-arg name="period" value="30000" /><!-- 30秒 业务执行间隔时间 milliseconds -->
     </bean>
-
+    <bean id="watchRecordAddBpJob" class="org.loxf.jyadmin.biz.thread.WatchRecordAddBpJob">
+        <constructor-arg name="expireLockMSecd" value="300" /><!-- 锁失效时间 -->
+        <constructor-arg name="lockTimeout" value="10" /><!-- 获取锁的等待时间 -->
+        <constructor-arg name="period" value="30000" /><!-- 30秒 业务执行间隔时间 milliseconds -->
+    </bean>
 </beans>

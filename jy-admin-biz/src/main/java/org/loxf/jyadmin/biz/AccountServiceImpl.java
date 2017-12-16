@@ -181,6 +181,43 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
+    public BaseResult<Boolean> reduceByThird(String custId, BigDecimal money, BigDecimal bp, String orderId, String detailName) {
+        // 账户锁定
+        if(accountMapper.lockAccount(custId)<=0) {
+            return new BaseResult<>(BaseConstant.FAILED, "账户锁定失败");
+        }
+        try {
+            // 获取账户信息
+            Account account = accountMapper.selectAccount(custId);
+            if (money != null && money.compareTo(account.getBalance()) > 0) {
+                return new BaseResult<>(BaseConstant.FAILED, "余额不足");
+            }
+            if (money != null && money.compareTo(BigDecimal.ZERO) > 0) {
+                // 账户明细
+                accountDetailMapper.insert(createAccountDetail(custId, account.getBalance(), money,
+                        detailName, orderId, 3, null));
+            }
+            if (bp != null && bp.compareTo(BigDecimal.ZERO) > 0) {
+                // 积分明细
+                // 扣积分
+                Account newAccountInfo = new Account();
+                newAccountInfo.setBp(account.getBp().subtract(bp));
+                newAccountInfo.setCustId(custId);
+                // 记录账户明细
+                accountMapper.updateBalanceOrBp(newAccountInfo);
+                custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBalance(), bp, detailName, orderId, 3));
+            }
+        } catch (Exception e){
+            logger.error("支付异常", e);
+            throw new RuntimeException(e);
+        } finally {
+            accountMapper.unlockAccount(custId);
+        }
+        return new BaseResult(true);
+    }
+
+    @Override
     public BaseResult setPayPassword(String custId, String email, String phone, int isChinese, String password, String verifyCode) {
         BaseResult baseResult = verifyCodeService.verify(custId, verifyCode);
         if(baseResult.getCode()==BaseConstant.FAILED){

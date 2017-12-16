@@ -3,8 +3,8 @@ package org.loxf.jyadmin.base.util.weixin;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
+import com.github.wxpay.sdk.WXPayConfig;
 import com.github.wxpay.sdk.WXPayUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.HttpUtil;
@@ -15,7 +15,6 @@ import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
 import org.loxf.jyadmin.base.util.weixin.bean.WXUserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -33,11 +32,11 @@ public class WeixinUtil {
         //System.out.println(url);
         System.out.println(commonGet(url));
     }
-    public static AccessToken queryAccessToken(){
-        return (AccessToken)commonGet(String.format(BaseConstant.ACCESS_TOKEN_URL, BaseConstant.WX_APPID, BaseConstant.WX_APPSECRET), AccessToken.class);
+    public static AccessToken queryAccessToken(String appId, String wxAppSecret){
+        return (AccessToken)commonGet(String.format(BaseConstant.ACCESS_TOKEN_URL, appId, wxAppSecret), AccessToken.class);
     }
 
-    public static String getLoginUrl(String url, String code){
+    public static String getLoginUrl(String appId, String url, String code){
         String redirectUrl = "";
         try {
             redirectUrl = String.format(BaseConstant.LOGIN_URL, URLEncoder.encode(url, "UTF-8"));
@@ -45,19 +44,19 @@ public class WeixinUtil {
         } catch (UnsupportedEncodingException e) {
             logger.error("Url decode failed." , e);
         }
-        return String.format(BaseConstant.USER_AUTH_CODE_URL, BaseConstant.WX_APPID, redirectUrl, code);
+        return String.format(BaseConstant.USER_AUTH_CODE_URL, appId, redirectUrl, code);
     }
 
     public static String validUserAccessToken(String accessToken, String openid){
         return commonGet(String.format(BaseConstant.CHECK_USER_ACCESS_TOKEN_URL, accessToken, openid));
     }
 
-    public static UserAccessToken queryUserAccessToken(String code){
-        return (UserAccessToken)commonGet(String.format(BaseConstant.QUERY_USER_TOKEN_BY_CODE_URL, BaseConstant.WX_APPID, BaseConstant.WX_APPSECRET, code), UserAccessToken.class);
+    public static UserAccessToken queryUserAccessToken(String appId, String wxAppSecret, String code){
+        return (UserAccessToken)commonGet(String.format(BaseConstant.QUERY_USER_TOKEN_BY_CODE_URL, appId, wxAppSecret, code), UserAccessToken.class);
     }
 
-    public static UserAccessToken refreshUserAccessToken(String refreshToken){
-        return (UserAccessToken)commonGet(String.format(BaseConstant.REFRESH_USER_TOKEN_BY_CODE_URL, BaseConstant.WX_APPID, refreshToken), UserAccessToken.class);
+    public static UserAccessToken refreshUserAccessToken(String appId, String refreshToken){
+        return (UserAccessToken)commonGet(String.format(BaseConstant.REFRESH_USER_TOKEN_BY_CODE_URL, appId, refreshToken), UserAccessToken.class);
     }
 
     public static WXUserInfo queryUserInfo(String access_token, String openId){
@@ -151,19 +150,4 @@ public class WeixinUtil {
         return null;
     }
 
-    public static BaseResult<Map<String, String>> payNotifySign(String notifyData) throws Exception {
-        Map<String, String> notifyMap = WXPayUtil.xmlToMap(notifyData);  // 转换成map
-        if(notifyMap.get("result_code").equals("SUCCESS")) {
-            WeixinPayConfig config = new WeixinPayConfig();
-            WXPay wxpay = new WXPay(config);
-            if (wxpay.isPayResultNotifySignatureValid(notifyMap)) {
-                // 签名正确
-                return new BaseResult<>(notifyMap);
-            } else {
-                return new BaseResult<>(BaseConstant.FAILED, "签名校验失败:" + notifyMap.get("err_code"));
-            }
-        } else {
-            return new BaseResult<>(BaseConstant.FAILED, "微信端返回err_code:" + notifyMap.get("err_code"));
-        }
-    }
 }

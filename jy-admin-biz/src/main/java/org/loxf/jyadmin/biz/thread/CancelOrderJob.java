@@ -43,7 +43,7 @@ public class CancelOrderJob extends JOB {
                 List<Order> list = orderMapper.queryTimeoutOrder();
                 if (CollectionUtils.isNotEmpty(list)) {
                     for (Order order : list) {
-                        orderMapper.updateByOrderId(order.getOrderId(), 9, "订单超时关闭");
+                        orderMapper.updateByOrderId(order.getOrderId(), null,9, "订单超时关闭");
                     }
                 }
             }

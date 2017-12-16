@@ -160,5 +160,17 @@
     无
     {{#  } }}
 </script>
+<script type="text/html" id="maxBpTpl">
+    {{#  if(d.metaData){ }}
+        {{#  var json = eval("("+d.metaData+")");}}
+        {{# if(json.MAXBP){ }}
+            {{ json.MAXBP }}
+        {{#  } else { }}
+            0
+        {{# } }}
+    {{#  } else { }}
+        0
+    {{#  } }}
+</script>
 <script src="${rc.contextPath}/static/jingyi/common.js"></script>
 <script src="${rc.contextPath}/static/jingyi/offer/offer.js"></script>

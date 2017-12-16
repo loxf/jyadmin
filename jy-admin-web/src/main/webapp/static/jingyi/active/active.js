@@ -56,6 +56,12 @@ table.render({ //其它参数在此省略
             templet : '#activePriviTpl'
         },
         {
+            field: 'maxBp',
+            title: '可用积分',
+            width: 100,
+            templet : '#maxBpTpl'
+        },
+        {
             field: 'indexShow',
             title: '首页轮播',
             width: 100,

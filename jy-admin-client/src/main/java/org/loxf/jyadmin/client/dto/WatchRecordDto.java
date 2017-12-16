@@ -25,6 +25,8 @@ public class WatchRecordDto extends BaseModel {
 
     private Integer minutes;
 
+    private Integer status;
+
     public String getWatchId() {
         return watchId;
     }
@@ -111,5 +113,13 @@ public class WatchRecordDto extends BaseModel {
 
     public void setTeachers(String teachers) {
         this.teachers = teachers;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

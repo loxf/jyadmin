@@ -1,6 +1,7 @@
 package org.loxf.jyadmin.base.util;
 
 import org.bouncycastle.util.encoders.Base64;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.encryption.Base64Util;
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -17,9 +18,8 @@ import java.security.spec.X509EncodedKeySpec;
 import javax.crypto.Cipher;
 
 public class RSAUtil {
-    // TODO 文件路径
-    // public static final String PKCS8_PUBLIC_FILE_PATH = "/home/jingyiweb/weixin_cert/weixin.pkcs8.public.pem";
-    public static final String PKCS8_PUBLIC_FILE_PATH = "C:\\Users\\lenovo\\Desktop\\weixin.pkcs8.public.pem";
+    // 文件路径
+    // public static final String PKCS8_PUBLIC_FILE_PATH = "C:\\Users\\lenovo\\Desktop\\weixin.pkcs8.public.pem";
 
     // 非对称加密密钥算法
     public static final String KEY_ALGORITHM = "RSA";
@@ -36,7 +36,7 @@ public class RSAUtil {
 
     public static byte[] encryptByPublicKey(byte[] data) throws Exception {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(PKCS8_PUBLIC_FILE_PATH));
+            BufferedReader br = new BufferedReader(new FileReader(BaseConstant.WEIXIN_PKCS8_PUBLIC_FILE_PATH));
             String readLine = null;
             StringBuilder sb = new StringBuilder();
             readLine = br.readLine();

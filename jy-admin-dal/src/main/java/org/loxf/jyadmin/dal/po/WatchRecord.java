@@ -25,6 +25,8 @@ public class WatchRecord extends BaseModel {
 
     private Integer minutes;
 
+    private Integer status;
+
     public String getWatchId() {
         return watchId;
     }
@@ -103,5 +105,13 @@ public class WatchRecord extends BaseModel {
 
     public void setMetaData(String metaData) {
         this.metaData = metaData;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

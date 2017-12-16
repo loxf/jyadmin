@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,6 +43,8 @@ public class CustCashServiceImpl implements CustCashService {
     private CustService custService;
     @Autowired
     private CustBankService custBankService;
+    @Value("#{configProperties['SERVER.IP']}")
+    private String SERVER_IP;
 
     @Override
     public PageResult<CustCashDto> queryCustCash(CustCashDto custCashDto) {
@@ -187,7 +190,7 @@ public class CustCashServiceImpl implements CustCashService {
                 if (custCashDto.getType() == 1) {
                     // 微信提现
                     remark = WeixinPayUtil.payForWeixin(custDto.getOpenid(), custCashDto.getOrderId(),
-                            custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue());
+                            custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue(), SERVER_IP);
                 } else {
                     // 银行卡提现
                     BaseResult<CustBankDto> bankDtoBaseResult = custBankService.queryBank(custCashDto.getObjId());

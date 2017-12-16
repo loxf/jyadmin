@@ -55,6 +55,9 @@
       <if test="status != null" >
         status = #{status},
       </if>
+      <if test="outTradeNo != null and outTradeNo!=''" >
+        out_trade_no = #{outTradeNo},
+      </if>
       <if test="msg!=null and msg!=''">
         msg = #{msg},
       </if>

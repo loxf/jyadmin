@@ -71,7 +71,7 @@ table.render({ //其它参数在此省略
         countName: 'total', //数据总数的字段名称，默认：count
         dataName: 'data' //数据列表的字段名称，默认：data
     },
-    limits: [30, 50, 100, 150, 300],
+    limits: [20, 30, 50, 100, 150],
     limit: 30, //默认采用30
     even: true
 });

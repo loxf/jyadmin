@@ -10,7 +10,7 @@ public interface OrderMapper {
 
     Order selectByOrderId(String orderId);
 
-    int updateByOrderId(@Param("orderId") String orderId, @Param("status")Integer status, @Param("msg")String msg);
+    int updateByOrderId(@Param("orderId") String orderId, @Param("outTradeNo") String outTradeNo, @Param("status")Integer status, @Param("msg")String msg);
 
     int count(Order record);
 

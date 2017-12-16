@@ -12,12 +12,13 @@
     <result column="video_id" property="videoId" jdbcType="VARCHAR" />
     <result column="video_name" property="videoName" jdbcType="VARCHAR" />
     <result column="meta_data" property="metaData" jdbcType="VARCHAR" />
-    <result column="minutes" property="minutes" jdbcType="VARCHAR" />
+    <result column="minutes" property="minutes" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, watch_id, cust_id, video_id, minutes, created_at, updated_at
+    id, watch_id, cust_id, video_id, minutes, status, created_at, updated_at
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
@@ -26,16 +27,23 @@
     where watch_id = #{watchId}
   </select>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.WatchRecord" >
-    insert into tb_watch_record (id, watch_id, cust_id, offer_id, video_id, minutes,
+    insert into tb_watch_record (id, watch_id, cust_id, offer_id, video_id, minutes, status,
       created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{watchId,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, #{offerId,jdbcType=VARCHAR},
-          #{videoId,jdbcType=VARCHAR}, 0, now(), now())
+          #{videoId,jdbcType=VARCHAR}, 0, 1, now(), now())
   </insert>
 
   <update id="updateMinutes" parameterType="String" >
     update tb_watch_record
     set minutes = minutes + 1,
       updated_at = now()
+    where watch_id = #{watchId} and status=1
+  </update>
+
+  <update id="updateStatus" parameterType="String" >
+    update tb_watch_record
+    set status = 3,
+    updated_at = now()
     where watch_id = #{watchId}
   </update>
 
@@ -64,4 +72,11 @@
       and a.cust_id = #{custId}
     </if>
   </sql>
+
+  <select id="queryNeedAddBp" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_watch_record
+    where status = 1 and updated_at &lt; date_add(now(), INTERVAL 3 MINUTE )
+  </select>
 </mapper>

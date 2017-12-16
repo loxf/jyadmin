@@ -60,6 +60,13 @@
         <input type="text"  style="width: 120px" name="buyPrivi_SVIP" placeholder="￥"
             #if(${buyJson} && ${buyJson.SVIP} ) value="$!{buyJson.SVIP}" #end  autocomplete="off" class="layui-input">
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">可用积分</label>
+        <div class="layui-input-block">
+            <input type="number" name="MAXBP" placeholder="最大可用积分" style="width:120px;" autocomplete="off" class="layui-input"
+                #if(${metaDataJson} && ${metaDataJson.MAXBP} ) value="$!{metaDataJson.MAXBP}" #end>
+        </div>
+    </div>
 
     <div class="layui-form-item">
         <label class="layui-form-label">商品图片</label>
@@ -201,7 +208,7 @@
         }
         var metaData = {
             HOT: data.field.HOT,
-            INDEX: data.field.INDEX
+            MAXBP: data.field.MAXBP
         };
 
         $.ajax({

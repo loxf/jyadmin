@@ -8,6 +8,7 @@ import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.CustService;
+import org.loxf.jyadmin.client.service.VipInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class CustController extends BaseControl<CustDto> {
     private static Logger logger = LoggerFactory.getLogger(CustController.class);
     @Autowired
     private CustService custService;
+    @Autowired
+    private VipInfoService vipInfoService;
 
     @RequestMapping("/index")
     public String index(){
@@ -61,6 +64,7 @@ public class CustController extends BaseControl<CustDto> {
         if(StringUtils.isBlank(custId) || StringUtils.isBlank(custId)){
             return new BaseResult(0, "客户ID不能为空");
         }
+        vipInfoService.changeVipLevel(custId, userLevel);
         // 执行修改逻辑
         CustDto custDto = new CustDto();
         custDto.setCustId(custId);
