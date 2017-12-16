@@ -53,7 +53,7 @@
   </select>
 
   <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.WatchRecord">
-    select b.nick_name,d.offer_name,d.offer_pic,d.meta_data,a.*
+    select b.nick_name,d.offer_name,d.offer_pic as pic,d.meta_data,a.*
     from tb_watch_record a, tb_cust b, tb_offer d
     where a.cust_id = b.cust_id
     AND a.offer_id = d.offer_id
