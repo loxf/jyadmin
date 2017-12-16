@@ -40,7 +40,6 @@ public class WatchRecordServiceImpl implements WatchRecordService {
                 return new BaseResult<>(BaseConstant.FAILED, "新增观看记录失败");
             }
         } else {
-            // TODO 需要一个定时任务执行5分钟未更新的观看记录，进行加积分
             watchRecordMapper.updateMinutes(watchRecordDto.getWatchId());
             return new BaseResult<>(watchRecordDto.getWatchId());
         }

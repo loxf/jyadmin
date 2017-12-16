@@ -33,7 +33,7 @@
             <li class="layui-nav-item">
                 <a href="javascript:;">
                     <!-- 用户头像 信息 -->
-                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    <img src="/static/default_header.png" class="layui-nav-img">
                     $!{username}
                 </a>
                 <dl class="layui-nav-child">
