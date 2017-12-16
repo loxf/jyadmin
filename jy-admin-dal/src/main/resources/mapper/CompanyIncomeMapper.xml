@@ -7,13 +7,14 @@
     <result column="cust_id" property="custId" jdbcType="VARCHAR" />
     <result column="cust_name" property="custName" jdbcType="VARCHAR" />
     <result column="amount" property="amount" jdbcType="DECIMAL" />
+    <result column="scholarship" property="scholarship" jdbcType="DECIMAL" />
     <result column="type" property="type" jdbcType="INTEGER" />
     <result column="source" property="source" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, detail_name, cust_id, cust_name, amount, `type`, source, created_at, updated_at
+    id, detail_name, cust_id, cust_name, amount, scholarship, `type`, source, created_at, updated_at
   </sql>
   <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CompanyIncome" >
     select
@@ -55,12 +56,26 @@
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CompanyIncome" >
     insert into tb_company_income (id, detail_name, cust_id, 
-      cust_name, amount, `type`,
+      cust_name, amount, scholarship, `type`,
       source, created_at, updated_at
       )
     values (#{id,jdbcType=BIGINT}, #{detailName,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, 
-      #{custName,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER}, 
+      #{custName,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{scholarship,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER},
       #{source,jdbcType=VARCHAR}, now(), now()
       )
   </insert>
+
+  <select id="queryIncome" parameterType="java.lang.String" resultType="double">
+    select ifnull(sum(amount),0) from tb_company_income where 1=1
+    <if test="startDay!=null and startDay!=''">
+      and created_at > #{startDay}
+    </if>
+  </select>
+
+  <select id="queryScholarship" parameterType="java.lang.String" resultType="double">
+    select ifnull(sum(scholarship)) from tb_company_income where 1=1
+    <if test="startDay!=null and startDay!=''">
+      and created_at > #{startDay}
+    </if>
+  </select>
 </mapper>

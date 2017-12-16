@@ -112,4 +112,17 @@
       and a.created_at &lt; date_add(#{endDate}, INTERVAL 1 DAY)
     </if>
   </sql>
+
+  <select id="queryOrderDistributeByLast7Day" resultType="java.util.HashMap">
+    SELECT
+    date_format(created_at, '%Y-%m-%d') AS `name`,
+    count(1) AS `value`
+    FROM
+    tb_order
+    WHERE
+    `status` = 3 and
+    TO_DAYS(NOW()) - TO_DAYS(created_at) &lt;= 7
+    GROUP BY
+    date_format(created_at, '%Y-%m-%d')
+  </select>
 </mapper>

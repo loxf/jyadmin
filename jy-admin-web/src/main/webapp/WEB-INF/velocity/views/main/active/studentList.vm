@@ -25,10 +25,6 @@
                 width:200
             }
         ]],
-        request: {
-            pageName: 'page', //页码的参数名称，默认：page
-            limitName: 'size' //每页数据量的参数名，默认：limit
-        },
         response: {
             statusName: 'code', //数据状态的字段名称，默认：code
             statusCode: 1, //成功的状态码，默认：0

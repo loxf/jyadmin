@@ -5,8 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
+import org.loxf.jyadmin.biz.util.BizUtil;
 import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.dal.dao.AccountMapper;
@@ -22,8 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service("custService")
 public class CustServiceImpl implements CustService {
@@ -180,6 +181,20 @@ public class CustServiceImpl implements CustService {
         return new BaseResult();
     }
 
+    @Override
+    public BaseResult queryCustLevelNbr() {
+        List<Map> data = custMapper.queryCustUserLevelDistribute();
+        // 初始化最近七天数据
+        return new BaseResult(BizUtil.getArrData(data));
+    }
+
+    @Override
+    public BaseResult queryCustIncrease() {
+        List<Map> data = custMapper.queryCustIncreaseLast7Day();
+        // 初始化最近七天数据
+        return new BaseResult(BizUtil.getDataByDate(data));
+    }
+
     /**
      * @param recommendId
      * @param isAdd 1:加 2:减
@@ -247,9 +262,12 @@ public class CustServiceImpl implements CustService {
     @Override
     @Transactional
     public BaseResult delCust(String custId) {
+        // TODO 合并老客户
         // 获取客户信息
         Cust cust = custMapper.selectByCustId(custId);
         updateRecommendChildNbr(cust.getRecommend(), 2);
         return new BaseResult(custMapper.deleteCust(custId));
     }
+
+
 }

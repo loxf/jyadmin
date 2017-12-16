@@ -8,6 +8,7 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.client.dto.ConfigDto;
 import org.loxf.jyadmin.client.dto.OfferDto;
 import org.loxf.jyadmin.client.dto.OfferRelDto;
@@ -50,14 +51,11 @@ public class OfferServiceImpl implements OfferService {
         int total = offerMapper.count(offer, appType);
         List<OfferDto> dtos = new ArrayList<>();
         if(total>0) {
-            Config basePlayTime = configMapper.selectConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "BASE_PLAY_TIME");
-            int basePlay = 0;
-            if(basePlayTime!=null && StringUtils.isNotBlank(basePlayTime.getConfigValue())){
-                basePlay = Integer.valueOf(basePlayTime.getConfigValue());
-            }
-            List<Offer> custList = offerMapper.pager(offer, appType);
-            if(CollectionUtils.isNotEmpty(custList)) {
-                for (Offer po : custList) {
+            int basePlay = Integer.valueOf(ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME,
+                    "BASE_PLAY_TIME", "0").getConfigValue());
+            List<Offer> offerList = offerMapper.pager(offer, appType);
+            if(CollectionUtils.isNotEmpty(offerList)) {
+                for (Offer po : offerList) {
                     OfferDto tmp = new OfferDto();
                     BeanUtils.copyProperties(po, tmp);
                     if (po.getOfferType().equals("CLASS")) {

@@ -14,6 +14,8 @@ public class CompanyIncomeDto extends BaseModel {
 
     private BigDecimal amount;
 
+    private BigDecimal scholarship;
+
     private Integer type;
 
     private String source;
@@ -48,6 +50,14 @@ public class CompanyIncomeDto extends BaseModel {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public BigDecimal getScholarship() {
+        return scholarship;
+    }
+
+    public void setScholarship(BigDecimal scholarship) {
+        this.scholarship = scholarship;
     }
 
     public Integer getType() {

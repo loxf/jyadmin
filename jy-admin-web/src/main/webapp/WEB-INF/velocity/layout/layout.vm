@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="renderer" content="webkit">
-    <title>静怡雅学馆管理系统</title>
+    <title>静怡雅学文化管理系统</title>
     #parse("/layout/fragments/css.vm")
     #parse("/layout/fragments/js.vm")
 
@@ -13,7 +13,9 @@
 <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
         <!-- 系统名称 -->
-        <div><a href="${rc.contextPath}/admin/index.html" class="layui-logo">静怡雅学馆</a></div>
+        <div><a href="${rc.contextPath}/admin/index.html" class="layui-logo">
+            <img style="height: 30px;30px; padding: 10px;" src="/static/favicon.ico">
+            静怡雅学文化</a></div>
         <!-- 头部区域（可配合layui已有的水平导航） -->
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item"><a href="javascript:getLeftMenu('VIP')">会员管理</a></li>
@@ -32,7 +34,7 @@
                 <a href="javascript:;">
                     <!-- 用户头像 信息 -->
                     <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                    贤心
+                    $!{username}
                 </a>
                 <dl class="layui-nav-child">
                     <dd><a onclick="modifyPw()">修改密码</a></dd>

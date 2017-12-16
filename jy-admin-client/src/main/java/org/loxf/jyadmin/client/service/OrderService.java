@@ -22,4 +22,5 @@ public interface OrderService {
      * @return
      */
     BaseResult<Boolean> hasBuy(String custId, int type, String obj);
+    BaseResult queryOrderIncrease();
 }

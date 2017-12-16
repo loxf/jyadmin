@@ -66,7 +66,8 @@
     from tb_friend_link
     where 1=1
     <include refid="WHERE_SQL"/>
-    order by `order` limit #{start} , #{size}
+    order by `order`
+    limit #{start} , #{size}
   </select>
 
   <sql id="WHERE_SQL">

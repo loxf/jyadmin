@@ -1,61 +1,72 @@
-<div class="layui-layout-body" style="widows:1000; height: 600">
-    <div>
-        <div class="layui-inline" style="widows:400; height: 200" id="incomeChart"></div>
-        <div class="layui-inline" style="widows:400; height: 200" id="custChart"></div>
-        <div class="layui-inline"></div>
+<script src="${rc.contextPath}/static/echarts/echarts.min.js"></script>
+<script src="${rc.contextPath}/static/echarts/walden.js"></script>
+<script src="${rc.contextPath}/static/jingyi/util/echartUtil.js"></script>
+<div class="layui-layout-body">
+    <div style="padding: 15px;">
+        <div class="layui-row layui-form-item">
+            <div class="layui-inline" style="width:600px; height: 400px; padding: 10px" id="incomeChart"></div>
+            <div class="layui-inline" style="width:600px; height: 400px; padding: 10px" id="custChart"></div>
+        </div>
+        <div class="layui-row layui-form-item">
+            <div class="layui-inline" style="width:600px; height: 400px; padding: 10px" id="increaseCust"></div>
+            <div class="layui-inline" style="width:600px; height: 400px; padding: 10px" id="increaseOrder"></div>
+        </div>
     </div>
 </div>
-<script src="${rc.contextPath}/static/echarts/echarts.min.js"></script>
 
 <script type="text/javascript">
-    // 基于准备好的dom，初始化echarts实例
-    function income() {
-        var incomeChart = echarts.init(document.getElementById('incomeChart'));
-        // 指定图表的配置项和数据
-        var option = {
-            title: {
-                text: '收入统计'
-            },
-            tooltip: {},
-            legend: {
-                data:['收入']
-            },
-            xAxis: {
-                data: ["公司净收入","奖学金","今日收入","最近一周收入","最近一个月收入"]
-            },
-            yAxis: {},
-            series: [{
-                name: '收入',
-                type: 'bar',
-                data: [54424.87, 43954.63, 1119.50, 2952.20, 1894.30]
-            }]
-        };
-        // 使用刚指定的配置项和数据显示图表。
-        incomeChart.setOption(option);
-    }
-    function cust() {
-        var custChart = echarts.init(document.getElementById('custChart'));
-        // 指定图表的配置项和数据
-        var option = {
-            series : [
-                {
-                    name: '会员分布',
-                    type: 'pie',
-                    radius: '55%',
-                    data:[
-                        {value:810, name:'普通会员'},
-                        {value:103, name:'VIP'},
-                        {value:12, name:'SVIP'},
-                        {value:24, name:'代理商'},
-                        {value:8, name:'合伙人'},
-                        {value:1, name:'分公司'}
-                    ]
-                }
-            ]
-        };
-        // 使用刚指定的配置项和数据显示图表。
-        custChart.setOption(option);
-    }
-    income();
-    cust();
+    $.ajax({
+        type: "POST",
+        url:"/admin/indexData/companyIncome.html",
+        dataType:"json",
+        success: function(data) {
+            if(data.code == 1){
+                getLine(data.data, "公司营收", "bar", "incomeChart");
+            }
+        }
+    });
+    $.ajax({
+        type: "POST",
+        url:"/admin/indexData/scholarship.html",
+        dataType:"json",
+        success: function(data) {
+            if(data.code == 1){
+                getLine(data.data, "奖学金", "bar", "incomeChart");
+            }
+        }
+    });
+    $.ajax({
+        type: "POST",
+        url:"/admin/indexData/custLevel.html",
+        dataType:"json",
+        success: function(data) {
+            if(data.code == 1){
+                getPie(data.data, "会员分布", "custChart");
+            }
+        }
+    });
+    $.ajax({
+        type: "POST",
+        url:"/admin/indexData/custIncrease.html",
+        dataType:"json",
+        success: function(data) {
+            if(data.code == 1){
+                getLine(data.data, "最近一周增长客户", "line", "increaseCust");
+            }
+        }
+    });
+    $.ajax({
+        type: "POST",
+        url:"/admin/indexData/orderIncrease.html",
+        dataType:"json",
+        success: function(data) {
+            if(data.code == 1){
+                getLine(data.data, "最近一周订单", "line", "increaseOrder");
+            }
+        }
+    });
+    /*var custTypeData = [["分公司",2],["合伙人",6],["代理商",17],["SVIP",24],["VIP",128],["普通会员", 1402]];
+    var companyIncom = [["公司净收入",45012],["奖学金",31255],["今日收入",120],["最近一周收入",600],["最近一月收入",4230]];
+    var increaseCust = [["2017-12-09",20],["2017-12-10",12],["2017-12-11",2],["2017-12-12",9],["2017-12-13",15],["2017-12-14",18],["2017-12-15",12]];
+    var increaseOrder = [["2017-12-09",2],["2017-12-10",5],["2017-12-11",1],["2017-12-12",4],["2017-12-13",0],["2017-12-14",2],["2017-12-15",12]];*/
 </script>

@@ -11,6 +11,7 @@ import org.loxf.jyadmin.base.exception.BizException;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.util.JedisUtil;
 import org.loxf.jyadmin.base.util.weixin.WeixinUtil;
+import org.loxf.jyadmin.biz.util.BizUtil;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.biz.weixin.WeixinPayUtil;
 import org.loxf.jyadmin.client.dto.OrderAttrDto;
@@ -258,5 +259,11 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return new BaseResult(BaseConstant.SUCCESS, "无需校验");
+    }
+
+    @Override
+    public BaseResult queryOrderIncrease() {
+        List<Map> list = orderMapper.queryOrderDistributeByLast7Day();
+        return new BaseResult(BizUtil.getDataByDate(list));
     }
 }

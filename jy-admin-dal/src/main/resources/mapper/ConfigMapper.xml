@@ -58,10 +58,6 @@
     from tb_config
     where 1=1
     <include refid="WHERE_SQL"/>
-    order by id DESC
-    <if test="pager!=null">
-      limit #{pager.start}, #{pager.size}
-    </if>
   </select>
 
   <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Config">
@@ -69,6 +65,10 @@
     from tb_config
     where 1=1
     <include refid="WHERE_SQL"/>
+    order by id DESC
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
   </select>
 
   <sql id="WHERE_SQL">

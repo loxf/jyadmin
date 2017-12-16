@@ -57,8 +57,8 @@ table.render({ //其它参数在此省略
         }
     ]],
     request: {
-        pageName: 'page', //页码的参数名称，默认：page
-        limitName: 'size' //每页数据量的参数名，默认：limit
+        pageName: 'pager.page', //页码的参数名称，默认：page
+        limitName: 'pager.size' //每页数据量的参数名，默认：limit
     },
     response: {
         statusName: 'code', //数据状态的字段名称，默认：code

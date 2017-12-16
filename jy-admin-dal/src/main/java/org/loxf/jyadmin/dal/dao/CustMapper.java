@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.Cust;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CustMapper {
     int deleteCust(String id);
@@ -37,4 +38,8 @@ public interface CustMapper {
      * @return
      */
     int updateChildNbr(@Param("custId")String custId, @Param("type")int type, @Param("isAdd")int isAdd);
+
+    List<Map> queryCustIncreaseLast7Day();
+
+    List<Map> queryCustUserLevelDistribute();
 }

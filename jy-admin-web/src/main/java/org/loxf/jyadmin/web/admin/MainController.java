@@ -1,10 +1,12 @@
 package org.loxf.jyadmin.web.admin;
 
 import org.loxf.jyadmin.base.bean.BaseResult;
+import org.loxf.jyadmin.client.dto.AdminDto;
 import org.loxf.jyadmin.client.dto.AreaDto;
 import org.loxf.jyadmin.client.dto.CityDto;
 import org.loxf.jyadmin.client.dto.ProvinceDto;
 import org.loxf.jyadmin.client.service.ProvinceAndCityService;
+import org.loxf.jyadmin.util.CookieUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +28,9 @@ public class MainController {
 
     @RequestMapping("/admin/index")
     public String index(Model model, HttpServletRequest request, HttpServletResponse response){
+        AdminDto adminDto = CookieUtil.getAdmin(request);
         model.addAttribute("isIndex", true);
+        model.addAttribute("username", adminDto.getRealName());
         return "index";
     }
 
