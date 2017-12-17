@@ -51,7 +51,7 @@ public class OfferServiceImpl implements OfferService {
         int total = offerMapper.count(offer, appType);
         List<OfferDto> dtos = new ArrayList<>();
         if(total>0) {
-            int basePlay = Integer.valueOf(ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME,
+            int basePlay = Integer.valueOf(ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_COM,
                     "BASE_PLAY_TIME", "0").getConfigValue());
             List<Offer> offerList = offerMapper.pager(offer, appType);
             if(CollectionUtils.isNotEmpty(offerList)) {

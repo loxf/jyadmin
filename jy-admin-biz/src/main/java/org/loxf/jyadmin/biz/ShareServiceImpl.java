@@ -58,7 +58,7 @@ public class ShareServiceImpl implements ShareService {
         map2.put("posY", 980);
         infoList.add(map1);
         infoList.add(map2);
-        String bgFilePath = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "SHARE_BG_PIC").getConfigValue();
+        String bgFilePath = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_COM, "SHARE_BG_PIC").getConfigValue();
         ImageUtil.overlapImage(new File(IMG_SERVER_PATH + bgFilePath), new File(IMG_SERVER_PATH + qrFilePath), new int[]{0, -170},
                 infoList, IMG_SERVER_PATH + shareFilePath);
         return new BaseResult<>(shareFilePath);
@@ -80,18 +80,18 @@ public class ShareServiceImpl implements ShareService {
         if(addBp){
             String bp;
             if(type.equals("VIDEO")) {
-                bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "BP_SHARE_VIDEO", "10").getConfigValue();
+                bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_BP, "BP_SHARE_VIDEO", "10").getConfigValue();
             } else if(type.equals("ACTIVE")){
-                bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "BP_SHARE_ACTIVE", "10").getConfigValue();
+                bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_BP, "BP_SHARE_ACTIVE", "10").getConfigValue();
             } else if(type.equals("RECOMMEND")){
-                bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "BP_SHARE_REGISTER", "30").getConfigValue();
+                bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_BP, "BP_SHARE_REGISTER", "30").getConfigValue();
             } else if(type.equals("PAGE")){
-                bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "BP_SHARE_OTHER", "5").getConfigValue();
+                bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_BP, "BP_SHARE_OTHER", "5").getConfigValue();
             } else {
                 bp = "1";
             }
             // 新增积分
-            BaseResult baseResult = accountService.increase(custId, null, new BigDecimal(bp), null, detailName, null);
+            BaseResult baseResult = accountService.increase(custId, null, new BigDecimal(bp), null, "分享" + detailName, null);
             if(baseResult.getCode()==BaseConstant.FAILED){
                 return baseResult;
             }

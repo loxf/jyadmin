@@ -25,7 +25,7 @@ public class CustSignServiceImpl implements CustSignService {
         if(custSignMapper.selectByCustAndSignDate(custId, signDate)>0){
             return new BaseResult<>(true);
         }
-        String bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "BP_SIGN", "1").getConfigValue();
+        String bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_BP, "BP_SIGN", "1").getConfigValue();
         BaseResult baseResult = accountService.increase(custId, null, new BigDecimal(bp), null, "签到得积分", null);
         if(baseResult.getCode()== BaseConstant.SUCCESS) {
             return new BaseResult<>(custSignMapper.insert(custId, signDate) > 0);

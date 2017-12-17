@@ -143,11 +143,11 @@ public class PartnerController extends BaseControl<AgentInfoDto> {
             // 获取不同等级代理商对应的VIP数量 生失效时间
             ConfigDto config = null;
             if(dto.getType()==1) {
-                config = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "AGENT_VIP_SVIP_NBR");
+                config = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY, "AGENT_VIP_SVIP_NBR");
             } else if(dto.getType()==2) {
-                config = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PARTNER_VIP_SVIP_NBR");
+                config = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY, "PARTNER_VIP_SVIP_NBR");
             } else if(dto.getType()==3) {
-                config = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "COMPANY_VIP_SVIP_NBR");
+                config = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY, "COMPANY_VIP_SVIP_NBR");
             }
             if(config==null){
                 return new BaseResult(BaseConstant.FAILED, "获取配置失败");
