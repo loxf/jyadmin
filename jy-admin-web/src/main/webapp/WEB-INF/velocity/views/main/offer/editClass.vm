@@ -331,6 +331,7 @@
                 metaData:JSON.stringify(metaData),
                 saleMoney:data.field.saleMoney,
                 offerType:'CLASS',
+                htmlId:htmlId,
                 mainMedia:data.field.mainMedia
             },
             dataType:"json",

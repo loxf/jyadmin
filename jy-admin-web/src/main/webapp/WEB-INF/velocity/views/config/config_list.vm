@@ -10,7 +10,12 @@
                 <input type="hidden" name="catalog" id="J_catalog" value="$!{catalog}">
             </div>
         </div>
-        <div class="layui-inline layui-col-lg3">
+        <div class="layui-inline layui-col-lg2">
+            <div class="layui-input-inline">
+                <input type="text" name="configCode" placeholder="配置编码" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
             <div class="layui-input-inline">
                 <select name="type" lay-search="">
                     <option value="">配置类型</option>
@@ -23,7 +28,7 @@
                 </select>
             </div>
         </div>
-        <div class="layui-inline layui-col-lg3">
+        <div class="layui-inline layui-col-lg2">
             <div class="layui-input-inline">
                 <select name="status">
                     <option value="">是否启用</option>
