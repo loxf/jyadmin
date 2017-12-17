@@ -19,27 +19,29 @@ public interface CustMapper {
 
     List<Cust> selectByName(String name);
 
-    Cust selectByPhoneOrEmail(@Param("isChinese") int isChinese, @Param("phone")String phone);
+    Cust selectByPhoneOrEmail(@Param("isChinese") int isChinese, @Param("phone") String phone);
 
     int count(Cust cust);
 
     List<Cust> pager(Cust cust);
 
-    List<Cust> queryChildList(@Param("list") List<String> parentId, @Param("start")int start, @Param("size") int size);
+    List<Cust> queryChildList(@Param("list") List<String> parentId, @Param("start") int start, @Param("size") int size);
 
-    int queryChildListCount(@Param("list")List<String> parentId);
+    int queryChildListCount(@Param("list") List<String> parentId);
 
     int updateByCustIdOrOpenid(Cust record);
 
     /**
      * @param custId
-     * @param type 1:一级 2:二级
-     * @param isAdd 1:加 2:减
+     * @param type   1:一级 2:二级
+     * @param isAdd  1:加 2:减
      * @return
      */
-    int updateChildNbr(@Param("custId")String custId, @Param("type")int type, @Param("isAdd")int isAdd);
+    int updateChildNbr(@Param("custId") String custId, @Param("type") int type, @Param("isAdd") int isAdd);
 
     List<Map> queryCustIncreaseLast7Day();
 
     List<Map> queryCustUserLevelDistribute();
+
+    Cust selectOldCust(@Param("phone") String phone);
 }

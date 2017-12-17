@@ -114,7 +114,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             // 获取账户信息
             Account account = accountMapper.selectAccount(custId);
-            if (StringUtils.isBlank(password) || account.getPassword() == null || !password.equals(account.getPassword())) {
+            if (StringUtils.isBlank(password) || StringUtils.isBlank(account.getPassword()) || !password.equals(account.getPassword())) {
                 return new BaseResult<>(BaseConstant.FAILED, "支付密码错误");
             }
             if (money != null && money.compareTo(account.getBalance()) > 0) {
@@ -131,7 +131,7 @@ public class AccountServiceImpl implements AccountService {
             if (bp != null && bp.compareTo(BigDecimal.ZERO) > 0) {
                 // 积分明细
                 newAccountInfo.setBp(account.getBp().subtract(bp));
-                custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBalance(), bp, detailName, orderId, 3));
+                custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBp(), bp, detailName, orderId, 3));
             }
             newAccountInfo.setCustId(custId);
             // 记录账户明细
@@ -152,34 +152,47 @@ public class AccountServiceImpl implements AccountService {
         if(accountMapper.lockAccount(custId)<=0) {
             return new BaseResult<>(BaseConstant.FAILED, "账户锁定失败");
         }
-        // 获取账户信息
-        Account account = accountMapper.selectAccount(custId);
-        // 加钱/积分 记录账户明细
-        Account newAccountInfo = new Account();
-        boolean insertDetail = false;
-        if(money!=null && money.compareTo(BigDecimal.ZERO)>0) {
-            //账户明细
-            newAccountInfo.setBalance(account.getBalance().add(money));
-            insertDetail = accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money,
-                    detailName, orderId, 1, sourceCustId)) > 0;
-        }
-        if(bp!=null && bp.compareTo(BigDecimal.ZERO)>0) {
-            // 积分明细
-            newAccountInfo.setBp(account.getBp().add(bp));
-            insertDetail = custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBp(), bp, detailName,
-                    orderId, 1)) > 0;
-        }
-        newAccountInfo.setCustId(custId);
-        if(insertDetail){
-            if(accountMapper.updateBalanceOrBp(newAccountInfo)<=0){
-                throw new RuntimeException("增加余额失败");
+        try {
+            // 获取账户信息
+            Account account = accountMapper.selectAccount(custId);
+            // 加钱/积分 记录账户明细
+            Account newAccountInfo = new Account();
+            boolean insertDetail = false;
+            if (money != null && money.compareTo(BigDecimal.ZERO) > 0) {
+                //账户明细
+                newAccountInfo.setBalance(account.getBalance().add(money));
+                insertDetail = accountDetailMapper.insert(createAccountDetail(custId, newAccountInfo.getBalance(), money,
+                        detailName, orderId, 1, sourceCustId)) > 0;
             }
-        } else {
-            return new BaseResult<>(BaseConstant.FAILED, "记录账户明细失败");
+            if (bp != null && bp.compareTo(BigDecimal.ZERO) > 0) {
+                // 积分明细
+                newAccountInfo.setBp(account.getBp().add(bp));
+                insertDetail = custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBp(), bp, detailName,
+                        orderId, 1)) > 0;
+            }
+            newAccountInfo.setCustId(custId);
+            if (insertDetail) {
+                if (accountMapper.updateBalanceOrBp(newAccountInfo) <= 0) {
+                    throw new RuntimeException("增加余额失败");
+                }
+            } else {
+                return new BaseResult<>(BaseConstant.FAILED, "记录账户明细失败");
+            }
+        } finally {
+            accountMapper.unlockAccount(custId);
         }
         return new BaseResult(true);
     }
 
+    /**
+     * 第三方已经扣款 只需要记录账户明细
+     * @param custId
+     * @param money      第三方支付金额
+     * @param bp         准备扣减的积分
+     * @param orderId
+     * @param detailName
+     * @return
+     */
     @Override
     @Transactional
     public BaseResult<Boolean> reduceByThird(String custId, BigDecimal money, BigDecimal bp, String orderId, String detailName) {
@@ -196,14 +209,13 @@ public class AccountServiceImpl implements AccountService {
                         detailName, orderId, 3, null));
             }
             if (bp != null && bp.compareTo(BigDecimal.ZERO) > 0) {
-                // 积分明细
                 // 扣积分
                 Account newAccountInfo = new Account();
                 newAccountInfo.setBp(account.getBp().subtract(bp));
                 newAccountInfo.setCustId(custId);
-                // 记录账户明细
                 accountMapper.updateBalanceOrBp(newAccountInfo);
-                custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBalance(), bp, detailName, orderId, 3));
+                // 记录积分明细
+                custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBp(), bp, detailName, orderId, 3));
             }
         } catch (Exception e){
             logger.error("支付异常", e);

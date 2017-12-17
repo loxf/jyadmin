@@ -25,44 +25,45 @@
     <result column="meta_data" property="metaData" jdbcType="VARCHAR" />
     <result column="openid" property="openid" jdbcType="VARCHAR" />
     <result column="unionid" property="unionid" jdbcType="VARCHAR" />
+    <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, cust_id, nick_name, real_name, first_lv_nbr, second_lv_nbr, user_level, phone, email, is_chinese, recommend,
     (select if(tt.is_chinese=1, phone, email) from tb_cust tt where tt.cust_id = a.recommend) as recommend_link,
-    is_agent, sex, country, province, city, address, head_img_url, privilege, meta_data, openid, unionid, created_at, updated_at
+    is_agent, sex, country, province, city, address, head_img_url, privilege, meta_data, openid, unionid, is_deleted, created_at, updated_at
   </sql>
   <sql id="Simple_Column_List">
-    cust_id, nick_name, real_name, user_level, phone, email, is_agent, is_chinese, openid, unionid, created_at
+    cust_id, nick_name, real_name, user_level, phone, email, is_agent, is_chinese, openid, unionid, is_deleted, created_at
   </sql>
 
   <select id="selectByOpenid" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
     from tb_cust a
-    where openid = #{openid}
+    where openid = #{openid} and is_deleted = 0
   </select>
 
   <select id="selectByCustId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
     from tb_cust a
-    where cust_id = #{custId}
+    where cust_id = #{custId} and is_deleted = 0
   </select>
 
   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
     from tb_cust a
-    where nick_name like concat('%', #{name}, '%') or real_name like concat('%', #{name}, '%')
+    where (nick_name like concat('%', #{name}, '%') or real_name like concat('%', #{name}, '%') ) and is_deleted = 0
   </select>
 
   <select id="selectByPhoneOrEmail" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />
     from tb_cust a
-    where is_chinese = #{isChinese}
+    where is_deleted = 0 and is_chinese = #{isChinese}
     <if test="isChinese==1">
       and phone = #{phone}
     </if>
@@ -75,7 +76,7 @@
     select
     <include refid="Base_Column_List" />
     from tb_cust a
-    where 1=1
+    where is_deleted = 0
     <include refid="WHERE_SQL"/>
     order by created_at desc
     <if test="pager!=null">
@@ -86,7 +87,7 @@
   <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.Cust" >
     select count(1)
     from tb_cust
-    where  1=1
+    where  is_deleted = 0
     <include refid="WHERE_SQL"/>
   </select>
 
@@ -135,19 +136,19 @@
     </if>
   </sql>
 
-  <delete id="deleteCust" parameterType="java.lang.String" >
-    delete from tb_cust
+  <update id="deleteCust" parameterType="java.lang.String" >
+    update tb_cust set is_deleted = 1
     where cust_id = #{custId}
-  </delete>
+  </update>
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Cust" >
     insert into tb_cust (cust_id, nick_name, real_name, user_level, phone, email, first_lv_nbr, second_lv_nbr, is_chinese, recommend, is_agent,
-    sex, country, province, city, address, head_img_url, privilege, openid, unionid, created_at, updated_at)
+    sex, country, province, city, address, head_img_url, privilege, openid, unionid, is_deleted, created_at, updated_at)
     values (#{custId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},#{realName,jdbcType=VARCHAR},
       'NONE', #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 0, 0,
       #{isChinese,jdbcType=INTEGER}, #{recommend,jdbcType=VARCHAR}, 0, #{sex,jdbcType=INTEGER},
       #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
-      #{headImgUrl,jdbcType=VARCHAR}, #{privilege,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR}, now(), now())
+      #{headImgUrl,jdbcType=VARCHAR}, #{privilege,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR}, 0, now(), now())
   </insert>
 
   <update id="updateByCustIdOrOpenid" parameterType="org.loxf.jyadmin.dal.po.Cust" >
@@ -260,4 +261,13 @@
     select if(is_agent=1,'代理商', if(is_agent=2,'合伙人','分公司')) as name, count(1) as value from tb_cust
      where is_agent &lt;&gt; 0 GROUP BY is_agent
   </select>
+
+  <select id="selectOldCust" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_cust a
+    where openid is null
+      and phone = #{phone}
+  </select>
+
 </mapper>

@@ -154,7 +154,7 @@ public class OrderServiceImpl implements OrderService {
                 if (orderAgain == null) {
                     return new BaseResult<>(BaseConstant.FAILED, "订单不存在");
                 }
-                if (orderAgain.getStatus().intValue() != 1) {
+                if (orderAgain.getStatus() != 1) {
                     return new BaseResult<>(BaseConstant.FAILED, "当前订单状态不正确");
                 }
                 dealCompleteOrder(orderId, partnerOrderId, status, msg);
@@ -172,9 +172,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     public void dealCompleteOrder(String orderId, String partnerOrderId, Integer status, String msg){
+        // 更新订单
         orderMapper.updateByOrderId(orderId, partnerOrderId, status, msg);
         // 如果是成功完成订单，触发交易
-        if (status.intValue() == 3) {
+        if (status == 3) {
             Trade trade = new Trade();
             trade.setOrderId(orderId);
             trade.setState(1);

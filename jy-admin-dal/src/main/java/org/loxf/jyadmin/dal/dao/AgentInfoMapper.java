@@ -19,4 +19,5 @@ public interface AgentInfoMapper {
 
     int exists(String custId);
 
+    List<AgentInfo> queryExpireInfo();
 }

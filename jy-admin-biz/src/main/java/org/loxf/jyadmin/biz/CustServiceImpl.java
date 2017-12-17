@@ -11,14 +11,8 @@ import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
 import org.loxf.jyadmin.biz.util.BizUtil;
 import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.CustService;
-import org.loxf.jyadmin.dal.dao.AccountMapper;
-import org.loxf.jyadmin.dal.dao.CustMapper;
-import org.loxf.jyadmin.dal.dao.VipInfoMapper;
-import org.loxf.jyadmin.dal.dao.WxUserTokenMapper;
-import org.loxf.jyadmin.dal.po.Account;
-import org.loxf.jyadmin.dal.po.Cust;
-import org.loxf.jyadmin.dal.po.VipInfo;
-import org.loxf.jyadmin.dal.po.WxUserToken;
+import org.loxf.jyadmin.dal.dao.*;
+import org.loxf.jyadmin.dal.po.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +31,8 @@ public class CustServiceImpl implements CustService {
     private AccountMapper accountMapper;
     @Autowired
     private VipInfoMapper vipInfoMapper;
+    @Autowired
+    private AgentInfoMapper agentInfoMapper;
 
     @Override
     @Transactional
@@ -91,6 +87,17 @@ public class CustServiceImpl implements CustService {
         CustDto tmp = new CustDto();
         BeanUtils.copyProperties(cust, tmp);
         return new BaseResult<>(tmp);
+    }
+
+    @Override
+    public BaseResult<CustDto> queryOldCust(String phone) {
+        Cust cust = custMapper.selectOldCust(phone);
+        if(cust==null){
+            return new BaseResult<>(BaseConstant.FAILED, "老客户不存在");
+        }
+        CustDto custDto = new CustDto();
+        BeanUtils.copyProperties(cust, custDto);
+        return new BaseResult<>(custDto);
     }
 
     @Override
@@ -170,7 +177,7 @@ public class CustServiceImpl implements CustService {
     @Override
     @Transactional
     public BaseResult unvalidVip(String custId) {
-        // 更新客户信息表
+        // 更新VIP信息表
         VipInfo vipInfo = new VipInfo();
         vipInfo.setCustId(custId);
         vipInfo.setStatus(3);
@@ -178,6 +185,22 @@ public class CustServiceImpl implements CustService {
         Cust cust = new Cust();
         cust.setCustId(custId);
         cust.setUserLevel("NONE");
+        custMapper.updateByCustIdOrOpenid(cust);
+        return new BaseResult();
+    }
+
+    @Override
+    @Transactional
+    public BaseResult unvalidAgent(String custId) {
+        // 更新代理信息表
+        AgentInfo agentInfo = new AgentInfo();
+        agentInfo.setCustId(custId);
+        agentInfo.setStatus(3);
+        agentInfoMapper.updateByCustId(agentInfo);
+        Cust cust = new Cust();
+        cust.setCustId(custId);
+        cust.setIsAgent(0);
+        custMapper.updateByCustIdOrOpenid(cust);
         return new BaseResult();
     }
 
@@ -262,10 +285,17 @@ public class CustServiceImpl implements CustService {
     @Override
     @Transactional
     public BaseResult delCust(String custId) {
-        // TODO 合并老客户
         // 获取客户信息
         Cust cust = custMapper.selectByCustId(custId);
         updateRecommendChildNbr(cust.getRecommend(), 2);
+        return new BaseResult(custMapper.deleteCust(custId));
+    }
+
+    @Override
+    @Transactional
+    public BaseResult delOldCust(String custId) {
+        // 获取客户信息
+        Cust cust = custMapper.selectByCustId(custId);
         return new BaseResult(custMapper.deleteCust(custId));
     }
 

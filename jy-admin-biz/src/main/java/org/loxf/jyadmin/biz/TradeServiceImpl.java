@@ -1,5 +1,7 @@
 package org.loxf.jyadmin.biz;
 
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONPObject;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
@@ -47,6 +49,8 @@ public class TradeServiceImpl implements TradeService {
     private AccountService accountService;
     @Autowired
     private CompanyIncomeMapper companyIncomeMapper;
+    @Autowired
+    private AgentInfoMapper agentInfoMapper;
 
     @Override
     public BaseResult<String> completeTrade(String orderId, Integer status, String msg) {
@@ -63,14 +67,14 @@ public class TradeServiceImpl implements TradeService {
                 if (orderAgain == null) {
                     return new BaseResult<>(BaseConstant.FAILED, "订单不存在");
                 }
-                if (orderAgain.getStatus().intValue() != 3) {
+                if (orderAgain.getStatus() != 3) {
                     return new BaseResult<>(BaseConstant.FAILED, "当前订单状态不正确");
                 }
                 Trade trade = tradeMapper.selectByOrderId(orderId);
                 if (trade == null) {
                     return new BaseResult<>(BaseConstant.FAILED, "交易不存在");
                 }
-                if (trade.getState().intValue() != 1) {
+                if (trade.getState() != 1) {
                     return new BaseResult<>(BaseConstant.FAILED, "当前交易状态不正确");
                 }
                 // 查询客户信息
@@ -78,7 +82,7 @@ public class TradeServiceImpl implements TradeService {
                 dealTrade(cust, cust.getRecommend(), orderId, status, msg, orderAgain);
                 return new BaseResult<>();
             } catch (Exception e) {
-                logger.error("交易失败", e);
+                logger.error("交易失败" + orderId, e);
                 return new BaseResult(BaseConstant.FAILED, "交易失败");
             } finally {
                 jedisUtil.del(key);
@@ -116,14 +120,20 @@ public class TradeServiceImpl implements TradeService {
             String detailName = "";
             if (order.getOrderType() == 3) {
                 String vipType = order.getObjId().equals("OFFER001") ? "VIP" : "SVIP";
-                detailName += "升级" + vipType;
-                // 处理VIP_INFO CUST_INFO
-                dealVip(order.getCustId(), vipType);
-                if (custFirst != null) {
-                    firstScholarships = queryScholarshipsRate(custFirst, "STUDENT", 1);
+                if(custFirst.getIsAgent()!=null && custFirst.getIsAgent()>0){
+                    // 推荐注册 如果是代理商及以上身份，检查是否有免费名额
+                    secondScholarships = queryFirstCustAgentScholarship(custFirst.getCustId(), vipType);
                 }
-                if(custSecond!=null){
-                    secondScholarships = queryScholarshipsRate(custSecond, "STUDENT", 2);
+                if(StringUtils.isBlank(firstScholarships)){
+                    detailName += "升级" + vipType;
+                    // 处理VIP_INFO CUST_INFO
+                    dealVip(order.getCustId(), vipType);
+                    if (custFirst != null) {
+                        firstScholarships = queryScholarshipsRate(custFirst, "STUDENT", 1);
+                    }
+                    if (custSecond != null) {
+                        secondScholarships = queryScholarshipsRate(custSecond, "STUDENT", 2);
+                    }
                 }
             } else if (order.getOrderType() == 5) {
                 detailName += "参加活动";
@@ -144,41 +154,72 @@ public class TradeServiceImpl implements TradeService {
                     secondScholarships = queryScholarshipsRate(custSecond, "OFFER", 2);
                 }
             }
-            // 分成计算 TODO 代理商分成 如果是代理商，先检查是否有免费名额，如果有先用免费名额
+            // 分成计算 代理商分成 如果是代理商，先检查是否有免费名额，如果有先用免费名额
             BigDecimal companyAmount = order.getOrderMoney();
+            BigDecimal scholarship = BigDecimal.ZERO;
             // TODO 模板消息接口 发送通知
             if(StringUtils.isNotBlank(firstScholarships)) {
-                BigDecimal first = order.getOrderMoney().multiply(new BigDecimal(firstScholarships)).
-                        divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
-                BaseResult<Boolean> baseResult = accountService.increase(custFirst.getCustId(), first, null, orderId,
-                        "奖：" + userName + "(1级)" + detailName, cust.getCustId());
-                if(baseResult.getCode()==BaseConstant.FAILED){
-                    throw new BizException(baseResult.getMsg());
-                }
+                BigDecimal first = dealScholarship(firstScholarships, order.getOrderMoney(), custFirst.getCustId(), orderId,
+                        userName + detailName + "(1级奖)", cust.getCustId());
                 companyAmount = companyAmount.subtract(first);
+                scholarship = scholarship.add(first);
             }
-            if(StringUtils.isNotBlank(secondScholarships)) {
-                BigDecimal second = order.getOrderMoney().multiply(new BigDecimal(secondScholarships)).
-                        divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
-                BaseResult<Boolean> baseResult = accountService.increase(custSecond.getCustId(), second, null, orderId,
-                        "奖：" + userName + "(2级)" + detailName , cust.getCustId());
-                if(baseResult.getCode()==BaseConstant.FAILED){
-                    throw new BizException(baseResult.getMsg());
-                }
+            if(StringUtils.isNotBlank(secondScholarships) && companyAmount.compareTo(BigDecimal.ZERO)>0) {
+                BigDecimal second = dealScholarship(secondScholarships, order.getOrderMoney(), custSecond.getCustId(), orderId,
+                        userName + detailName + "(2级奖)", cust.getCustId());
                 companyAmount = companyAmount.subtract(second);
+                scholarship = scholarship.add(second);
             }
             // 计算公司收入
             companyIncomeMapper.insert(createCompanyIncome(cust.getCustId(), userName, detailName,
-                    companyAmount, orderId, order.getOrderType()));
+                    companyAmount, scholarship, orderId, order.getOrderType()));
         }
         tradeMapper.updateByOrderId(orderId, status, msg);
     }
 
-    private CompanyIncome createCompanyIncome(String custId, String custName, String detailName, BigDecimal companyAmount, String source, int type ){
+    private String queryFirstCustAgentScholarship(String custId, String vipType){
+        // 推荐注册 如果是代理商及以上身份，检查是否有免费名额
+        AgentInfo agentInfo = agentInfoMapper.selectByCustId(custId);
+        if(agentInfo.getStatus()==1) {
+            String metaDataStr = agentInfo.getMetaData();
+            if(StringUtils.isNotBlank(metaDataStr)){
+                JSONObject jsonObject = JSONObject.parseObject(metaDataStr);
+                if(jsonObject.containsKey("total" + vipType)){
+                    int totalNbr = jsonObject.getIntValue("total" + vipType);
+                    int useNbr = jsonObject.getIntValue("use" + vipType);
+                    if(totalNbr - useNbr>0){
+                        // 使用免费名额，奖学金比例100%
+                        jsonObject.put("useVIP", ++useNbr);
+                        AgentInfo newAgent = new AgentInfo();
+                        newAgent.setMetaData(jsonObject.toJSONString());
+                        newAgent.setCustId(custId);
+                        agentInfoMapper.updateByCustId(newAgent);
+                        return  "100";
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private BigDecimal dealScholarship(String scholarships, BigDecimal orderMoney, String custId, String orderId, String detailName, String sourceCustId){
+        BigDecimal first = orderMoney.multiply(new BigDecimal(scholarships)).
+                divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
+        BaseResult<Boolean> baseResult = accountService.increase(custId, first, null, orderId,
+                detailName, sourceCustId);
+        if(baseResult.getCode()==BaseConstant.FAILED){
+            throw new BizException(baseResult.getMsg());
+        }
+        return first;
+    }
+
+    private CompanyIncome createCompanyIncome(String custId, String custName, String detailName, BigDecimal companyAmount,
+                                              BigDecimal scholarship, String source, int type ){
         CompanyIncome companyIncome = new CompanyIncome();
         companyIncome.setCustId(custId);
         companyIncome.setCustName(custName);
         companyIncome.setAmount(companyAmount);
+        companyIncome.setScholarship(scholarship);
         companyIncome.setDetailName(detailName);
         companyIncome.setSource(source);
         companyIncome.setType(type);

@@ -1,6 +1,8 @@
 package org.loxf.jyadmin.biz.thread;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.loxf.jyadmin.base.bean.BaseResult;
+import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.service.TradeService;
 import org.loxf.jyadmin.dal.dao.OrderMapper;
 import org.loxf.jyadmin.dal.dao.TradeMapper;
@@ -45,10 +47,17 @@ public class TradeJob extends JOB {
             @Override
             public void run() {
                 // 获取交易订单
-                List<Trade> list = tradeMapper.selectList(1, 200);
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (Trade trade : list) {
-                        tradeService.completeTrade(trade.getOrderId(), 3, null);
+                while (true) {
+                    List<Trade> list = tradeMapper.selectList(1, 200);
+                    if (CollectionUtils.isNotEmpty(list)) {
+                        for (Trade trade : list) {
+                            BaseResult baseResult = tradeService.completeTrade(trade.getOrderId(), 3, null);
+                            if(baseResult.getCode()== BaseConstant.FAILED){
+                                logger.error("订单交易处理失败[" + trade.getOrderId() + "]：" + baseResult.getMsg());
+                            }
+                        }
+                    } else {
+                        break;
                     }
                 }
             }

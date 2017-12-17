@@ -1,11 +1,14 @@
 package org.loxf.jyadmin.biz.thread;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.loxf.jyadmin.client.service.AgentInfoService;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.client.service.TradeService;
 import org.loxf.jyadmin.client.service.VipInfoService;
+import org.loxf.jyadmin.dal.dao.AgentInfoMapper;
 import org.loxf.jyadmin.dal.dao.TradeMapper;
 import org.loxf.jyadmin.dal.dao.VipInfoMapper;
+import org.loxf.jyadmin.dal.po.AgentInfo;
 import org.loxf.jyadmin.dal.po.Trade;
 import org.loxf.jyadmin.dal.po.VipInfo;
 import org.slf4j.Logger;
@@ -28,6 +31,8 @@ public class CustLevelJob extends JOB {
     @Autowired
     private VipInfoMapper vipInfoMapper;
     @Autowired
+    private AgentInfoMapper agentInfoMapper;
+    @Autowired
     private CustService custService;
 
     /**
@@ -46,11 +51,18 @@ public class CustLevelJob extends JOB {
         timer.schedule(new Task(prefix + this.getClass().getName(), expireLockMSecd, lockTimeout, new Runnable() {
             @Override
             public void run() {
-                // 获取交易订单
-                List<VipInfo> list = vipInfoMapper.queryExpireInfo();
-                if (CollectionUtils.isNotEmpty(list)) {
-                    for (VipInfo vipInfo : list) {
+                // 获取失效VIP
+                List<VipInfo> vipInfoList = vipInfoMapper.queryExpireInfo();
+                if (CollectionUtils.isNotEmpty(vipInfoList)) {
+                    for (VipInfo vipInfo : vipInfoList) {
                         custService.unvalidVip(vipInfo.getCustId());
+                    }
+                }
+                // 获取失效代理
+                List<AgentInfo> agentInfoList = agentInfoMapper.queryExpireInfo();
+                if (CollectionUtils.isNotEmpty(agentInfoList)) {
+                    for (AgentInfo agentInfo : agentInfoList) {
+                        custService.unvalidAgent(agentInfo.getCustId());
                     }
                 }
             }

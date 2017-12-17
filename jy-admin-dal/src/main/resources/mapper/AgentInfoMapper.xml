@@ -121,4 +121,11 @@
   <select id="exists" parameterType="java.lang.String" resultType="java.lang.Integer">
     select count(1) from tb_agent_info where cust_id = #{custId,jdbcType=VARCHAR} and status in (0, 1)
   </select>
+
+  <select id="queryExpireInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_agent_info
+    where exp_date &lt; now() and status = 1
+  </select>
 </mapper>
