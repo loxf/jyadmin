@@ -238,8 +238,8 @@ function sendWeiXin(data, layEvent, obj) {
         var json = JSON.parse(metaData);
         var teacherArr = json.TEACHER;
         if(teacherArr.length>0){
-            for (var teacher in teacherArr){
-                teacherStr += teacher.name + " ";
+            for (var inx in teacherArr){
+                teacherStr += teacherArr[inx].name + " ";
             }
         }
     }

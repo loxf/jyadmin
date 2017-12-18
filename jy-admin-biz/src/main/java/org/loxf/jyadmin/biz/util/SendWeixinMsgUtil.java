@@ -24,7 +24,7 @@ public class SendWeixinMsgUtil {
         data.put("first", WeixinSender.createWXKeyWord("恭喜您，获得了一笔奖学金。", null));
         data.put("keyword1", WeixinSender.createWXKeyWord(money, "#FF3030"));
         data.put("keyword2", WeixinSender.createWXKeyWord(nickName, null));
-        data.put("remark", WeixinSender.createWXKeyWord("可通过菜单栏“奖学金”进行余额查询，余额提现，清单明细查询等操作", null));
+        data.put("remark", WeixinSender.createWXKeyWord("可通过菜单“奖学金”进行余额查询，余额提现，清单明细查询等操作", null));
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(WxMsgTemplateConstant.JXJ,
                 openid, data, BaseConstant.JYZX_ACCOUNT_URL));
     }
@@ -41,7 +41,7 @@ public class SendWeixinMsgUtil {
         data.put("keyword2", WeixinSender.createWXKeyWord(addr, null));
         data.put("keyword3", WeixinSender.createWXKeyWord(teachers, null));
         data.put("keyword4", WeixinSender.createWXKeyWord(DateUtils.formatHms(new Date()), null));
-        data.put("remark", WeixinSender.createWXKeyWord("点击学习课程，邀请朋友一起学习可获积分奖励", null));
+        data.put("remark", WeixinSender.createWXKeyWord("点击学习课程，邀请朋友一起学习可获奖学金", null));
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(WxMsgTemplateConstant.CLASS_NOTICE,
                 openid, data, url));
     }
