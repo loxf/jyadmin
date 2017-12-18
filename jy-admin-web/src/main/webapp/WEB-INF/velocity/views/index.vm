@@ -11,6 +11,9 @@
             <div class="layui-inline" style="width:600px; height: 400px; padding: 10px" id="increaseCust"></div>
             <div class="layui-inline" style="width:600px; height: 400px; padding: 10px" id="increaseOrder"></div>
         </div>
+        <div class="layui-row layui-form-item">
+            <div class="layui-inline" style="width:600px; height: 400px; padding: 10px" id="scholarshipChart"></div>
+        </div>
     </div>
 </div>
 
@@ -31,7 +34,7 @@
         dataType:"json",
         success: function(data) {
             if(data.code == 1){
-                getLine(data.data, "奖学金", "bar", "incomeChart");
+                getLine(data.data, "奖学金", "bar", "scholarshipChart");
             }
         }
     });

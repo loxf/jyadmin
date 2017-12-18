@@ -105,7 +105,7 @@ public class TradeServiceImpl implements TradeService {
             }
         }
         if (status == 3) {
-            String userName = (StringUtils.isNotBlank(cust.getRealName())? cust.getRealName() : cust.getNickName()) ;
+            String userName = cust.getNickName() ;
             // 增加购买记录
             PurchasedInfo purchasedInfo = new PurchasedInfo();
             purchasedInfo.setCustId(order.getCustId());
