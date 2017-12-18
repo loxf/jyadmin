@@ -52,6 +52,15 @@ public class WeixinSender implements ISender {
         return result ;
     }
 
+    public static Map createWXKeyWord(String value, String color){
+        Map map = new HashMap();
+        map.put("value", value);
+        if(StringUtils.isNotBlank(color)){
+            color = "#000000";
+        }
+        map.put("color", color);
+        return map;
+    }
     private JedisUtil jedisUtil(){
         return SpringApplicationContextUtil.getBean(JedisUtil.class);
     }

@@ -1,17 +1,17 @@
 package org.loxf.jyadmin.web.admin;
 
+import com.alibaba.dubbo.container.page.Page;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.bean.Pager;
 import org.loxf.jyadmin.base.constant.BaseConstant;
-import org.loxf.jyadmin.client.dto.OfferCatalogDto;
-import org.loxf.jyadmin.client.dto.OfferDto;
-import org.loxf.jyadmin.client.dto.OfferRelDto;
-import org.loxf.jyadmin.client.dto.VideoConfigDto;
+import org.loxf.jyadmin.biz.util.SendWeixinMsgUtil;
+import org.loxf.jyadmin.client.dto.*;
 import org.loxf.jyadmin.client.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +36,9 @@ public class OfferController extends BaseControl<OfferDto> {
     @Autowired
     private HtmlInfoService htmlInfoService;
     @Autowired
-    private ConfigService configService;
-    @Autowired
-    private IndexRecommendService indexRecommendService;
-    @Autowired
     private VideoConfigService videoConfigService;
+    @Autowired
+    private CustService custService;
 
     @RequestMapping("/index")
     public String index(Model model){
@@ -188,14 +186,32 @@ public class OfferController extends BaseControl<OfferDto> {
 
     @RequestMapping("/getDetailUrl")
     @ResponseBody
-    public BaseResult getDetailUrl(String offerId, String type){
-        if(type.equals("ACTIVE")) {
-            return new BaseResult(String.format(BaseConstant.ACTIVE_DETAIL_URL, offerId));
-        } else if(type.equals("OFFER")){
-            return new BaseResult(String.format(BaseConstant.OFFER_DETAIL_URL, offerId));
-        } else if(type.equals("CLASS")){
-            return new BaseResult(String.format(BaseConstant.CLASS_DETAIL_URL, offerId));
+    public BaseResult<String> getDetailUrl(String offerId, String type){
+        return new BaseResult(getUrl(offerId, type));
+    }
+
+    @RequestMapping("/sendWeiXin")
+    @ResponseBody
+    public BaseResult sendWeiXin(String offerId, String type, String offerName, String addr, String teachers){
+        CustDto custDto = new CustDto();
+        custDto.setPager(new Pager(1, 100000));
+        List<CustDto> custDtoList = custService.pager(custDto).getData();
+        if(CollectionUtils.isNotEmpty(custDtoList)){
+            String url = getUrl(offerId, type);
+            for(CustDto cust :custDtoList){
+                SendWeixinMsgUtil.sendClassOfferNotice(cust.getOpenid(), offerName, addr, teachers, url);
+            }
         }
-        return new BaseResult(BaseConstant.FAILED, "类型不存在");
+        return new BaseResult();
+    }
+    private String getUrl(String offerId, String type){
+        if(type.equals("ACTIVE")) {
+            return String.format(BaseConstant.ACTIVE_DETAIL_URL, offerId);
+        } else if(type.equals("OFFER")){
+            return String.format(BaseConstant.OFFER_DETAIL_URL, offerId);
+        } else if(type.equals("CLASS")){
+            return String.format(BaseConstant.CLASS_DETAIL_URL, offerId);
+        }
+        return null;
     }
 }

@@ -302,5 +302,24 @@ function searchList(){
 }
 
 function sendWeiXin(data, layEvent, obj) {
-
+    var addr = data.province + "-" + data.city;
+    $.ajax({
+        type: "POST",
+        url:contextPath + "/admin/offer/sendWeiXin.html",
+        dataType:"json",
+        data : {
+            offerId : data.activeId,
+            type : "ACTIVE",
+            offerName : data.activeName,
+            addr : addr,
+            teachers : "现场揭示"
+        },
+        success: function(data) {
+            if(data.code==1){
+                layer.msg("推送成功");
+            } else {
+                layer.msg(data.msg);
+            }
+        }
+    });
 }

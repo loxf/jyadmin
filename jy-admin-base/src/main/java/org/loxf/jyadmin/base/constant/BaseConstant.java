@@ -87,6 +87,8 @@ public class BaseConstant {
 
     // APP主页
     public static String JYZX_INDEX_URL =  "https://www.jingyizaixian.com";
+    // 奖学金页面
+    public static String JYZX_ACCOUNT_URL =  "https://www.jingyizaixian.com/myAccount";
     // APP主页推广二维码地址
     public static String JYZX_INDEX_RECOMMEND_URL =  "https://www.jingyizaixian.com?recommend=%s";
     // 套餐详情

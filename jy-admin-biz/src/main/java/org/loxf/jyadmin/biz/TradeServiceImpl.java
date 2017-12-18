@@ -1,7 +1,6 @@
 package org.loxf.jyadmin.biz;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPObject;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
@@ -10,7 +9,9 @@ import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.JedisUtil;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.biz.util.RandomUtils;
+import org.loxf.jyadmin.biz.util.SendWeixinMsgUtil;
 import org.loxf.jyadmin.client.service.AccountService;
+import org.loxf.jyadmin.client.service.NoticeService;
 import org.loxf.jyadmin.client.service.TradeService;
 import org.loxf.jyadmin.dal.dao.*;
 import org.loxf.jyadmin.dal.po.*;
@@ -21,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service("tradeService")
 public class TradeServiceImpl implements TradeService {
@@ -51,6 +49,8 @@ public class TradeServiceImpl implements TradeService {
     private CompanyIncomeMapper companyIncomeMapper;
     @Autowired
     private AgentInfoMapper agentInfoMapper;
+    @Autowired
+    private NoticeService noticeService;
 
     @Override
     public BaseResult<String> completeTrade(String orderId, Integer status, String msg) {
@@ -157,12 +157,13 @@ public class TradeServiceImpl implements TradeService {
             // 分成计算 代理商分成 如果是代理商，先检查是否有免费名额，如果有先用免费名额
             BigDecimal companyAmount = order.getOrderMoney();
             BigDecimal scholarship = BigDecimal.ZERO;
-            // TODO 模板消息接口 发送通知
             if(StringUtils.isNotBlank(firstScholarships)) {
+                // 模板消息接口 发送通知
                 BigDecimal first = dealScholarship(firstScholarships, order.getOrderMoney(), custFirst.getCustId(), orderId,
                         userName + detailName + "(1级奖)", cust.getCustId());
                 companyAmount = companyAmount.subtract(first);
                 scholarship = scholarship.add(first);
+                SendWeixinMsgUtil.sendScholarshipMsg(custFirst.getOpenid(), first.toPlainString(), custFirst.getNickName());
             }
             if(StringUtils.isNotBlank(secondScholarships) && companyAmount.compareTo(BigDecimal.ZERO)>0) {
                 BigDecimal second = dealScholarship(secondScholarships, order.getOrderMoney(), custSecond.getCustId(), orderId,
@@ -176,6 +177,7 @@ public class TradeServiceImpl implements TradeService {
         }
         tradeMapper.updateByOrderId(orderId, status, msg);
     }
+
 
     private String queryFirstCustAgentScholarship(String custId, String vipType){
         // 推荐注册 如果是代理商及以上身份，检查是否有免费名额

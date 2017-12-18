@@ -158,12 +158,12 @@
 	(
 		SELECT A.offer_name, A.offer_desc, A.offer_id,A.offer_type,a.sale_money,a.buy_privi,a.created_at
 		FROM	tb_offer a	WHERE
-			a.offer_type IN ('VIP', 'CLASS')	AND A.`status` = 1
+			a.offer_type IN ('VIP', 'CLASS')
 			<if test="name!=null and name!=''"> and a.offer_name like concat('%', #{name}, '%')</if>
 		UNION ALL
 		SELECT	B.active_name AS offer_name, B.active_desc AS offer_desc, b.active_id AS offer_id,'ACTIVE' AS offer_type,
 				b.price AS sale_money,b.active_privi AS buy_privi,b.created_at
-		FROM tb_active b WHERE B.`status` = 1
+		FROM tb_active b WHERE 1=1
             <if test="name!=null and name!=''"> and b.active_name like concat('%', #{name}, '%')</if>
 	) t ORDER BY created_at DESC
   </select>
@@ -174,7 +174,8 @@
     from tb_offer_rel a, tb_offer b
     where a.rel_id = b.offer_id and a.offer_type &lt;&gt;'ACTIVE' and a.offer_id = #{offerId} and  a.rel_type = #{relType}
     union all
-    select a.sort, '' as `CATALOG_NAME`, c.active_name AS offer_name,c.active_id AS offer_id,'ACTIVE' AS offer_type,
+    select a.sort, '' as `CATALOG_NAME`, c.active_name AS offer_name,
+	c.active_desc as offer_desc, c.active_id AS offer_id,'ACTIVE' AS offer_type,
     c.price AS sale_money,c.active_privi AS buy_privi, null, c.created_at
     from tb_offer_rel a, tb_active c
     where a.rel_id = c.active_id and a.offer_type='ACTIVE' and a.offer_id = #{offerId} and  a.rel_type = #{relType}

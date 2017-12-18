@@ -232,7 +232,36 @@ function deleteOffer(data, layEvent, obj) {
 }
 
 function sendWeiXin(data, layEvent, obj) {
-
+    var metaData = data.metaData;
+    var teacherStr = "";
+    if(metaData){
+        var json = JSON.parse(metaData);
+        var teacherArr = json.TEACHER;
+        if(teacherArr.length>0){
+            for (var teacher in teacherArr){
+                teacherStr += teacher.name + " ";
+            }
+        }
+    }
+    $.ajax({
+        type: "POST",
+        url:contextPath + "/admin/offer/sendWeiXin.html",
+        dataType:"json",
+        data : {
+            offerId : data.offerId,
+            type : data.offerType,
+            offerName : data.offerName,
+            addr : "在线学习平台",
+            teachers : teacherStr
+        },
+        success: function(data) {
+            if(data.code==1){
+                layer.msg("推送成功");
+            } else {
+                layer.msg(data.msg);
+            }
+        }
+    });
 }
 
 function onOffer(data, layEvent, obj){
