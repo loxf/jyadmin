@@ -73,7 +73,7 @@
   </select>
 
   <select id="queryScholarship" parameterType="java.lang.String" resultType="double">
-    select ifnull(sum(scholarship)) from tb_company_income where 1=1
+    select ifnull(sum(scholarship),0) from tb_company_income where 1=1
     <if test="startDay!=null and startDay!=''">
       and created_at > #{startDay}
     </if>

@@ -138,8 +138,6 @@ table.on('tool(userDataTable)', function (obj) { //注：tool是工具条事件�
         editOffer(data, layEvent, obj);
     } else if (layEvent === 'deleteOffer') {// 删除商品
         deleteOffer(data, layEvent, obj);
-    } else if (layEvent === 'copyHref') {// 复制链接
-        copyHref(data, layEvent, obj);
     } else if (layEvent === 'sendWeiXin') {// 微信推送
         sendWeiXin(data, layEvent, obj);
     } else if (layEvent === 'onOffer') {// 上架
@@ -233,10 +231,6 @@ function deleteOffer(data, layEvent, obj) {
     });
 }
 
-function copyHref(data, layEvent, obj) {
-
-}
-
 function sendWeiXin(data, layEvent, obj) {
 
 }
@@ -308,3 +302,4 @@ function showOffer(offerId) {
 function searchList(){
     $("#searchList").click();
 }
+

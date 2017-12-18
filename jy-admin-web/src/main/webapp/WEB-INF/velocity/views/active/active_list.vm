@@ -64,7 +64,7 @@
     {{#  } else { }}
     <a class="layui-btn layui-btn-mini" lay-event="offActive">取消</a>
     <a class="layui-btn layui-btn-mini" lay-event="indexShow">首页轮播</a>
-    <a class="layui-btn layui-btn-mini" lay-event="copyHref">复制链接</a>
+    <a class="layui-btn layui-btn-mini copy-btn" data-offertype="ACTIVE" data-offerid="{{d.activeId}}">复制链接</a>
     <a class="layui-btn layui-btn-mini" lay-event="sendWeiXin">微信推送</a>
     {{#  } }}
 </script>
@@ -146,5 +146,7 @@
     {{#  } }}
 </script>
 
+<script src="${rc.contextPath}/static/jquery/clipboard.min.js"></script>
 <script src="${rc.contextPath}/static/jingyi/common.js"></script>
 <script src="${rc.contextPath}/static/jingyi/active/active.js"></script>
+<script src="${rc.contextPath}/static/jingyi/offer/detailUrlCopy.js"></script>

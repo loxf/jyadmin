@@ -185,4 +185,17 @@ public class OfferController extends BaseControl<OfferDto> {
     public BaseResult indexRecommend(String offerId){
         return offerService.sendIndexRecommend(offerId);
     }
+
+    @RequestMapping("/getDetailUrl")
+    @ResponseBody
+    public BaseResult getDetailUrl(String offerId, String type){
+        if(type.equals("ACTIVE")) {
+            return new BaseResult(String.format(BaseConstant.ACTIVE_DETAIL_URL, offerId));
+        } else if(type.equals("OFFER")){
+            return new BaseResult(String.format(BaseConstant.OFFER_DETAIL_URL, offerId));
+        } else if(type.equals("CLASS")){
+            return new BaseResult(String.format(BaseConstant.CLASS_DETAIL_URL, offerId));
+        }
+        return new BaseResult(BaseConstant.FAILED, "类型不存在");
+    }
 }

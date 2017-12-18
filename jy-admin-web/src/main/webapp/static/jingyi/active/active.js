@@ -175,8 +175,6 @@ table.on('tool(userDataTable)', function (obj) { //注：tool是工具条事件�
         deleteActive(data, layEvent, obj);
     } else if(layEvent === 'indexShow'){// 首页推荐
         indexRecommend(data, layEvent, obj);
-    } else if (layEvent === 'copyHref') {// 复制链接
-        copyHref(data, layEvent, obj);
     } else if (layEvent === 'sendWeiXin') {// 微信推送
         sendWeiXin(data, layEvent, obj);
     }
@@ -301,9 +299,6 @@ function openCustListOfActive(activeId) {
 
 function searchList(){
     $("#searchList").click();
-}
-function copyHref(data, layEvent, obj) {
-
 }
 
 function sendWeiXin(data, layEvent, obj) {
