@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.NoticeMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.Notice" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="notice_type" property="noticeType" jdbcType="VARCHAR" />
+    <result column="notice_obj" property="noticeObj" jdbcType="VARCHAR" />
+    <result column="meta_data" property="metaData" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, notice_type, notice_obj, meta_data, status, remark, created_at, updated_at
+  </sql>
+  <select id="queryNeedSend" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_notice
+    where status = 1
+  </select>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Notice" >
+    insert into tb_notice (id, notice_type, notice_obj, meta_data,
+      status, remark, created_at, 
+      updated_at)
+    values (#{id,jdbcType=BIGINT}, #{noticeType,jdbcType=VARCHAR}, #{noticeObj,jdbcType=VARCHAR}, #{metaData,jdbcType=VARCHAR},
+      1, #{remark,jdbcType=VARCHAR}, now(), now())
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.Notice" >
+    update tb_notice
+    set
+      <if test="remark!=null and remark!=''">
+      remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      status = #{status,jdbcType=INTEGER},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

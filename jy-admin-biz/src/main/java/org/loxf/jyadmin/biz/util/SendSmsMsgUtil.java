@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by hutingting on 2017/7/20.
  */
-public class SendMsgUtils {
-    static Logger logger = LoggerFactory.getLogger(SendMsgUtils.class);
+public class SendSmsMsgUtil {
+    static Logger logger = LoggerFactory.getLogger(SendSmsMsgUtil.class);
 
     static final String SETPAYPASSWORD = "SMS_114070317";// 设置支付密码模板
     static final String BINDUSER = "SMS_114065333";// 绑定用户模板

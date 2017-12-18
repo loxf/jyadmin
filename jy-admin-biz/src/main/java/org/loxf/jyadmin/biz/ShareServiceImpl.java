@@ -41,7 +41,7 @@ public class ShareServiceImpl implements ShareService {
         }
         String qrFilePath = File.separator + "QR" + File.separator + "QR" + custId + ".jpg";
         if(!new File(IMG_SERVER_PATH + qrFilePath).exists()) {
-            String text = String.format(BaseConstant.JYZX_INDEX_URL, custId); // 二维码内容
+            String text = String.format(BaseConstant.JYZX_INDEX_RECOMMEND_URL, custId); // 二维码内容
             String logoPath = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_COM, "COMPANY_LOGO",
                     "/CONFIG/0a94a6ec6695491c805ca0cd22741077.jpeg").getConfigValue();
             MatrixToImageWriter.createQR(text, "jpg", IMG_SERVER_PATH + qrFilePath, IMG_SERVER_PATH + logoPath);

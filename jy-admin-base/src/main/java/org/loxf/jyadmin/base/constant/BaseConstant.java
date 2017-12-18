@@ -80,9 +80,15 @@ public class BaseConstant {
      * 微信付款-银行
      */
     public static String WEIXIN_PAY_BANK = "https://api.mch.weixin.qq.com/mmpaysptrans/pay_bank";
+    /**
+     * 微信模板消息接口
+     */
+    public static String WEIXIN_TEMPLATE_MSG = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s";
 
-    // 推广二维码地址
-    public static String JYZX_INDEX_URL =  "https://www.jingyizaixian.com?recommend=%s";
+    // APP主页
+    public static String JYZX_INDEX_URL =  "https://www.jingyizaixian.com";
+    // APP主页推广二维码地址
+    public static String JYZX_INDEX_RECOMMEND_URL =  "https://www.jingyizaixian.com?recommend=%s";
     // 套餐详情
     public static String OFFER_DETAIL_URL =  "https://www.jingyizaixian.com/packageDetail?id=%s";
     // 活动详情

@@ -66,6 +66,12 @@ public class WeixinUtil {
     public static JsTicket queryJsTicket(String access_token){
         return (JsTicket)commonGet(String.format(BaseConstant.JS_TICKET_URL, access_token), JsTicket.class);
     }
+    public static BaseResult sendTemplateMsg(String msg, String access_token) throws Exception {
+        String url = String.format(BaseConstant.WEIXIN_TEMPLATE_MSG, access_token);
+        String result = HttpsUtil.handlePost(url, msg, null);
+        logger.info(result);
+        return new BaseResult(result);
+    }
 
     public static Map<String, String> signJsTicket(String jsapi_ticket, String url) {
         Map<String, String> ret = new HashMap<String, String>();

@@ -46,7 +46,7 @@ public class WatchRecordAddBpJob extends JOB {
 
     public void start() {
         Timer timer = new Timer();
-        timer.schedule(new Task(prefix + this.getClass().getName(), expireLockMSecd, lockTimeout, new Runnable() {
+        timer.schedule(new Task(prefix + this.getClass().getSimpleName(), expireLockMSecd, lockTimeout, new Runnable() {
             @Override
             public void run() {
                 // 获取15分钟超时订单

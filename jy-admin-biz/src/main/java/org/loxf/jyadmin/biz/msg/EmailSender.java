@@ -1,8 +1,7 @@
 package org.loxf.jyadmin.biz.msg;
 
-import org.loxf.jyadmin.biz.util.MailSender;
+import org.loxf.jyadmin.biz.util.SendMailUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class EmailSender implements ISender {
@@ -10,7 +9,7 @@ public class EmailSender implements ISender {
     @Override
     public boolean send(Map params, String target) {
         String [] toMail = new String[]{target};
-        MailSender.getInstance().sendEmail(params, "静怡雅学馆验证码", verifyMail, toMail , null);
+        SendMailUtil.getInstance().sendEmail(params, "静怡雅学馆验证码", verifyMail, toMail , null);
         return true;
     }
 }

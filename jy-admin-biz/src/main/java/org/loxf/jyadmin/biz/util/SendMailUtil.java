@@ -1,9 +1,7 @@
 package org.loxf.jyadmin.biz.util;
 
-import com.alibaba.druid.filter.config.ConfigTools;
 import org.apache.velocity.app.VelocityEngine;
 import org.loxf.jyadmin.base.constant.BaseConstant;
-import org.loxf.jyadmin.base.util.SpringApplicationContextUtil;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -20,8 +18,8 @@ import java.util.Properties;
 /**
  * Created by luohj on 2017/8/24.
  */
-public class MailSender {
-    private static MailSender mailSender ;
+public class SendMailUtil {
+    private static SendMailUtil sendMailUtil;
     //从配置文件中读取相应的邮件配置属性
     private String emailHost;
     private String userName;
@@ -41,7 +39,7 @@ public class MailSender {
         }*/
     }
 
-    private MailSender(){
+    private SendMailUtil(){
         emailHost = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "EMAIL_HOST").getConfigValue();
         userName = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "EMAIL_USERNAME").getConfigValue();
         password = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "EMAIL_PASSWORD").getConfigValue();
@@ -49,15 +47,15 @@ public class MailSender {
         getVelocityEngineInstance();
     }
 
-    public static MailSender getInstance(){
-        if(mailSender==null){
-            synchronized (MailSender.class){
-                if(mailSender==null){
-                    mailSender = new MailSender();
+    public static SendMailUtil getInstance(){
+        if(sendMailUtil ==null){
+            synchronized (SendMailUtil.class){
+                if(sendMailUtil ==null){
+                    sendMailUtil = new SendMailUtil();
                 }
             }
         }
-        return mailSender;
+        return sendMailUtil;
     }
 
     private JavaMailSender getMailInstance() {
