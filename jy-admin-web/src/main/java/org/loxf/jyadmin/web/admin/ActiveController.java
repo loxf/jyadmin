@@ -111,6 +111,14 @@ public class ActiveController extends BaseControl<ActiveDto> {
     @RequestMapping("/editActive")
     @ResponseBody
     public BaseResult editActive(ActiveDto activeDto){
+        // 处理活动时间
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            activeDto.setActiveStartTime(sf.parse(activeDto.getStartDate()));
+            activeDto.setActiveEndTime(sf.parse(activeDto.getEndDate()));
+        } catch (ParseException e) {
+            logger.error("时间转化失败：", e);
+        }
         return activeService.updateActive(activeDto);
     }
     @RequestMapping("/deleteActive")

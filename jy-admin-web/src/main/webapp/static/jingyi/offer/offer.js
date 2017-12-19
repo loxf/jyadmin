@@ -174,13 +174,6 @@ function indexRecommend(data, layEvent, obj) {
         dataType:"json",
         success: function(data) {
             layer.msg(data.msg);
-            /*layer.msg(data.msg, {
-                time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
-            }, function(){
-                /!*obj.update({
-                    metaData:{HOT : true}
-                });*!/
-            });*/
         }
     });
 }
@@ -282,9 +275,7 @@ function onOffer(data, layEvent, obj){
                 time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
             }, function(){
                 if(data.code == 1){
-                    obj.update({
-                        status: 1
-                    });
+                    searchList();
                 }
             });
         }
@@ -309,9 +300,7 @@ function offOffer(data, layEvent, obj){
                 time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
             }, function(){
                 if(data.code == 1){
-                    obj.update({
-                        status: 0
-                    });
+                    searchList();
                 }
             });
         }
