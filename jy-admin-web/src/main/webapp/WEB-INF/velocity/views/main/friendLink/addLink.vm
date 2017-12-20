@@ -27,7 +27,7 @@
         <label class="layui-form-label">图标</label>
         <div class="layui-input-inline">
             <a class="layui-btn uploadImg" id="PicBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=LINKLOGO'}">
-                <i class="layui-icon">&#xe62f;</i>上传链接图片（宽150*高40）</a>
+                <i class="layui-icon">&#xe62f;</i>上传链接图片（宽320*高135）</a>
             <div class="layui-upload-list">
                 <img class="layui-upload-img" style="max-width: 350px;" id="PicImg">
             </div>

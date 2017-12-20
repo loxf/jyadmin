@@ -15,7 +15,7 @@
         <label class="layui-form-label">分类图片</label>
         <div class="layui-input-inline">
             <a class="layui-btn uploadImg" id="picBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=CATALOG'}">
-                <i class="layui-icon">&#xe62f;</i>上传分类图片（宽300*高180）</a>
+                <i class="layui-icon">&#xe62f;</i>上传分类图片（宽1000*高558）</a>
             <div class="layui-upload-list">
                 <img class="layui-upload-img" style="max-width: 350px;" id="picImg">
             </div>
