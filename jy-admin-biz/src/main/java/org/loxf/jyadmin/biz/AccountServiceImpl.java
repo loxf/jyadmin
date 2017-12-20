@@ -6,13 +6,16 @@ import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.biz.util.SendWeixinMsgUtil;
 import org.loxf.jyadmin.client.dto.ActiveCustListDto;
 import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.AccountService;
+import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.client.service.VerifyCodeService;
 import org.loxf.jyadmin.dal.dao.AccountDetailMapper;
 import org.loxf.jyadmin.dal.dao.AccountMapper;
 import org.loxf.jyadmin.dal.dao.CustBpDetailMapper;
+import org.loxf.jyadmin.dal.dao.CustMapper;
 import org.loxf.jyadmin.dal.po.Account;
 import org.loxf.jyadmin.dal.po.AccountDetail;
 import org.loxf.jyadmin.dal.po.Cust;
@@ -41,6 +44,8 @@ public class AccountServiceImpl implements AccountService {
     private CustBpDetailMapper custBpDetailMapper;
     @Autowired
     private VerifyCodeService verifyCodeService;
+    @Autowired
+    private CustMapper custMapper;
 
     @Override
     public PageResult<JSONObject> queryBalanceList(CustDto custDto) {
@@ -169,6 +174,8 @@ public class AccountServiceImpl implements AccountService {
                 newAccountInfo.setBp(account.getBp().add(bp));
                 insertDetail = custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBp(), bp, detailName,
                         orderId, 1)) > 0;
+                Cust cust = custMapper.selectByCustId(custId);
+                SendWeixinMsgUtil.sendGetBpNotice(cust.getOpenid(), cust.getNickName(), detailName, bp.toPlainString(), newAccountInfo.getBp().toPlainString());
             }
             newAccountInfo.setCustId(custId);
             if (insertDetail) {

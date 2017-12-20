@@ -36,6 +36,10 @@ public class TradeServiceImpl implements TradeService {
     @Autowired
     private VipInfoMapper vipInfoMapper;
     @Autowired
+    private OfferMapper offerMapper;
+    @Autowired
+    private ActiveMapper activeMapper;
+    @Autowired
     private ActiveCustListMapper activeCustListMapper;
     @Autowired
     private OrderAttrMapper orderAttrMapper;
@@ -49,8 +53,6 @@ public class TradeServiceImpl implements TradeService {
     private CompanyIncomeMapper companyIncomeMapper;
     @Autowired
     private AgentInfoMapper agentInfoMapper;
-    @Autowired
-    private NoticeService noticeService;
 
     @Override
     public BaseResult<String> completeTrade(String orderId, Integer status, String msg) {
@@ -128,6 +130,8 @@ public class TradeServiceImpl implements TradeService {
                     detailName += "升级" + vipType;
                     // 处理VIP_INFO CUST_INFO
                     dealVip(order.getCustId(), vipType);
+                    // 发送VIP通知
+                    SendWeixinMsgUtil.sendBeVipNotice(cust.getOpenid(), cust.getNickName(), vipType);
                     if (custFirst != null) {
                         firstScholarships = queryScholarshipsRate(custFirst, "STUDENT", 1);
                     }
@@ -138,7 +142,12 @@ public class TradeServiceImpl implements TradeService {
             } else if (order.getOrderType() == 5) {
                 detailName += "参加活动";
                 // 增加活动名单信息
+                Active active = activeMapper.selectByActiveId(order.getObjId());
                 dealActive(order);
+                // 发送活动报名成功消息
+                SendWeixinMsgUtil.sendActiveInNotice(cust.getOpenid(), cust.getNickName(), active.getActiveName(),
+                        DateUtils.formatHms(active.getActiveStartTime()) + " ~ " + DateUtils.formatHms(active.getActiveEndTime()),
+                        active.getAddr(), String.format(BaseConstant.ACTIVE_DETAIL_URL, active.getActiveId()));
                 if (custFirst != null) {
                     firstScholarships = queryScholarshipsRate(custFirst, "ACTIVE", 1);
                 }
@@ -153,6 +162,15 @@ public class TradeServiceImpl implements TradeService {
                 if(custSecond!=null){
                     secondScholarships = queryScholarshipsRate(custSecond, "OFFER", 2);
                 }
+                Offer offer = offerMapper.selectByOfferId(order.getObjId());
+                String url = "";
+                if(offer.getOfferType().equals("CLASS")){
+                    url = String.format(BaseConstant.CLASS_DETAIL_URL, order.getObjId());
+                } else if(offer.getOfferType().equals("OFFER")){
+                    url = String.format(BaseConstant.OFFER_DETAIL_URL, order.getObjId());
+                }
+                // 购买课程通知
+                SendWeixinMsgUtil.sendBuyOfferNotice(cust.getOpenid(), cust.getNickName(), offer.getOfferName(), url);
             }
             // 分成计算 代理商分成 如果是代理商，先检查是否有免费名额，如果有先用免费名额
             BigDecimal companyAmount = order.getOrderMoney();
@@ -278,9 +296,9 @@ public class TradeServiceImpl implements TradeService {
         activeCustList.setActiveName(order.getOrderName());
         List<OrderAttr> orderAttrs = orderAttrMapper.selectByOrderId(order.getOrderId());
         for (OrderAttr attr : orderAttrs) {
-            if (attr.getAttrCode().equals("CUST_NAME")) {
+            if (attr.getAttrCode().equals("ACTIVITY_USER_NAME")) {
                 activeCustList.setName(attr.getAttrValue());
-            } else if (attr.getAttrCode().equals("CUST_PHONE")) {
+            } else if (attr.getAttrCode().equals("ACTIVITY_CONTACT")) {
                 activeCustList.setPhone(attr.getAttrValue());
             }
         }

@@ -1,6 +1,7 @@
 package org.loxf.jyadmin.biz.msg;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.constant.BaseConstant;
@@ -26,9 +27,15 @@ public class WeixinSender implements ISender {
         String accessToken = jedisUtil().get(BaseConstant.WX_ACCESS_TOKEN);
         if(StringUtils.isNotBlank(accessToken)) {
             try {
-                WeixinUtil.sendTemplateMsg(JSON.toJSONString(params), accessToken);
+                String result = WeixinUtil.sendTemplateMsg(JSON.toJSONString(params), accessToken).getData();
+                JSONObject resultJson = JSON.parseObject(result);
+                if(resultJson.getIntValue("errcode")!=0){
+                    logger.error("发送微信消息失败：" + result);
+                    return false;
+                }
             } catch (Exception e) {
                 logger.error("发送微信消息失败", e);
+                return false;
             }
             return true;
         }

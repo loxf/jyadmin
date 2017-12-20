@@ -5,10 +5,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
-import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
 import org.loxf.jyadmin.biz.util.BizUtil;
+import org.loxf.jyadmin.biz.util.SendWeixinMsgUtil;
 import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.dal.dao.*;
@@ -58,6 +58,8 @@ public class CustServiceImpl implements CustService {
         Account account = new Account();
         account.setCustId(custId);
         accountMapper.insert(account);
+        // 注册通知
+        SendWeixinMsgUtil.sendRegisterNotice(custDto.getOpenid(), custDto.getNickName());
         return new BaseResult<>(custId);
     }
 

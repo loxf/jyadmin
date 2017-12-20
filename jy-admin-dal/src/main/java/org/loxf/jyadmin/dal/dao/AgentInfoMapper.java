@@ -2,6 +2,7 @@ package org.loxf.jyadmin.dal.dao;
 
 import org.loxf.jyadmin.dal.po.AgentInfo;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface AgentInfoMapper {
@@ -20,4 +21,6 @@ public interface AgentInfoMapper {
     int exists(String custId);
 
     List<AgentInfo> queryExpireInfo();
+
+    List<HashMap> queryWillExpireInfo();
 }

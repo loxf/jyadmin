@@ -73,7 +73,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
             insertCode(obj, code, codeType, sendType);
             return new BaseResult();
         } else {
-            return new BaseResult(BaseConstant.FAILED, "发送验证码失败");
+            return new BaseResult(BaseConstant.FAILED, "请勿频繁发送短信");
         }
     }
 

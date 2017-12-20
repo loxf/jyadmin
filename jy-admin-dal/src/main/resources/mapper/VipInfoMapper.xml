@@ -15,6 +15,12 @@
   <sql id="Base_Column_List" >
     id, cust_id, status, `type`, meta_data, eff_date, exp_date, created_at, updated_at
   </sql>
+  <select id="queryWillExpireInfo" resultType="java.util.HashMap">
+    select b.nick_name, b.openid, a.`type`, DATE_FORMAT(a.exp_date, '%Y-%m-%d %T') as exp_date
+    from tb_vip_info a, tb_cust b
+    where a.cust_id = b.cust_id and a.exp_date &lt; date_add(now(), INTERVAL 2 DAY) and a.status = 1
+  </select>
+
   <select id="queryExpireInfo" resultMap="BaseResultMap" >
     select
     <include refid="Base_Column_List" />

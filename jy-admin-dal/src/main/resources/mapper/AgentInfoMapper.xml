@@ -128,4 +128,11 @@
     from tb_agent_info
     where exp_date &lt; now() and status = 1
   </select>
+
+  <select id="queryWillExpireInfo" resultType="java.util.HashMap">
+    select b.nick_name, b.openid, a.`type`, DATE_FORMAT(a.exp_date, '%Y-%m-%d %T') as exp_date
+    from tb_agent_info a, tb_cust b
+    where a.cust_id = b.cust_id and a.exp_date &lt; date_add(now(), INTERVAL 2 DAY)  and a.status = 1
+  </select>
+
 </mapper>
