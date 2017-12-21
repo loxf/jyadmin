@@ -91,6 +91,12 @@ var menu = {
             menuName: '运行配置',
             menuHref: contextPath + '/admin/config/index.html?catalog=RUNTIME'
         }
+    ],
+    PRIVI: [
+        {
+            menuName: '系统初始化',
+            menuHref: contextPath + '/admin/init/index.html'
+        }
     ]
 }
 
@@ -110,7 +116,7 @@ function getLeftMenu(type) {
 
 function locationMenu() {
     var href = location.href;
-    var arr = ["VIP", "ORDER", "OFFER", "CONFIG"];
+    var arr = ["VIP", "ORDER", "OFFER", "CONFIG", "PRIVI"];
     for (var i = 0; i < arr.length; i++) {
         var item = arr[i];
         var menuArr = eval("menu." + item);

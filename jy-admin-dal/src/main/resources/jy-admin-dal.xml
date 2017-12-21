@@ -33,6 +33,7 @@
 
         <property name="poolPreparedStatements" value="true" />
         <property name="maxOpenPreparedStatements" value="20" />
+        <property name="connectionInitSqls" value="set names utf8mb4;"/>
     </bean>
 
     <!-- sql session factory -->

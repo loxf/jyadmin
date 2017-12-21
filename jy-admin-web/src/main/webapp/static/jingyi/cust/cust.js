@@ -72,6 +72,12 @@ table.render({ //其它参数在此省略
             templet : '#secondLvNbrTpl'
         },
         {
+            field: 'metaData',
+            title: '手动设置会员',
+            width: 80,
+            templet : '#metaDataTpl'
+        },
+        {
             field: 'province',
             title: '省',
             width: 80

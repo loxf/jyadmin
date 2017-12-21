@@ -129,4 +129,18 @@
     {{#  } }}
 </script>
 
+<script type="text/html" id="metaDataTpl">
+    {{#  if(d.metaData){ }}
+        {{#  var json = eval("("+d.metaData+")");}}
+        {{# if(json.ADMINSET){ }}
+        是
+        {{#  } else { }}
+        否
+        {{# } }}
+    {{#  } else { }}
+    否
+    {{#  } }}
+</script>
+
+
 <script src="${rc.contextPath}/static/jingyi/cust/cust.js"></script>

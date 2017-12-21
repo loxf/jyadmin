@@ -89,4 +89,6 @@ public interface AccountService {
      * @return
      */
     BaseResult<JSONObject> queryBpRankingList(String custId);
+
+    BaseResult<String> delAccount(String custId);
 }

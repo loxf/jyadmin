@@ -69,6 +69,9 @@ public class CustController extends BaseControl<CustDto> {
         CustDto custDto = new CustDto();
         custDto.setCustId(custId);
         custDto.setUserLevel(userLevel);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("ADMINSET", true);
+        custDto.setMetaData(jsonObject.toJSONString());
         return custService.updateCust(custDto);
     }
 

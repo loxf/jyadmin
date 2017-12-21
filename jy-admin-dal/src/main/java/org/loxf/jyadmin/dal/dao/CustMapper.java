@@ -44,4 +44,8 @@ public interface CustMapper {
     List<Map> queryCustUserLevelDistribute();
 
     Cust selectOldCust(@Param("phone") String phone);
+
+    List<Cust> queryOldCustDealRecommend();
+
+    int updateOldCustInfo(Cust cust);
 }

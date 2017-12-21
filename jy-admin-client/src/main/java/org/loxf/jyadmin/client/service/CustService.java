@@ -4,8 +4,13 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
 import org.loxf.jyadmin.client.dto.CustDto;
+import org.loxf.jyadmin.client.tmp.CustInfoUpload;
+
+import java.util.List;
 
 public interface CustService {
+    BaseResult<String> addOldCust(List<CustInfoUpload> custInfoUploads);
+    BaseResult<String> updateOldCustRecommend();
     BaseResult<String> addCust(CustDto custDto, UserAccessToken userAccessToken);
     PageResult<CustDto> pager(CustDto custDto);
     BaseResult<CustDto> queryCust(int type, String phoneOrEmail);
@@ -22,7 +27,7 @@ public interface CustService {
     BaseResult updateCust(CustDto custDto);
     PageResult<CustDto> queryChildList(int type, String custId, int page, int size);
     BaseResult delCust(String custId);
-    BaseResult delOldCust(String custId);
+    BaseResult delTmpCust(String custId);
     BaseResult updateRecommend(String custId , String recommend);
     BaseResult unvalidVip(String custId);
     BaseResult unvalidAgent(String custId);
@@ -37,4 +42,6 @@ public interface CustService {
      * @return
      */
     BaseResult queryCustIncrease();
+
+    BaseResult updateOldCustInfo(CustDto custDto);
 }

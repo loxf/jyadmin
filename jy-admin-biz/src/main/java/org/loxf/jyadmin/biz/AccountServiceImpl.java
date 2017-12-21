@@ -256,6 +256,12 @@ public class AccountServiceImpl implements AccountService {
         return new BaseResult<>(result);
     }
 
+    @Override
+    public BaseResult<String> delAccount(String custId) {
+        accountMapper.deleteByCustId(custId);
+        return new BaseResult<>();
+    }
+
     private AccountDetail createAccountDetail(String custId, BigDecimal balance, BigDecimal changeMoney,
                                               String detailName, String orderId, Integer type, String sourceCustId){
         AccountDetail accountDetail = new AccountDetail();
