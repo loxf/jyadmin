@@ -11,7 +11,7 @@
     <script src="${rc.contextPath}/static/jquery/jquery.md5.js"></script>
 
 </head>
-<body class="layui-layout-body">
+<body>
 <div class="layui-layout">
     $!{screen_content}
     <div class="layui-footer" style="text-align:center;">

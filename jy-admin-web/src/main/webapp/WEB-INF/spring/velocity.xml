@@ -32,6 +32,7 @@
             <map>
                 <entry key="main/*" value="layout/main_layout.vm" />
                 <entry key="login" value="layout/ssl_layout.vm" />
+                <entry key="publicPage/*" value="layout/ssl_layout.vm" />
                 <entry key="*" value="layout/layout.vm" />
             </map>
         </property>
