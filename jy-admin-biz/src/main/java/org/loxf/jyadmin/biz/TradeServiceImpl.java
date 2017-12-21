@@ -143,11 +143,11 @@ public class TradeServiceImpl implements TradeService {
                 detailName += "参加活动";
                 // 增加活动名单信息
                 Active active = activeMapper.selectByActiveId(order.getObjId());
-                dealActive(order);
+                ActiveCustList activeCustList = dealActive(order);
                 // 发送活动报名成功消息
                 SendWeixinMsgUtil.sendActiveInNotice(cust.getOpenid(), cust.getNickName(), active.getActiveName(),
                         DateUtils.formatHms(active.getActiveStartTime()) + " ~ " + DateUtils.formatHms(active.getActiveEndTime()),
-                        active.getAddr(), String.format(BaseConstant.ACTIVE_DETAIL_URL, active.getActiveId()));
+                        activeCustList.getActiveTicketNo(), active.getAddr(), String.format(BaseConstant.ACTIVE_DETAIL_URL, active.getActiveId()));
                 if (custFirst != null) {
                     firstScholarships = queryScholarshipsRate(custFirst, "ACTIVE", 1);
                 }
@@ -288,7 +288,7 @@ public class TradeServiceImpl implements TradeService {
         }
         return "";
     }
-    public void dealActive(Order order) {
+    public ActiveCustList dealActive(Order order) {
         ActiveCustList activeCustList = new ActiveCustList();
         activeCustList.setActiveTicketNo(DateUtils.format(new Date(), "yyMMddHHmmss") + RandomUtils.getRandomStr(4));
         activeCustList.setActiveId(order.getObjId());
@@ -304,6 +304,7 @@ public class TradeServiceImpl implements TradeService {
         }
         activeCustList.setStatus(1);// 已付款
         activeCustListMapper.insert(activeCustList);
+        return activeCustList;
     }
 
     public void dealVip(String custId, String vipType) {

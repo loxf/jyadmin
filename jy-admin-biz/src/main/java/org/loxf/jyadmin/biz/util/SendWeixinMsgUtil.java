@@ -170,12 +170,13 @@ public class SendWeixinMsgUtil {
      * @param activeName
      * @param url
      */
-    public static void sendActiveInNotice( String openid, String nickname, String activeName, String activeTime, String addr, String url){
+    public static void sendActiveInNotice( String openid, String nickname, String activeName, String activeTime,
+                                           String ticketNo, String addr, String url){
         Map data = new HashMap();
         data.put("first", WeixinSender.createWXKeyWord("亲爱的" + nickname +"，您已成功报名：" + activeName, null));
         data.put("keyword1", WeixinSender.createWXKeyWord(activeTime, "#FF3030"));
-        data.put("keyword1", WeixinSender.createWXKeyWord(addr, null));
-        data.put("remark", WeixinSender.createWXKeyWord("期待您的到来。点击可查看活动详情。", null));
+        data.put("keyword2", WeixinSender.createWXKeyWord(addr, null));
+        data.put("remark", WeixinSender.createWXKeyWord("您的票号：" + ticketNo + "。期待您的到来。点击可查看活动详情。", null));
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(WxMsgTemplateConstant.ACTIVE_IN,
                 openid, data, url));
     }
