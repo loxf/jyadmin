@@ -23,7 +23,7 @@
     from tb_company_income
     where 1=1
     <include refid="WHERE_SQL"/>
-    order by id DESC
+    order by id
     <if test="pager!=null">
       limit #{pager.start}, #{pager.size}
     </if>
