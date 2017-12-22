@@ -103,11 +103,8 @@ public class ExcelUtil {
                             DateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                             data.add(formater.format(d));
                         } else {
-                            DecimalFormat decimalFormat = new DecimalFormat("0");
+                            DecimalFormat decimalFormat = new DecimalFormat("#.##");
                             String value = decimalFormat.format(cell.getNumericCellValue());
-                            if (StringUtils.isNotBlank(value) && value.endsWith(".0")) {
-                                value = value.replace(".0", "");
-                            }
                             data.add(value);
                         }
                     } else {

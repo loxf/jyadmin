@@ -40,7 +40,19 @@
     updated_at)
     values
     <foreach collection="list" item="item" separator="," >
-    ( #{item.custId,jdbcType=VARCHAR}, 0, 0, null, 0, now(), now())
+    ( #{item.custId,jdbcType=VARCHAR},
+      <if test="item.balance!=null">
+        #{item.balance},
+      </if>
+      <if test="item.balance==null">
+        0,
+      </if>
+      <if test="item.bp!=null">
+        #{item.bp},
+      </if>
+      <if test="item.bp==null">
+        0,
+      </if> null, 0, now(), now())
     </foreach>
   </insert>
 
