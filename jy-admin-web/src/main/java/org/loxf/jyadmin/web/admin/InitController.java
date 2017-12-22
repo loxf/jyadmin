@@ -50,7 +50,12 @@ public class InitController {
     @ResponseBody
     public BaseResult<String> custInit(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
+            long a = System.currentTimeMillis();
+            if(a>0){
+                throw new RuntimeException("测试");
+            }
             List<CustInfoUpload> list = ExcelImportUtil.parseUploadDataToList(file.getInputStream(), file.getOriginalFilename(), CustInfoUpload.class);
+
             BaseResult baseResult = custService.addOldCust(list);
             // 处理代理关系
             custService.updateOldCustRecommend();
