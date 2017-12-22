@@ -12,6 +12,8 @@ public interface AccountMapper {
 
     int insert(Account record);
 
+    int insertList(List<Account> list);
+
     Account selectAccount(String custId);
 
     int deleteByCustId(String custId);

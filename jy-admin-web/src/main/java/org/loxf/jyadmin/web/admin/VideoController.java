@@ -28,7 +28,7 @@ public class VideoController {
 
     public static String USER_UNIQUE = "tcznqlkk60";
     public static String SECRET_KEY = "bb8585d8a83cf41f6138e7764c916364";
-    public static String PLAY_UNIQUE = "805ef13853";
+    public static String PLAY_UNIQUE = "ffffffffff";
     public static LetvCloudV1 cloudInit = new LetvCloudV1(USER_UNIQUE, SECRET_KEY);
 
     @Autowired

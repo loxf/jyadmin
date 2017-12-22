@@ -60,13 +60,13 @@ table.render({ //其它参数在此省略
         {
             field: 'firstLvNbr',
             title: '一级',
-            width: 60,
+            width: 80,
             templet : '#firstLvNbrTpl'
         },
         {
             field: 'secondLvNbr',
             title: '二级',
-            width: 60,
+            width: 80,
             templet : '#secondLvNbrTpl'
         },
         {

@@ -49,8 +49,9 @@ function getPie(data, title, obj) {
                     },
                     emphasis: {
                         show: true,
+                        formatter: "{b}: {c}位\n({d}%)",
                         textStyle: {
-                            fontSize: '30',
+                            fontSize: '20',
                             fontWeight: 'bold'
                         }
                     }

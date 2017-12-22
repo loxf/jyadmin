@@ -34,6 +34,16 @@
     values ( #{custId,jdbcType=VARCHAR}, 0, 0, null, 0, now(), now())
   </insert>
 
+  <insert id="insertList" parameterType="org.loxf.jyadmin.dal.po.Account" >
+    insert into tb_account ( cust_id, balance,
+    bp, password, is_lock, created_at,
+    updated_at)
+    values
+    <foreach collection="list" item="item" separator="," >
+    ( #{item.custId,jdbcType=VARCHAR}, 0, 0, null, 0, now(), now())
+    </foreach>
+  </insert>
+
   <select id="checkPassword">
     select count(1) from tb_account where cust_id = #{custId} and password = #{password}
   </select>

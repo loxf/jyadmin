@@ -34,12 +34,22 @@
     from tb_vip_info
     where cust_id = #{custId}
   </select>
-  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.VipInfo" >
+  <insert id="insertList" parameterType="org.loxf.jyadmin.dal.po.VipInfo" >
     insert into tb_vip_info (id, cust_id, status, meta_data,
       type, eff_date, exp_date, 
       created_at, updated_at)
+    values
+    <foreach collection="list" item="item" separator=",">
+    (#{item.id,jdbcType=BIGINT}, #{item.custId,jdbcType=VARCHAR}, #{item.status,jdbcType=INTEGER}, #{item.metaData,jdbcType=VARCHAR},
+      #{item.type,jdbcType=VARCHAR}, #{item.effDate,jdbcType=TIMESTAMP}, #{item.expDate,jdbcType=TIMESTAMP}, #{item.createdAt}, now())
+    </foreach>
+  </insert>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.VipInfo" >
+    insert into tb_vip_info (id, cust_id, status, meta_data,
+    type, eff_date, exp_date,
+    created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{metaData,jdbcType=VARCHAR},
-      #{type,jdbcType=VARCHAR}, #{effDate,jdbcType=TIMESTAMP}, #{expDate,jdbcType=TIMESTAMP}, now(), now())
+    #{type,jdbcType=VARCHAR}, #{effDate,jdbcType=TIMESTAMP}, #{expDate,jdbcType=TIMESTAMP}, now(), now())
   </insert>
   <update id="updateByCustId" parameterType="org.loxf.jyadmin.dal.po.VipInfo" >
     update tb_vip_info

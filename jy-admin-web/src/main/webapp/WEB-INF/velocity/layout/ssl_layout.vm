@@ -3,7 +3,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="renderer" content="webkit">
-    <title>静怡雅院管理系统</title>
+    <title>$!{sysTitle}</title>
     <link rel="shortcut icon" href="${rc.contextPath}/static/favicon.ico">
     <link rel="stylesheet" href="${rc.contextPath}/static/layui-v2.1.5/layui/css/layui.css">
     <script src="${rc.contextPath}/static/layui-v2.1.5/layui/layui.js"></script>
@@ -15,7 +15,7 @@
 <div class="layui-layout">
     $!{screen_content}
     <div class="layui-footer" style="text-align:center;">
-        <label style="margin-left:auto;margin-right:auto;width: 500px;text-align:center">© 静怡雅学馆 - 专业定制 <a href="http://www.miitbeian.gov.cn" target="_blank" style="color:gray">粤ICP备14100871号</a></label>
+        <label style="margin-left:auto;margin-right:auto;width: 500px;text-align:center">© 静怡雅学文化 - 专业定制 <a href="http://www.miitbeian.gov.cn" target="_blank" style="color:gray">粤ICP备14100871号</a></label>
     </div>
 </div>
 

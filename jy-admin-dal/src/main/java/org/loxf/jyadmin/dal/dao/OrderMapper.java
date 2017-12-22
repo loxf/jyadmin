@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface OrderMapper {
+    int insertList(List<Order> record);
+
     int insert(Order record);
 
     Order selectByOrderId(String orderId);

@@ -7,6 +7,7 @@ import org.loxf.jyadmin.base.util.ExcelImportUtil;
 import org.loxf.jyadmin.client.dto.AdminDto;
 import org.loxf.jyadmin.client.service.*;
 import org.loxf.jyadmin.client.tmp.CustInfoUpload;
+import org.loxf.jyadmin.client.tmp.OrderInfoUpload;
 import org.loxf.jyadmin.util.CookieUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,9 +67,17 @@ public class InitController {
 
     @RequestMapping("/orderInit")
     @ResponseBody
-    public String orderInit(HttpServletRequest request,
+    public BaseResult orderInit(HttpServletRequest request,
                             @RequestParam(value = "file", required = false) MultipartFile file) {
-        return "";
+        // 订单表
+        try {
+            List<OrderInfoUpload> list = ExcelImportUtil.parseUploadDataToList(file.getInputStream(), file.getOriginalFilename(), OrderInfoUpload.class);
+            BaseResult baseResult = orderService.createOldOrder(list);
+            return baseResult;
+        } catch (Exception e) {
+            logger.error("上传失败", e);
+            return new BaseResult(BaseConstant.FAILED, e.getMessage());
+        }
     }
 
     @RequestMapping("/companyIncomeInit")

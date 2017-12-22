@@ -46,8 +46,20 @@
       created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=VARCHAR}, #{orderName,jdbcType=VARCHAR}, 
       #{orderType,jdbcType=INTEGER}, #{orderMoney,jdbcType=DECIMAL}, #{bp,jdbcType=DECIMAL}, 
-      #{totalMoney,jdbcType=DECIMAL}, #{discount,jdbcType=DECIMAL}, #{objId,jdbcType=VARCHAR}, 
-      1, #{payType,jdbcType=INTEGER}, #{custId,jdbcType=VARCHAR}, #{outTradeNo,jdbcType=VARCHAR}, now(), now())
+      #{totalMoney,jdbcType=DECIMAL}, #{discount,jdbcType=DECIMAL}, #{objId,jdbcType=VARCHAR},
+    <if test="status!=null">
+      #{status},
+    </if>
+    <if test="status==null">
+      1,
+    </if>
+    #{payType,jdbcType=INTEGER}, #{custId,jdbcType=VARCHAR}, #{outTradeNo,jdbcType=VARCHAR},
+    <if test="createdAt!=null">
+      #{createdAt},
+    </if>
+    <if test="createdAt==null">
+      now(),
+    </if> now())
   </insert>
   <update id="updateByOrderId">
     update tb_order
@@ -125,4 +137,20 @@
     GROUP BY
     date_format(created_at, '%Y-%m-%d')
   </select>
+
+
+  <insert id="insertList" parameterType="org.loxf.jyadmin.dal.po.Order" >
+    insert into tb_order (id, order_id, order_name,
+    order_type, order_money, bp,
+    total_money, discount, obj_id,
+    status, pay_type, cust_id, out_trade_no,
+    created_at, updated_at)
+    values
+    <foreach collection="list" item="item" separator=",">
+    (#{item.id,jdbcType=BIGINT}, #{item.orderId,jdbcType=VARCHAR}, #{item.orderName,jdbcType=VARCHAR},
+    #{item.orderType,jdbcType=INTEGER}, #{item.orderMoney,jdbcType=DECIMAL}, #{item.bp,jdbcType=DECIMAL},
+    #{item.totalMoney,jdbcType=DECIMAL}, #{item.discount,jdbcType=DECIMAL}, #{item.objId,jdbcType=VARCHAR},
+    #{item.status}, #{item.payType,jdbcType=INTEGER}, #{item.custId,jdbcType=VARCHAR}, #{item.outTradeNo,jdbcType=VARCHAR}, #{item.createdAt}, now())
+    </foreach>
+  </insert>
 </mapper>

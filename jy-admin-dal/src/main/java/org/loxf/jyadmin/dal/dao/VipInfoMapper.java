@@ -8,6 +8,8 @@ import java.util.List;
 public interface VipInfoMapper {
     int insert(VipInfo record);
 
+    int insertList(List<VipInfo> list);
+
     VipInfo selectByCustId(String custId);
 
     int updateByCustId(VipInfo record);

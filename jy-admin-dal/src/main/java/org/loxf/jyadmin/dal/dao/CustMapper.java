@@ -11,7 +11,7 @@ public interface CustMapper {
 
     int insert(Cust record);
 
-    int insertSelective(Cust record);
+    int insertList(List<Cust> list);
 
     Cust selectByOpenid(String openid);
 

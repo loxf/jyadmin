@@ -9,6 +9,8 @@ public interface PurchasedInfoMapper {
 
     List<PurchasedInfo> list(PurchasedInfo record);
 
+    int insertList(List<PurchasedInfo> record);
+
     int insert(PurchasedInfo record);
 
 }

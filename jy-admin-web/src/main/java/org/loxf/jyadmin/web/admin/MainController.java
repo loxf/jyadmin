@@ -23,6 +23,7 @@ public class MainController {
 
     @RequestMapping("/")
     public String welcome(Model model, HttpServletRequest request, HttpServletResponse response){
+        model.addAttribute("sysTitle", "静怡雅学文化管理系统");
         return "login";
     }
 

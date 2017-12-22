@@ -33,6 +33,12 @@
         where active_id = #{activeId}
     </select>
 
+    <select id="selectByActiveName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select *
+        from tb_active
+        where active_name = #{activeName} limit 1
+    </select>
+
     <select id="pager" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Active">
         select
         <include refid="Base_Column_List"/>

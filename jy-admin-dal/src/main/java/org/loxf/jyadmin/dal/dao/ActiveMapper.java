@@ -15,6 +15,8 @@ public interface ActiveMapper {
 
     Active selectByActiveId(String id);
 
+    Active selectByActiveName(String activeName);
+
     int insert(Active record);
 
     int updateByActiveId(Active record);

@@ -8,6 +8,7 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.exception.BizException;
+import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.util.JedisUtil;
 import org.loxf.jyadmin.base.util.weixin.WeixinUtil;
@@ -19,6 +20,7 @@ import org.loxf.jyadmin.client.dto.OrderDto;
 import org.loxf.jyadmin.client.dto.VipInfoDto;
 import org.loxf.jyadmin.client.service.OrderService;
 import org.loxf.jyadmin.client.service.VipInfoService;
+import org.loxf.jyadmin.client.tmp.OrderInfoUpload;
 import org.loxf.jyadmin.dal.dao.*;
 import org.loxf.jyadmin.dal.po.*;
 import org.slf4j.Logger;
@@ -38,6 +40,10 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderMapper orderMapper;
     @Autowired
+    private OfferMapper offerMapper;
+    @Autowired
+    private ActiveMapper activeMapper;
+    @Autowired
     private CustMapper custMapper;
     @Autowired
     private OrderAttrMapper orderAttrMapper;
@@ -49,6 +55,103 @@ public class OrderServiceImpl implements OrderService {
     private VipInfoService vipInfoService;
     @Autowired
     private JedisUtil jedisUtil;
+
+    @Override
+    @Transactional
+    public BaseResult createOldOrder(List<OrderInfoUpload> orderInfoUploadList) {
+        List<Order> orders = new ArrayList<>();
+        List<PurchasedInfo> purchasedInfos = new ArrayList<>();
+        Map<String, String> phoneMapCustId = new HashMap();
+        Map<String, String> custIdAndNameMap = new HashMap();
+        Map<String, String> nameAndObjIdMap = new HashMap();
+        for(OrderInfoUpload orderInfoUpload : orderInfoUploadList) {
+            Order order = new Order();
+            String orderId = orderInfoUpload.getOrderId().replaceAll("'", "");
+            order.setOrderId(orderId);
+            order.setBp(new BigDecimal(orderInfoUpload.getBp()).multiply(BigDecimal.TEN));
+            // 查询custId
+            String custId = "";
+            String nickname = "";
+            if(phoneMapCustId.containsKey(orderInfoUpload.getPhone())){
+                custId = phoneMapCustId.get(orderInfoUpload.getPhone());
+                nickname = custIdAndNameMap.get(custId);
+            } else {
+                Cust cust = custMapper.selectByPhoneOrEmail(1, orderInfoUpload.getPhone());
+                if(cust==null){
+                    continue;
+                } else {
+                    custId = cust.getCustId();
+                    phoneMapCustId.put(orderInfoUpload.getPhone(), custId);
+                    nickname = cust.getNickName();
+                    custIdAndNameMap.put(custId, nickname);
+                }
+            }
+            order.setCustId(custId);
+            order.setCustName(nickname);
+            order.setOrderName(orderInfoUpload.getOrderName());
+            if(orderInfoUpload.getPayType().equals("微信支付")){
+                order.setPayType(1);
+            } else {
+                order.setPayType(2);
+            }
+            if(orderInfoUpload.getOrderType().equalsIgnoreCase("vip")){
+                // VIP
+                order.setOrderType(3);
+                order.setObjId("OFFER001");
+            } else if(orderInfoUpload.getOrderType().equalsIgnoreCase("activity")){
+                // 活动
+                order.setOrderType(5);
+                if(nameAndObjIdMap.containsKey(orderInfoUpload.getOrderName())){
+                    order.setObjId(nameAndObjIdMap.get(orderInfoUpload.getOrderName()));
+                } else {
+                    Active active = activeMapper.selectByActiveName(orderInfoUpload.getOrderName());
+                    if (active != null) {
+                        order.setObjId(active.getActiveId());
+                        nameAndObjIdMap.put(orderInfoUpload.getOrderName(), active.getActiveId());
+                    }
+                }
+            } else {
+                // 商品
+                order.setOrderType(1);
+                if(nameAndObjIdMap.containsKey(orderInfoUpload.getOrderName())){
+                    order.setObjId(nameAndObjIdMap.get(orderInfoUpload.getOrderName()));
+                } else {
+                    Offer offer = offerMapper.selectOfferByName(orderInfoUpload.getOrderName());
+                    if(offer!=null){
+                        order.setObjId(offer.getOfferId());
+                        nameAndObjIdMap.put(orderInfoUpload.getOrderName(), offer.getOfferId());
+                    }
+                }
+            }
+            order.setOrderMoney(new BigDecimal(orderInfoUpload.getMoney()));
+            order.setTotalMoney(order.getOrderMoney().add(new BigDecimal(orderInfoUpload.getBp())));
+            order.setDiscount(10L);
+            if(orderInfoUpload.getStatus().equals("已付款")){
+                order.setStatus(3);
+            } else if(orderInfoUpload.getStatus().equals("未支付")){
+                order.setStatus(9);
+            }
+            order.setCreatedAt(DateUtils.toDate(orderInfoUpload.getCreatedTime(), "yyyy-MM-dd HH:mm:ss"));
+            orders.add(order);
+            if(StringUtils.isNotBlank(order.getObjId())){
+                PurchasedInfo purchasedInfo = new PurchasedInfo();
+                purchasedInfo.setOfferId(order.getObjId());
+                purchasedInfo.setType(order.getOrderType());
+                purchasedInfo.setCustId(order.getCustId());
+                purchasedInfo.setOrderId(order.getOrderId());
+                purchasedInfo.setNickName(order.getCustName());
+                purchasedInfo.setCreatedAt(DateUtils.toDate(orderInfoUpload.getPayTime(), "yyyy-MM-dd HH:mm:ss"));
+                purchasedInfos.add(purchasedInfo);
+            }
+        }
+        if(CollectionUtils.isNotEmpty(orders)){
+            orderMapper.insertList(orders);
+        }
+        if(CollectionUtils.isNotEmpty(purchasedInfos)){
+            purchasedInfoMapper.insertList(purchasedInfos);
+        }
+        return new BaseResult();
+    }
 
     @Override
     @Transactional

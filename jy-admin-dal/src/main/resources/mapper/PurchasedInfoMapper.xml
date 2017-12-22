@@ -55,4 +55,13 @@
       #{offerId,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, now(), now())
   </insert>
 
+  <insert id="insertList" parameterType="org.loxf.jyadmin.dal.po.PurchasedInfo" >
+    insert into tb_purchased_info (id, cust_id, order_id, nick_name, offer_id,
+    `type`, created_at, updated_at)
+    values
+    <foreach collection="list" item="item" separator=",">
+    (#{item.id,jdbcType=BIGINT}, #{item.custId,jdbcType=VARCHAR}, #{item.orderId,jdbcType=VARCHAR}, #{item.nickName,jdbcType=VARCHAR},
+    #{item.offerId,jdbcType=VARCHAR}, #{item.type,jdbcType=VARCHAR}, #{item.createdAt}, now())
+    </foreach>
+  </insert>
 </mapper>

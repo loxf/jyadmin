@@ -145,17 +145,31 @@
     insert into tb_cust (cust_id, nick_name, real_name, user_level, phone, email, first_lv_nbr, second_lv_nbr, is_chinese, recommend, is_agent,
     sex, country, province, city, address, head_img_url, privilege, meta_data, openid, unionid, is_deleted, created_at, updated_at)
     values (#{custId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},#{realName,jdbcType=VARCHAR},
-      #{userLevel}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 0, 0,
-      #{isChinese,jdbcType=INTEGER}, #{recommend,jdbcType=VARCHAR}, #{isAgent}, #{sex,jdbcType=INTEGER},
-      #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
-      #{headImgUrl,jdbcType=VARCHAR}, #{privilege,jdbcType=VARCHAR}, #{metaData,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR}, 0,
+    #{userLevel}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 0, 0,
+    #{isChinese,jdbcType=INTEGER}, #{recommend,jdbcType=VARCHAR}, #{isAgent}, #{sex,jdbcType=INTEGER},
+    #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+    #{headImgUrl,jdbcType=VARCHAR}, #{privilege,jdbcType=VARCHAR}, #{metaData,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR}, 0,
     <if test="createdAt!=null">
       #{createdAt},
     </if>
     <if test="createdAt==null">
       now(),
     </if>
-      now())
+    now())
+  </insert>
+
+  <insert id="insertList" parameterType="org.loxf.jyadmin.dal.po.Cust" >
+    insert into tb_cust (cust_id, nick_name, real_name, user_level, phone, email, first_lv_nbr, second_lv_nbr, is_chinese, recommend, is_agent,
+    sex, country, province, city, address, head_img_url, privilege, meta_data, openid, unionid, is_deleted, created_at, updated_at)
+    values
+    <foreach collection="list" item="item" separator="," >
+    (#{item.custId,jdbcType=VARCHAR}, #{item.nickName,jdbcType=VARCHAR},#{item.realName,jdbcType=VARCHAR},
+    #{item.userLevel}, #{item.phone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 0, 0,
+    #{item.isChinese,jdbcType=INTEGER}, #{item.recommend,jdbcType=VARCHAR}, #{item.isAgent}, #{item.sex,jdbcType=INTEGER},
+    #{item.country,jdbcType=VARCHAR}, #{item.province,jdbcType=VARCHAR}, #{item.city,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR},
+    #{item.headImgUrl,jdbcType=VARCHAR}, #{item.privilege,jdbcType=VARCHAR}, #{item.metaData,jdbcType=VARCHAR}, #{item.openid,jdbcType=VARCHAR}, #{item.unionid,jdbcType=VARCHAR}, 0,
+    #{item.createdAt}, now())
+    </foreach>
   </insert>
 
   <update id="updateByCustIdOrOpenid" parameterType="org.loxf.jyadmin.dal.po.Cust" >

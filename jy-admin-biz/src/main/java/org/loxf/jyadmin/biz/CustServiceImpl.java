@@ -39,6 +39,7 @@ public class CustServiceImpl implements CustService {
     private AgentInfoMapper agentInfoMapper;
 
     @Override
+    @Transactional
     public BaseResult<String> addOldCust(List<CustInfoUpload> custInfoUploads) {
         if (CollectionUtils.isNotEmpty(custInfoUploads)) {
             List<Cust> custList = new ArrayList<>();
@@ -113,29 +114,35 @@ public class CustServiceImpl implements CustService {
             for(Cust cust : custList){
                 String phone = cust.getRecommend();
                 Cust recommendCust = custMapper.selectByPhoneOrEmail(1, phone);
-                cust.setRecommend(recommendCust.getCustId());
-                custMapper.updateByCustIdOrOpenid(cust);
+                if(recommendCust!=null) {
+                    cust.setRecommend(recommendCust.getCustId());
+                    custMapper.updateByCustIdOrOpenid(cust);
+                }
             }
             // 更新下级数量
             for(Cust cust : custList){
-                updateRecommendChildNbr(cust.getRecommend(), 1);
+                if(StringUtils.isNotBlank(cust.getRecommend())) {
+                    updateRecommendChildNbr(cust.getRecommend(), 1);
+                }
             }
         }
         return new BaseResult<>();
     }
 
-
-    @Transactional
     public void insertOldData(List<Cust> custList, List<VipInfo> vipInfoList,
                               List<AgentInfo> agentInfoList, List<Account> accountList) {
         if (CollectionUtils.isNotEmpty(custList)) {
-            for (Cust cust : custList) {
-                custMapper.insert(cust);
+            for (int i=0; i<custList.size();) {
+                int end = (i+500)>custList.size()?custList.size():(i+500);
+                custMapper.insertList(custList.subList(i, end));
+                i = end;
             }
         }
         if (CollectionUtils.isNotEmpty(accountList)) {
-            for (Account account : accountList) {
-                accountMapper.insert(account);
+            for (int i=0; i<accountList.size();) {
+                int end = (i+500)>accountList.size()?accountList.size():(i+500);
+                accountMapper.insertList(accountList.subList(i, end));
+                i = end;
             }
         }
         if (CollectionUtils.isNotEmpty(agentInfoList)) {
@@ -144,9 +151,7 @@ public class CustServiceImpl implements CustService {
             }
         }
         if (CollectionUtils.isNotEmpty(vipInfoList)) {
-            for (VipInfo vipInfo : vipInfoList) {
-                vipInfoMapper.insert(vipInfo);
-            }
+            vipInfoMapper.insertList(vipInfoList);
         }
     }
 

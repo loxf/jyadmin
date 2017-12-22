@@ -2,59 +2,66 @@
     <legend>系统上线步骤</legend>
 </fieldset>
 
-<form class="layui-form" action="">
-    <div class="layui-row layui-form-item">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
-            <legend>自动初始化</legend>
-        </fieldset>
-        <div class="layui-inline layui-col-lg2">
-            <a class="layui-btn uploadExcel" id="activePicBtn" lay-data="{url: '${rc.contextPath}/admin/init/custInit.html'}">
-                <i class="layui-icon">&#xe62f;</i>会员数据初始化</a>
+<form class=" layui-form" action="">
+    <div style="padding: 10px;">
+        <div class=" layui-row layui-form-item">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+                <legend>自动初始化</legend>
+            </fieldset>
+            <div class="layui-inline layui-col-lg2">
+                <a class="layui-btn uploadExcel" id="activePicBtn"
+                   lay-data="{url: '${rc.contextPath}/admin/init/custInit.html'}">
+                    <i class="layui-icon">&#xe62f;</i>会员数据初始化</a>
+            </div>
+            <div class="layui-inline layui-col-lg2">
+                <a class="layui-btn uploadExcel" id="activePicBtn"
+                   lay-data="{url: '${rc.contextPath}/admin/init/orderInit.html'}">
+                    <i class="layui-icon">&#xe62f;</i>订单数据初始化</a>
+            </div>
+            <div class="layui-inline layui-col-lg2">
+                <a class="layui-btn uploadExcel" id="activePicBtn"
+                   lay-data="{url: '${rc.contextPath}/admin/init/companyIncomeInit.html'}">
+                    <i class="layui-icon">&#xe62f;</i>公司收入初始化</a>
+            </div>
+            <div class="layui-inline layui-col-lg2">
+                <a class="layui-btn uploadExcel" id="activePicBtn"
+                   lay-data="{url: '${rc.contextPath}/admin/init/userIncomeInit.html'}">
+                    <i class="layui-icon">&#xe62f;</i>用户收入初始化</a>
+            </div>
+            <div class="layui-inline layui-col-lg2">
+                <a class="layui-btn uploadExcel" id="activePicBtn"
+                   lay-data="{url: '${rc.contextPath}/admin/init/takeCashInit.html'}">
+                    <i class="layui-icon">&#xe62f;</i>提现管理初始化</a>
+            </div>
         </div>
-        <div class="layui-inline layui-col-lg2">
-            <a class="layui-btn uploadExcel" id="activePicBtn" lay-data="{url: '${rc.contextPath}/admin/init/orderInit.html'}">
-                <i class="layui-icon">&#xe62f;</i>订单数据初始化</a>
+        <div class="layui-row layui-form-item">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+                <legend>手动初始化</legend>
+            </fieldset>
+            <div class="layui-inline layui-col-lg2">
+                <input type="button" class="layui-btn" onclick="agentInit()" value="合伙人数据初始化"/>
+            </div>
+            <div class="layui-inline layui-col-lg2">
+                <input type="button" class="layui-btn" onclick="agentPendingInit()" value="合伙人审核初始化"/>
+            </div>
+            <div class="layui-inline layui-col-lg2">
+                <input type="button" class="layui-btn" onclick="classInit()" value="课程初始化"/>
+            </div>
         </div>
-        <div class="layui-inline layui-col-lg2">
-            <a class="layui-btn uploadExcel" id="activePicBtn" lay-data="{url: '${rc.contextPath}/admin/init/companyIncomeInit.html'}">
-                <i class="layui-icon">&#xe62f;</i>公司收入初始化</a>
+        <div class="layui-row layui-form-item">
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+                <legend>图片服务器配置</legend>
+            </fieldset>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+                <legend>代理配置</legend>
+            </fieldset>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+                <legend>系统参数配置</legend>
+            </fieldset>
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+                <legend>密钥文件配置</legend>
+            </fieldset>
         </div>
-        <div class="layui-inline layui-col-lg2">
-            <a class="layui-btn uploadExcel" id="activePicBtn" lay-data="{url: '${rc.contextPath}/admin/init/userIncomeInit.html'}">
-                <i class="layui-icon">&#xe62f;</i>用户收入初始化</a>
-        </div>
-        <div class="layui-inline layui-col-lg2">
-            <a class="layui-btn uploadExcel" id="activePicBtn" lay-data="{url: '${rc.contextPath}/admin/init/takeCashInit.html'}">
-                <i class="layui-icon">&#xe62f;</i>提现管理初始化</a>
-        </div>
-    </div>
-    <div class="layui-row layui-form-item">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
-            <legend>手动初始化</legend>
-        </fieldset>
-        <div class="layui-inline layui-col-lg2">
-            <input type="button" class="layui-btn" onclick="agentInit()" value="合伙人数据初始化"/>
-        </div>
-        <div class="layui-inline layui-col-lg2">
-            <input type="button" class="layui-btn" onclick="agentPendingInit()" value="合伙人审核初始化"/>
-        </div>
-        <div class="layui-inline layui-col-lg2">
-            <input type="button" class="layui-btn" onclick="classInit()" value="课程初始化"/>
-        </div>
-    </div>
-    <div class="layui-row layui-form-item">
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
-            <legend>图片服务器配置</legend>
-        </fieldset>
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
-            <legend>代理配置</legend>
-        </fieldset>
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
-            <legend>系统参数配置</legend>
-        </fieldset>
-        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
-            <legend>密钥文件配置</legend>
-        </fieldset>
     </div>
 </form>
 <script src="${rc.contextPath}/static/jingyi/system/system.js"></script>
