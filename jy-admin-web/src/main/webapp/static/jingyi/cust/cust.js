@@ -30,6 +30,11 @@ table.render({ //其它参数在此省略
             width: 120
         },
         {
+            field: 'realName',
+            title: '真实姓名',
+            width: 120
+        },
+        {
             field: 'isChinese',
             title: '国内/海外',
             width: 100,
