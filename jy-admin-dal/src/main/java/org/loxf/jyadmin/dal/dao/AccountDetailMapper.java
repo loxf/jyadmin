@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface AccountDetailMapper {
 
+    int insertList(List<AccountDetail> record);
+
     int insert(AccountDetail record);
 
     int count(AccountDetail record);

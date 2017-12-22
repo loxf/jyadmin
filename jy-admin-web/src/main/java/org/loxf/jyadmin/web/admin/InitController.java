@@ -7,6 +7,7 @@ import org.loxf.jyadmin.base.util.ExcelImportUtil;
 import org.loxf.jyadmin.client.dto.AdminDto;
 import org.loxf.jyadmin.client.service.*;
 import org.loxf.jyadmin.client.tmp.CustInfoUpload;
+import org.loxf.jyadmin.client.tmp.IncomeUpload;
 import org.loxf.jyadmin.client.tmp.OrderInfoUpload;
 import org.loxf.jyadmin.util.CookieUtil;
 import org.slf4j.Logger;
@@ -30,13 +31,9 @@ public class InitController {
     @Autowired
     private CustService custService;
     @Autowired
-    private AgentInfoService agentInfoService;
-    @Autowired
-    private VipInfoService vipInfoService;
-    @Autowired
     private OrderService orderService;
     @Autowired
-    private AccountDetailService accountDetailService;
+    private CompanyIncomeService companyIncomeService;
 
     @RequestMapping("/index")
     public String toIndex(Model model, HttpServletRequest request) {
@@ -69,7 +66,6 @@ public class InitController {
     @ResponseBody
     public BaseResult orderInit(HttpServletRequest request,
                             @RequestParam(value = "file", required = false) MultipartFile file) {
-        // 订单表
         try {
             List<OrderInfoUpload> list = ExcelImportUtil.parseUploadDataToList(file.getInputStream(), file.getOriginalFilename(), OrderInfoUpload.class);
             BaseResult baseResult = orderService.createOldOrder(list);
@@ -82,16 +78,28 @@ public class InitController {
 
     @RequestMapping("/companyIncomeInit")
     @ResponseBody
-    public String companyIncomeInit(HttpServletRequest request,
+    public BaseResult companyIncomeInit(HttpServletRequest request,
                                     @RequestParam(value = "file", required = false) MultipartFile file) {
-        return "";
+        try {
+            List<IncomeUpload> list = ExcelImportUtil.parseUploadDataToList(file.getInputStream(), file.getOriginalFilename(), IncomeUpload.class);
+            return companyIncomeService.initCompanyIncome(list);
+        } catch (Exception e) {
+            logger.error("上传失败", e);
+            return new BaseResult(BaseConstant.FAILED, e.getMessage());
+        }
     }
 
     @RequestMapping("/userIncomeInit")
     @ResponseBody
-    public String userIncomeInit(HttpServletRequest request,
+    public BaseResult userIncomeInit(HttpServletRequest request,
                                  @RequestParam(value = "file", required = false) MultipartFile file) {
-        return "";
+        try {
+            List<IncomeUpload> list = ExcelImportUtil.parseUploadDataToList(file.getInputStream(), file.getOriginalFilename(), IncomeUpload.class);
+            return companyIncomeService.initScholarshipIncome(list);
+        } catch (Exception e) {
+            logger.error("上传失败", e);
+            return new BaseResult(BaseConstant.FAILED, e.getMessage());
+        }
     }
 
     @RequestMapping("/takeCashInit")

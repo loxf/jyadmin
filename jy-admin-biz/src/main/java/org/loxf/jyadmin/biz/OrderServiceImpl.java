@@ -54,12 +54,15 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private VipInfoService vipInfoService;
     @Autowired
+    private AccountDetailMapper accountDetailMapper;
+    @Autowired
     private JedisUtil jedisUtil;
 
     @Override
     @Transactional
     public BaseResult createOldOrder(List<OrderInfoUpload> orderInfoUploadList) {
         List<Order> orders = new ArrayList<>();
+        List<AccountDetail> accountDetails = new ArrayList<>();
         List<PurchasedInfo> purchasedInfos = new ArrayList<>();
         Map<String, String> phoneMapCustId = new HashMap();
         Map<String, String> custIdAndNameMap = new HashMap();
@@ -143,9 +146,22 @@ public class OrderServiceImpl implements OrderService {
                 purchasedInfo.setCreatedAt(DateUtils.toDate(orderInfoUpload.getPayTime(), "yyyy-MM-dd HH:mm:ss"));
                 purchasedInfos.add(purchasedInfo);
             }
+            if(order.getStatus()==3){
+                AccountDetail accountDetail = new AccountDetail();
+                accountDetail.setCustId(order.getCustId());
+                accountDetail.setOrderId(order.getOrderId());
+                accountDetail.setDetailName(order.getOrderName());
+                accountDetail.setType(3);
+                accountDetail.setChangeBalance(order.getOrderMoney());
+                accountDetail.setCreatedAt(order.getCreatedAt());
+                accountDetails.add(accountDetail);
+            }
         }
         if(CollectionUtils.isNotEmpty(orders)){
             orderMapper.insertList(orders);
+        }
+        if(CollectionUtils.isNotEmpty(accountDetails)){
+            accountDetailMapper.insertList(accountDetails);
         }
         if(CollectionUtils.isNotEmpty(purchasedInfos)){
             purchasedInfoMapper.insertList(purchasedInfos);

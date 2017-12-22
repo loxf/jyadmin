@@ -19,6 +19,8 @@ public class CompanyIncome extends BaseModel {
 
     private Integer type;
 
+    private String beneficiary;
+
     private String source;
 
     public String getDetailName() {
@@ -67,6 +69,14 @@ public class CompanyIncome extends BaseModel {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public String getBeneficiary() {
+        return beneficiary;
+    }
+
+    public void setBeneficiary(String beneficiary) {
+        this.beneficiary = beneficiary;
     }
 
     public String getSource() {

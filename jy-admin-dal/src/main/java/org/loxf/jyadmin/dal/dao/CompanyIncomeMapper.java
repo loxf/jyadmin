@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface CompanyIncomeMapper {
 
+    int insertList(List<CompanyIncome> record);
+
     int insert(CompanyIncome record);
 
     int count(CompanyIncome record);

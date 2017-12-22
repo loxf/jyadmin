@@ -77,6 +77,19 @@
       )
   </insert>
 
+  <insert id="insertList" parameterType="org.loxf.jyadmin.dal.po.AccountDetail" >
+    insert into tb_account_detail (id, cust_id, order_id,
+    detail_name, `type`, balance,
+    change_balance, source_cust_id, created_at, updated_at
+    )
+    values
+    <foreach collection="list" item="item" separator="," >
+    (#{item.id,jdbcType=BIGINT}, #{item.custId,jdbcType=VARCHAR}, #{item.orderId,jdbcType=VARCHAR},
+    #{item.detailName,jdbcType=VARCHAR}, #{item.type,jdbcType=INTEGER}, #{item.balance,jdbcType=DECIMAL},
+    #{item.changeBalance,jdbcType=DECIMAL}, #{item.sourceCustId,jdbcType=DECIMAL}, #{item.createdAt}, now() )
+    </foreach>
+  </insert>
+
   <select id="sumByType" resultType="java.lang.Integer">
       select ifnull(sum(change_balance), 0)  from tb_account_detail
         where cust_id = #{custId}

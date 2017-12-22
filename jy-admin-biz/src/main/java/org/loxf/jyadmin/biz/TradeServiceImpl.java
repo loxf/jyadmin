@@ -191,7 +191,7 @@ public class TradeServiceImpl implements TradeService {
             }
             // 计算公司收入
             companyIncomeMapper.insert(createCompanyIncome(cust.getCustId(), userName, detailName,
-                    companyAmount, scholarship, orderId, order.getOrderType()));
+                    companyAmount, scholarship, (custFirst==null?null:custFirst.getCustId()), orderId, order.getOrderType()));
         }
         tradeMapper.updateByOrderId(orderId, status, msg);
     }
@@ -234,13 +234,14 @@ public class TradeServiceImpl implements TradeService {
     }
 
     private CompanyIncome createCompanyIncome(String custId, String custName, String detailName, BigDecimal companyAmount,
-                                              BigDecimal scholarship, String source, int type ){
+                                              BigDecimal scholarship, String beneficiary, String source, int type ){
         CompanyIncome companyIncome = new CompanyIncome();
         companyIncome.setCustId(custId);
         companyIncome.setCustName(custName);
         companyIncome.setAmount(companyAmount);
         companyIncome.setScholarship(scholarship);
         companyIncome.setDetailName(detailName);
+        companyIncome.setBeneficiary(beneficiary);
         companyIncome.setSource(source);
         companyIncome.setType(type);
         return companyIncome;

@@ -9,12 +9,13 @@
     <result column="amount" property="amount" jdbcType="DECIMAL" />
     <result column="scholarship" property="scholarship" jdbcType="DECIMAL" />
     <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="beneficiary" property="beneficiary" jdbcType="VARCHAR" />
     <result column="source" property="source" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, detail_name, cust_id, cust_name, amount, scholarship, `type`, source, created_at, updated_at
+    id, detail_name, cust_id, cust_name, amount, scholarship, `type`, beneficiary, source, created_at, updated_at
   </sql>
   <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CompanyIncome" >
     select
@@ -33,10 +34,6 @@
     from tb_company_income
     where 1=1
     <include refid="WHERE_SQL"/>
-    order by id DESC
-    <if test="pager!=null">
-      limit #{pager.start}, #{pager.size}
-    </if>
   </select>
 
   <sql id="WHERE_SQL">
@@ -57,12 +54,24 @@
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CompanyIncome" >
     insert into tb_company_income (id, detail_name, cust_id, 
       cust_name, amount, scholarship, `type`,
-      source, created_at, updated_at
+      source, beneficiary, created_at, updated_at
       )
     values (#{id,jdbcType=BIGINT}, #{detailName,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, 
       #{custName,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{scholarship,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER},
-      #{source,jdbcType=VARCHAR}, now(), now()
+      #{source,jdbcType=VARCHAR}, #{beneficiary} now(), now()
       )
+  </insert>
+
+  <insert id="insertList" parameterType="org.loxf.jyadmin.dal.po.CompanyIncome" >
+    insert into tb_company_income (id, detail_name, cust_id,
+    cust_name, amount, scholarship, `type`,
+    source, beneficiary, created_at, updated_at )
+    values
+    <foreach collection="list" item="item" separator=",">
+    (#{item.id,jdbcType=BIGINT}, #{item.detailName,jdbcType=VARCHAR}, #{item.custId,jdbcType=VARCHAR},
+    #{item.custName,jdbcType=VARCHAR}, #{item.amount,jdbcType=DECIMAL}, #{item.scholarship,jdbcType=DECIMAL}, #{item.type,jdbcType=INTEGER},
+      #{item.source,jdbcType=VARCHAR}, #{item.beneficiary,jdbcType=VARCHAR}, #{item.createdAt}, now()  )
+    </foreach>
   </insert>
 
   <select id="queryIncome" parameterType="java.lang.String" resultType="double">
