@@ -76,7 +76,7 @@
             and meta_data like concat('%', #{metaData,jdbcType=VARCHAR}, '%')
         </if>
         <if test="startDate != null and startDate!=''">
-            and active_start_time >= #{startDate,jdbcType=TIMESTAMP}
+            and active_start_time >= #{startDate}
         </if>
         <if test="endDate != null and endDate!=''">
             and active_start_time &lt; date_add(#{endDate}, INTERVAL 1 DAY)

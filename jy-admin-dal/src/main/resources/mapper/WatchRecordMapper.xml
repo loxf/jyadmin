@@ -77,6 +77,6 @@
     select
     <include refid="Base_Column_List" />
     from tb_watch_record
-    where status = 1 and updated_at &lt; date_add(now(), INTERVAL 3 MINUTE )
+    where status = 1 and updated_at &lt; date_add(now(), INTERVAL -2 MINUTE )
   </select>
 </mapper>
