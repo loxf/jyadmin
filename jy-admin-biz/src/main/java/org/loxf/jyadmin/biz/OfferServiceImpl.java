@@ -58,7 +58,7 @@ public class OfferServiceImpl implements OfferService {
                 for (Offer po : offerList) {
                     OfferDto tmp = new OfferDto();
                     BeanUtils.copyProperties(po, tmp);
-                    if (po.getOfferType().equals("CLASS")) {
+                    if (appType==2 && po.getOfferType().equals("CLASS")) {
                         String videoId = po.getMainMedia();
                         WatchRecord watchRecord = new WatchRecord();
                         watchRecord.setVideoId(videoId);
@@ -162,28 +162,35 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     @Transactional
-    public BaseResult sendIndexRecommend(String offerId){
+    public BaseResult sendIndexRecommend(String offerId, Integer type){
         Offer offer = offerMapper.selectByOfferId(offerId);
         if(offer==null){
             return new BaseResult(BaseConstant.FAILED, "商品不存在");
         }
         String metaData = offer.getMetaData();
-        JSONObject metaJSON = null;
+        JSONObject metaJSON ;
         if(StringUtils.isBlank(metaData)){
             metaJSON = new JSONObject();
         } else {
             metaJSON = JSON.parseObject(metaData);
         }
-        if(metaJSON.containsKey("INDEX")){
-            indexRecommendMapper.updateByPrimaryKey(offer.getOfferType(), offerId);
-        } else {
+        if(type==1){
             indexRecommendMapper.insert(offer.getOfferType(), offerId);
             metaJSON.put("INDEX", "on");
-            Offer offerRefresh = new Offer();
-            offerRefresh.setOfferId(offerId);
-            offerRefresh.setMetaData(metaJSON.toJSONString());
-            offerMapper.updateByOfferId(offerRefresh);
+        } else {
+            // 取消
+            metaJSON.remove("INDEX");
+            indexRecommendMapper.delete(offer.getOfferType(), offerId);
         }
+        Offer offerRefresh = new Offer();
+        offerRefresh.setOfferId(offerId);
+        offerRefresh.setMetaData(metaJSON.toJSONString());
+        offerMapper.updateByOfferId(offerRefresh);
         return new BaseResult();
+    }
+
+    @Override
+    public BaseResult<List<String>> queryOfferByChildOffer(String childOfferId) {
+        return new BaseResult<>(offerRelMapper.queryOfferIdByRelOfferId(childOfferId));
     }
 }

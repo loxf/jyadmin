@@ -11,4 +11,6 @@ public interface OfferRelMapper {
 
     int insert(OfferRel record);
 
+    List<String> queryOfferIdByRelOfferId(String relOfferId);
+
 }

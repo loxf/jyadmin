@@ -26,4 +26,8 @@
   <delete id="deleteByOfferIdAndRelType">
     DELETE FROM tb_offer_rel where offer_id = #{offerId} and rel_type = #{relType}
   </delete>
+
+  <select id="queryOfferIdByRelOfferId" parameterType="java.lang.String">
+    SELECT offer_id from tb_offer_rel where rel_id = #{relOfferId}
+  </select>
 </mapper>

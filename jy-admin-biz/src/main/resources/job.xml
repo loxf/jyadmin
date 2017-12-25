@@ -16,16 +16,16 @@
             </list>
         </constructor-arg>
     </bean>
-    <!-- JOB -->
+    <!-- JOB TODO 用户WX_TOKEN刷新 -->
     <bean id="cancelOrderJob" class="org.loxf.jyadmin.biz.thread.CancelOrderJob">
         <constructor-arg name="expireLockMSecd" value="60" /><!-- 锁失效时间 -->
         <constructor-arg name="lockTimeout" value="5" /><!-- 获取锁的等待时间 -->
         <constructor-arg name="period" value="60000" /><!-- 业务执行间隔时间 milliseconds -->
     </bean>
     <bean id="tradeJob" class="org.loxf.jyadmin.biz.thread.TradeJob">
-        <constructor-arg name="expireLockMSecd" value="120" /><!-- 锁失效时间 -->
+        <constructor-arg name="expireLockMSecd" value="60" /><!-- 锁失效时间 -->
         <constructor-arg name="lockTimeout" value="5" /><!-- 获取锁的等待时间 -->
-        <constructor-arg name="period" value="10000" /><!-- 业务执行间隔时间 milliseconds -->
+        <constructor-arg name="period" value="2000" /><!-- 业务执行间隔时间 milliseconds -->
     </bean>
     <bean id="custLevelJob" class="org.loxf.jyadmin.biz.thread.CustLevelJob">
         <constructor-arg name="expireLockMSecd" value="300" /><!-- 锁失效时间 -->
@@ -48,8 +48,8 @@
         <constructor-arg name="period" value="30000" /><!-- 30秒 业务执行间隔时间 milliseconds -->
     </bean>
     <bean id="noticeJob" class="org.loxf.jyadmin.biz.thread.NoticeJob">
-        <constructor-arg name="expireLockMSecd" value="120" /><!-- 锁失效时间 -->
-        <constructor-arg name="lockTimeout" value="10" /><!-- 获取锁的等待时间 -->
-        <constructor-arg name="period" value="10000" /><!-- 10秒 业务执行间隔时间 milliseconds -->
+        <constructor-arg name="expireLockMSecd" value="30" /><!-- 锁失效时间 -->
+        <constructor-arg name="lockTimeout" value="5" /><!-- 获取锁的等待时间 -->
+        <constructor-arg name="period" value="5000" /><!-- 5秒 业务执行间隔时间 milliseconds -->
     </bean>
 </beans>

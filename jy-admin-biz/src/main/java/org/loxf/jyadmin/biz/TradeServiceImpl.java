@@ -63,7 +63,16 @@ public class TradeServiceImpl implements TradeService {
             return new BaseResult<>(BaseConstant.FAILED, "状态不正确");
         }
         String key = "COMPLETE_TRADE_" + orderId;
-        if (jedisUtil.setnx(key, "true", 60) > 0) {
+        boolean lock = false;
+        if (jedisUtil.setnx(key, System.currentTimeMillis() + "", 60) > 0) {
+            lock = true;
+        } else {
+            String oldTime = jedisUtil.get(key);
+            if (System.currentTimeMillis() - Long.valueOf(oldTime) > 60 * 1000) {
+                lock = true;
+            }
+        }
+        if (lock) {
             try {
                 Order orderAgain = orderMapper.selectByOrderId(orderId);
                 if (orderAgain == null) {
@@ -95,7 +104,7 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Transactional
-    public void dealTrade(Cust cust ,String recommend, String orderId, int status, String msg, Order order) {
+    public void dealTrade(Cust cust, String recommend, String orderId, int status, String msg, Order order) {
         Cust custFirst = null;
         Cust custSecond = null;
         if (StringUtils.isNotBlank(recommend)) {
@@ -107,7 +116,7 @@ public class TradeServiceImpl implements TradeService {
             }
         }
         if (status == 3) {
-            String userName = cust.getNickName() ;
+            String userName = cust.getNickName();
             // 增加购买记录
             PurchasedInfo purchasedInfo = new PurchasedInfo();
             purchasedInfo.setCustId(order.getCustId());
@@ -122,16 +131,12 @@ public class TradeServiceImpl implements TradeService {
             String detailName = "";
             if (order.getOrderType() == 3) {
                 String vipType = order.getObjId().equals("OFFER001") ? "VIP" : "SVIP";
-                if(custFirst.getIsAgent()!=null && custFirst.getIsAgent()>0){
+                if (custFirst != null && custFirst.getIsAgent() != null && custFirst.getIsAgent() > 0) {
                     // 推荐注册 如果是代理商及以上身份，检查是否有免费名额
-                    secondScholarships = queryFirstCustAgentScholarship(custFirst.getCustId(), vipType);
+                    firstScholarships = queryFirstCustAgentScholarship(custFirst.getCustId(), vipType);
                 }
-                if(StringUtils.isBlank(firstScholarships)){
-                    detailName += "升级" + vipType;
-                    // 处理VIP_INFO CUST_INFO
-                    dealVip(order.getCustId(), vipType);
-                    // 发送VIP通知
-                    SendWeixinMsgUtil.sendBeVipNotice(cust.getOpenid(), cust.getNickName(), vipType);
+                if (StringUtils.isBlank(firstScholarships)) {
+                    // 非代理免费名额走正常逻辑
                     if (custFirst != null) {
                         firstScholarships = queryScholarshipsRate(custFirst, "STUDENT", 1);
                     }
@@ -139,6 +144,11 @@ public class TradeServiceImpl implements TradeService {
                         secondScholarships = queryScholarshipsRate(custSecond, "STUDENT", 2);
                     }
                 }
+                detailName += "升级" + vipType;
+                // 处理VIP_INFO CUST_INFO
+                dealVip(order.getCustId(), vipType);
+                // 发送VIP通知
+                SendWeixinMsgUtil.sendBeVipNotice(cust.getOpenid(), cust.getNickName(), vipType);
             } else if (order.getOrderType() == 5) {
                 detailName += "参加活动";
                 // 增加活动名单信息
@@ -151,7 +161,7 @@ public class TradeServiceImpl implements TradeService {
                 if (custFirst != null) {
                     firstScholarships = queryScholarshipsRate(custFirst, "ACTIVE", 1);
                 }
-                if(custSecond!=null){
+                if (custSecond != null) {
                     secondScholarships = queryScholarshipsRate(custSecond, "ACTIVE", 2);
                 }
             } else {
@@ -159,14 +169,14 @@ public class TradeServiceImpl implements TradeService {
                 if (custFirst != null) {
                     firstScholarships = queryScholarshipsRate(custFirst, "OFFER", 1);
                 }
-                if(custSecond!=null){
+                if (custSecond != null) {
                     secondScholarships = queryScholarshipsRate(custSecond, "OFFER", 2);
                 }
                 Offer offer = offerMapper.selectByOfferId(order.getObjId());
                 String url = "";
-                if(offer.getOfferType().equals("CLASS")){
+                if (offer.getOfferType().equals("CLASS")) {
                     url = String.format(BaseConstant.CLASS_DETAIL_URL, order.getObjId());
-                } else if(offer.getOfferType().equals("OFFER")){
+                } else if (offer.getOfferType().equals("OFFER")) {
                     url = String.format(BaseConstant.OFFER_DETAIL_URL, order.getObjId());
                 }
                 // 购买课程通知
@@ -175,7 +185,7 @@ public class TradeServiceImpl implements TradeService {
             // 分成计算 代理商分成 如果是代理商，先检查是否有免费名额，如果有先用免费名额
             BigDecimal companyAmount = order.getOrderMoney();
             BigDecimal scholarship = BigDecimal.ZERO;
-            if(StringUtils.isNotBlank(firstScholarships)) {
+            if (StringUtils.isNotBlank(firstScholarships)) {
                 // 模板消息接口 发送通知
                 BigDecimal first = dealScholarship(firstScholarships, order.getOrderMoney(), custFirst.getCustId(), orderId,
                         userName + detailName + "(1级奖)", cust.getCustId());
@@ -183,7 +193,7 @@ public class TradeServiceImpl implements TradeService {
                 scholarship = scholarship.add(first);
                 SendWeixinMsgUtil.sendScholarshipMsg(custFirst.getOpenid(), first.toPlainString(), custFirst.getNickName());
             }
-            if(StringUtils.isNotBlank(secondScholarships) && companyAmount.compareTo(BigDecimal.ZERO)>0) {
+            if (StringUtils.isNotBlank(secondScholarships) && companyAmount.compareTo(BigDecimal.ZERO) > 0) {
                 BigDecimal second = dealScholarship(secondScholarships, order.getOrderMoney(), custSecond.getCustId(), orderId,
                         userName + detailName + "(2级奖)", cust.getCustId());
                 companyAmount = companyAmount.subtract(second);
@@ -191,30 +201,30 @@ public class TradeServiceImpl implements TradeService {
             }
             // 计算公司收入
             companyIncomeMapper.insert(createCompanyIncome(cust.getCustId(), userName, detailName,
-                    companyAmount, scholarship, (custFirst==null?null:custFirst.getCustId()), orderId, order.getOrderType()));
+                    companyAmount, scholarship, (custFirst == null ? null : custFirst.getCustId()), orderId, order.getOrderType()));
         }
         tradeMapper.updateByOrderId(orderId, status, msg);
     }
 
 
-    private String queryFirstCustAgentScholarship(String custId, String vipType){
+    private String queryFirstCustAgentScholarship(String custId, String vipType) {
         // 推荐注册 如果是代理商及以上身份，检查是否有免费名额
         AgentInfo agentInfo = agentInfoMapper.selectByCustId(custId);
-        if(agentInfo.getStatus()==1) {
+        if (agentInfo.getStatus() == 1) {
             String metaDataStr = agentInfo.getMetaData();
-            if(StringUtils.isNotBlank(metaDataStr)){
+            if (StringUtils.isNotBlank(metaDataStr)) {
                 JSONObject jsonObject = JSONObject.parseObject(metaDataStr);
-                if(jsonObject.containsKey("total" + vipType)){
+                if (jsonObject.containsKey("total" + vipType)) {
                     int totalNbr = jsonObject.getIntValue("total" + vipType);
                     int useNbr = jsonObject.getIntValue("use" + vipType);
-                    if(totalNbr - useNbr>0){
+                    if (totalNbr - useNbr > 0) {
                         // 使用免费名额，奖学金比例100%
                         jsonObject.put("useVIP", ++useNbr);
                         AgentInfo newAgent = new AgentInfo();
                         newAgent.setMetaData(jsonObject.toJSONString());
                         newAgent.setCustId(custId);
                         agentInfoMapper.updateByCustId(newAgent);
-                        return  "100";
+                        return "100";
                     }
                 }
             }
@@ -222,19 +232,19 @@ public class TradeServiceImpl implements TradeService {
         return null;
     }
 
-    private BigDecimal dealScholarship(String scholarships, BigDecimal orderMoney, String custId, String orderId, String detailName, String sourceCustId){
+    private BigDecimal dealScholarship(String scholarships, BigDecimal orderMoney, String custId, String orderId, String detailName, String sourceCustId) {
         BigDecimal first = orderMoney.multiply(new BigDecimal(scholarships)).
                 divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
         BaseResult<Boolean> baseResult = accountService.increase(custId, first, null, orderId,
                 detailName, sourceCustId);
-        if(baseResult.getCode()==BaseConstant.FAILED){
+        if (baseResult.getCode() == BaseConstant.FAILED) {
             throw new BizException(baseResult.getMsg());
         }
         return first;
     }
 
     private CompanyIncome createCompanyIncome(String custId, String custName, String detailName, BigDecimal companyAmount,
-                                              BigDecimal scholarship, String beneficiary, String source, int type ){
+                                              BigDecimal scholarship, String beneficiary, String source, int type) {
         CompanyIncome companyIncome = new CompanyIncome();
         companyIncome.setCustId(custId);
         companyIncome.setCustName(custName);
@@ -249,11 +259,11 @@ public class TradeServiceImpl implements TradeService {
 
     /**
      * @param cust
-     * @param type STUDENT（VIP），OFFER（课程，套餐），ACTIVE（活动）
+     * @param type  STUDENT（VIP），OFFER（课程，套餐），ACTIVE（活动）
      * @param first 1:直接 2:间接
      * @return
      */
-    private String queryScholarshipsRate(Cust cust, String type, int first){
+    private String queryScholarshipsRate(Cust cust, String type, int first) {
         String firstAndSecondScholarships = null;
         if (cust.getIsAgent() != null && cust.getIsAgent() > 0) {
             if (cust.getIsAgent() == 1) {
@@ -280,15 +290,16 @@ public class TradeServiceImpl implements TradeService {
                         "VIP_FIRST_" + type, "30,5").getConfigValue();
             }
         }
-        if(StringUtils.isNotBlank(firstAndSecondScholarships)){
+        if (StringUtils.isNotBlank(firstAndSecondScholarships)) {
             String[] tmp = firstAndSecondScholarships.split(",");
-            if(first>tmp.length){
+            if (first > tmp.length) {
                 return "";
             }
-            return tmp[first-1];
+            return tmp[first - 1];
         }
         return "";
     }
+
     public ActiveCustList dealActive(Order order) {
         ActiveCustList activeCustList = new ActiveCustList();
         activeCustList.setActiveTicketNo(DateUtils.format(new Date(), "yyMMddHHmmss") + RandomUtils.getRandomStr(4));

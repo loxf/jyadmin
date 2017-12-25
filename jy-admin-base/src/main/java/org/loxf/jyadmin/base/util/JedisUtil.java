@@ -382,7 +382,7 @@ public class JedisUtil {
         try {
             jedis = getResource();
             result = jedis.setnx(getRuleKey(key), value);
-            if (cacheSeconds != 0) {
+            if (result>0 && cacheSeconds != 0) {
                 jedis.expire(getRuleKey(key), cacheSeconds);
             }
             logger.debug("setnx {} = {}", getRuleKey(key), value);

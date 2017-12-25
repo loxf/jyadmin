@@ -125,12 +125,16 @@ public class VideoController {
         } else {
             try {
                 String response = cloudInit.videoDel(Integer.valueOf(dto.getVideoOutId()));
-                logger.info("删除乐视视频返回：", response);
+                logger.info("删除乐视视频返回：{}", response);
                 JSONObject rep = JSON.parseObject(response);
                 if(rep.getIntValue("code")==0) {
                     return videoConfigService.delVideo(videoId);
                 } else {
-                    return new BaseResult(BaseConstant.FAILED, rep.getString("msg"));
+                    BaseResult baseResult = videoConfigService.delVideo(videoId);
+                    if(baseResult.getCode()==BaseConstant.SUCCESS){
+                        baseResult.setMsg("本地删除成功，乐视端删除失败：" + rep.getString("message"));
+                    }
+                    return baseResult;
                 }
             } catch (Exception e){
                 logger.error("删除视频失败", e);

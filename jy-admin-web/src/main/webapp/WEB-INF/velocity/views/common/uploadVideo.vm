@@ -18,8 +18,8 @@
     </tbody>
 </table>
 <div>
-    <input type="button" class="uploadBtn" id="uploadBtn" value="开始上传" />
-    <input type="button" class="uploadBtn" id='fileSelecter' value="添加视频" />
+    <input type="button" id="uploadBtn" value="开始上传" />
+    <input type="button" id='fileSelecter' value="添加视频" />
 </div>
 <!--使用例子-->
 <script type="text/javascript" src="${rc.contextPath}/static/jingyi/uploadVideo/html5Upload.js"></script>
@@ -52,10 +52,10 @@
                 $("#videoStatus").html("已上传");
             },
             uploadError: function (data) { //上传错误回调
-                $("#videoStatus").html("上传错误！错误码：" + data.code + ";错误消息：" + data.msg);
+                parent.layer.msg("上传错误！错误码:" + data.code + "，错误消息：" +  data.msg);
             },
             uploadAbort:function(data){ //中断
-
+                parent.layer.msg("上传中断！错误码:" + data.code + "，错误消息：" +  data.msg);
             }
         });
     });

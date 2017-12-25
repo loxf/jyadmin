@@ -180,8 +180,8 @@ public class OfferController extends BaseControl<OfferDto> {
 
     @RequestMapping("/indexRecommend")
     @ResponseBody
-    public BaseResult indexRecommend(String offerId){
-        return offerService.sendIndexRecommend(offerId);
+    public BaseResult indexRecommend(String offerId, Integer type){
+        return offerService.sendIndexRecommend(offerId, type);
     }
 
     @RequestMapping("/getDetailUrl")

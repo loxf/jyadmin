@@ -67,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
         Map<String, String> phoneMapCustId = new HashMap();
         Map<String, String> custIdAndNameMap = new HashMap();
         Map<String, String> nameAndObjIdMap = new HashMap();
-        for(OrderInfoUpload orderInfoUpload : orderInfoUploadList) {
+        for (OrderInfoUpload orderInfoUpload : orderInfoUploadList) {
             Order order = new Order();
             String orderId = orderInfoUpload.getOrderId().replaceAll("'", "");
             order.setOrderId(orderId);
@@ -75,12 +75,12 @@ public class OrderServiceImpl implements OrderService {
             // 查询custId
             String custId = "";
             String nickname = "";
-            if(phoneMapCustId.containsKey(orderInfoUpload.getPhone())){
+            if (phoneMapCustId.containsKey(orderInfoUpload.getPhone())) {
                 custId = phoneMapCustId.get(orderInfoUpload.getPhone());
                 nickname = custIdAndNameMap.get(custId);
             } else {
                 Cust cust = custMapper.selectByPhoneOrEmail(1, orderInfoUpload.getPhone());
-                if(cust==null){
+                if (cust == null) {
                     continue;
                 } else {
                     custId = cust.getCustId();
@@ -92,19 +92,19 @@ public class OrderServiceImpl implements OrderService {
             order.setCustId(custId);
             order.setCustName(nickname);
             order.setOrderName(orderInfoUpload.getOrderName());
-            if(orderInfoUpload.getPayType().equals("微信支付")){
+            if (orderInfoUpload.getPayType().equals("微信支付")) {
                 order.setPayType(1);
             } else {
                 order.setPayType(2);
             }
-            if(orderInfoUpload.getOrderType().equalsIgnoreCase("vip")){
+            if (orderInfoUpload.getOrderType().equalsIgnoreCase("vip")) {
                 // VIP
                 order.setOrderType(3);
                 order.setObjId("OFFER001");
-            } else if(orderInfoUpload.getOrderType().equalsIgnoreCase("activity")){
+            } else if (orderInfoUpload.getOrderType().equalsIgnoreCase("activity")) {
                 // 活动
                 order.setOrderType(5);
-                if(nameAndObjIdMap.containsKey(orderInfoUpload.getOrderName())){
+                if (nameAndObjIdMap.containsKey(orderInfoUpload.getOrderName())) {
                     order.setObjId(nameAndObjIdMap.get(orderInfoUpload.getOrderName()));
                 } else {
                     Active active = activeMapper.selectByActiveName(orderInfoUpload.getOrderName());
@@ -116,11 +116,11 @@ public class OrderServiceImpl implements OrderService {
             } else {
                 // 商品
                 order.setOrderType(1);
-                if(nameAndObjIdMap.containsKey(orderInfoUpload.getOrderName())){
+                if (nameAndObjIdMap.containsKey(orderInfoUpload.getOrderName())) {
                     order.setObjId(nameAndObjIdMap.get(orderInfoUpload.getOrderName()));
                 } else {
                     Offer offer = offerMapper.selectOfferByName(orderInfoUpload.getOrderName());
-                    if(offer!=null){
+                    if (offer != null) {
                         order.setObjId(offer.getOfferId());
                         nameAndObjIdMap.put(orderInfoUpload.getOrderName(), offer.getOfferId());
                     }
@@ -129,14 +129,14 @@ public class OrderServiceImpl implements OrderService {
             order.setOrderMoney(new BigDecimal(orderInfoUpload.getMoney()));
             order.setTotalMoney(order.getOrderMoney().add(new BigDecimal(orderInfoUpload.getBp())));
             order.setDiscount(10L);
-            if(orderInfoUpload.getStatus().equals("已付款")){
+            if (orderInfoUpload.getStatus().equals("已付款")) {
                 order.setStatus(3);
-            } else if(orderInfoUpload.getStatus().equals("未支付")){
+            } else if (orderInfoUpload.getStatus().equals("未支付")) {
                 order.setStatus(9);
             }
             order.setCreatedAt(DateUtils.toDate(orderInfoUpload.getCreatedTime(), "yyyy-MM-dd HH:mm:ss"));
             orders.add(order);
-            if(StringUtils.isNotBlank(order.getObjId())){
+            if (StringUtils.isNotBlank(order.getObjId())) {
                 PurchasedInfo purchasedInfo = new PurchasedInfo();
                 purchasedInfo.setOfferId(order.getObjId());
                 purchasedInfo.setType(order.getOrderType());
@@ -146,7 +146,7 @@ public class OrderServiceImpl implements OrderService {
                 purchasedInfo.setCreatedAt(DateUtils.toDate(orderInfoUpload.getPayTime(), "yyyy-MM-dd HH:mm:ss"));
                 purchasedInfos.add(purchasedInfo);
             }
-            if(order.getStatus()==3){
+            if (order.getStatus() == 3) {
                 AccountDetail accountDetail = new AccountDetail();
                 accountDetail.setCustId(order.getCustId());
                 accountDetail.setOrderId(order.getOrderId());
@@ -157,13 +157,13 @@ public class OrderServiceImpl implements OrderService {
                 accountDetails.add(accountDetail);
             }
         }
-        if(CollectionUtils.isNotEmpty(orders)){
+        if (CollectionUtils.isNotEmpty(orders)) {
             orderMapper.insertList(orders);
         }
-        if(CollectionUtils.isNotEmpty(accountDetails)){
+        if (CollectionUtils.isNotEmpty(accountDetails)) {
             accountDetailMapper.insertList(accountDetails);
         }
-        if(CollectionUtils.isNotEmpty(purchasedInfos)){
+        if (CollectionUtils.isNotEmpty(purchasedInfos)) {
             purchasedInfoMapper.insertList(purchasedInfos);
         }
         return new BaseResult();
@@ -180,7 +180,16 @@ public class OrderServiceImpl implements OrderService {
             return new BaseResult(BaseConstant.FAILED, "关键参数缺失");
         }
         String lockKey = "CREATE_ORDER_" + orderDto.getCustId();
-        if (jedisUtil.setnx(lockKey, "true", 60) > 0) {
+        boolean lock = false;
+        if (jedisUtil.setnx(lockKey, System.currentTimeMillis() + "", 60) > 0) {
+            lock = true;
+        } else {
+            String oldTime = jedisUtil.get(lockKey);
+            if(System.currentTimeMillis() - Long.valueOf(oldTime)>60*1000){
+                lock = true;
+            }
+        }
+        if(lock) {
             orderDto.setOrderId(IdGenerator.generate(prefix));
             Order order = new Order();
             BeanUtils.copyProperties(orderDto, order);
@@ -246,7 +255,7 @@ public class OrderServiceImpl implements OrderService {
         result.put("appId", appId);
         result.put("nonceStr", WXPayUtil.generateNonceStr());
         result.put("package", "prepay_id=" + prepay_id);
-        result.put("timeStamp", (System.currentTimeMillis()/1000) + "");
+        result.put("timeStamp", (System.currentTimeMillis() / 1000) + "");
         result.put("signType", "MD5");
         String sign = WXPayUtil.generateSignature(result, key);
         result.put("paySign", sign);
@@ -255,19 +264,28 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      * @param orderId
-     * @param status 3:完成订单， -3:订单完成失败
+     * @param status  3:完成订单， -3:订单完成失败
      * @return
      */
     @Override
     public BaseResult<String> completeOrder(String orderId, String partnerOrderId, Integer status, String msg) {
-        if(StringUtils.isBlank(orderId)){
+        if (StringUtils.isBlank(orderId)) {
             return new BaseResult<>(BaseConstant.FAILED, "订单号为空");
         }
-        if(status==null||(status.intValue()!=3&&status.intValue()!=-3)){
+        if (status == null || (status.intValue() != 3 && status.intValue() != -3)) {
             return new BaseResult<>(BaseConstant.FAILED, "状态不正确");
         }
         String key = "COMPLETE_ORDER_" + orderId;
-        if(jedisUtil.setnx(key, "true", 60)>0){
+        boolean lock = false;
+        if (jedisUtil.setnx(key, System.currentTimeMillis() + "", 60) > 0) {
+            lock = true;
+        } else {
+            String oldTime = jedisUtil.get(key);
+            if(System.currentTimeMillis() - Long.valueOf(oldTime)>60*1000){
+                lock = true;
+            }
+        }
+        if(lock){
             try {
                 Order orderAgain = orderMapper.selectByOrderId(orderId);
                 if (orderAgain == null) {
@@ -278,7 +296,7 @@ public class OrderServiceImpl implements OrderService {
                 }
                 dealCompleteOrder(orderId, partnerOrderId, status, msg);
                 return new BaseResult();
-            } catch (Exception e){
+            } catch (Exception e) {
                 logger.error("完成订单失败：", e);
                 throw new BizException("完成订单失败");
             } finally {
@@ -290,7 +308,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Transactional
-    public void dealCompleteOrder(String orderId, String partnerOrderId, Integer status, String msg){
+    public void dealCompleteOrder(String orderId, String partnerOrderId, Integer status, String msg) {
         // 更新订单
         orderMapper.updateByOrderId(orderId, partnerOrderId, status, msg);
         // 如果是成功完成订单，触发交易
@@ -359,20 +377,20 @@ public class OrderServiceImpl implements OrderService {
             purchasedInfo.setCustId(custId);
             purchasedInfo.setType(type);
             purchasedInfo.setOfferId(obj);
-            if(purchasedInfoMapper.count(purchasedInfo)>0) {
+            if (purchasedInfoMapper.count(purchasedInfo) > 0) {
                 return new BaseResult<>(BaseConstant.FAILED, "已购买商品");
             } else {
                 return new BaseResult<>(true);
             }
         } else {
-            if(obj.equals("OFFER001")) {
+            if (obj.equals("OFFER001")) {
                 // 如果是SVIP还在有效期，不能购买VIP。其他都可以
                 BaseResult<VipInfoDto> baseResultVip = vipInfoService.queryVipInfo(custId);
-                if ( baseResultVip.getCode()==BaseConstant.SUCCESS) {
+                if (baseResultVip.getCode() == BaseConstant.SUCCESS) {
                     VipInfoDto vipInfoDto = baseResultVip.getData();
                     Date now = new Date();
-                    if(vipInfoDto.getType().equals("SVIP") && vipInfoDto.getStatus()==1 &&
-                            vipInfoDto.getEffDate().before(now) && vipInfoDto.getExpDate().after(now)){
+                    if (vipInfoDto.getType().equals("SVIP") && vipInfoDto.getStatus() == 1 &&
+                            vipInfoDto.getEffDate().before(now) && vipInfoDto.getExpDate().after(now)) {
                         return new BaseResult<>(BaseConstant.FAILED, "SVIP使用中，不能购买VIP");
                     }
                 }

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.base.util.JedisUtil;
 import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.client.service.VipInfoService;
@@ -25,6 +26,8 @@ public class CustController extends BaseControl<CustDto> {
     private CustService custService;
     @Autowired
     private VipInfoService vipInfoService;
+    @Autowired
+    private JedisUtil jedisUtil;
 
     @RequestMapping("/index")
     public String index(){
@@ -64,15 +67,21 @@ public class CustController extends BaseControl<CustDto> {
         if(StringUtils.isBlank(custId) || StringUtils.isBlank(custId)){
             return new BaseResult(0, "客户ID不能为空");
         }
-        vipInfoService.changeVipLevel(custId, userLevel);
+        BaseResult vipBaseResult = vipInfoService.changeVipLevel(custId, userLevel);
         // 执行修改逻辑
-        CustDto custDto = new CustDto();
-        custDto.setCustId(custId);
-        custDto.setUserLevel(userLevel);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("ADMINSET", true);
-        custDto.setMetaData(jsonObject.toJSONString());
-        return custService.updateCust(custDto);
+        if(vipBaseResult.getCode()==BaseConstant.SUCCESS) {
+            CustDto custDto = new CustDto();
+            custDto.setCustId(custId);
+            custDto.setUserLevel(userLevel);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("ADMINSET", true);
+            custDto.setMetaData(jsonObject.toJSONString());
+            BaseResult baseResult = custService.updateCust(custDto);
+            // 如果购买的是VIP，设置用户信息刷新标志
+            jedisUtil.set("REFRESH_CUST_INFO_" + custId, "true", 60);
+            return baseResult;
+        }
+        return vipBaseResult;
     }
 
     @RequestMapping("/toChildList")

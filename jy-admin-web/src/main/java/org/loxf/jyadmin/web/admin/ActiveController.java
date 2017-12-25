@@ -146,7 +146,7 @@ public class ActiveController extends BaseControl<ActiveDto> {
 
     @RequestMapping("/indexRecommend")
     @ResponseBody
-    public BaseResult indexRecommend(String activeId){
-        return activeService.sendIndexRecommend(activeId);
+    public BaseResult indexRecommend(String activeId, Integer type){
+        return activeService.sendIndexRecommend(activeId, type);
     }
 }

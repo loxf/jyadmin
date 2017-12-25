@@ -63,7 +63,6 @@
     <a class="layui-btn layui-btn-mini" lay-event="deleteActive">删除</a>
     {{#  } else { }}
     <a class="layui-btn layui-btn-mini" lay-event="offActive">取消</a>
-    <a class="layui-btn layui-btn-mini" lay-event="indexShow">首页轮播</a>
     <a class="layui-btn layui-btn-mini copy-btn" data-offertype="ACTIVE" data-offerid="{{d.activeId}}">复制链接</a>
     <a class="layui-btn layui-btn-mini" lay-event="sendWeiXin">微信推送</a>
     {{#  } }}
@@ -93,9 +92,9 @@
     {{#  if(d.metaData){ }}
     {{#  var json = eval("("+d.metaData+")");}}
     {{# if(json.INDEX){ }}
-    <font color="#8b0000">是</font>
+    <a class="layui-btn layui-btn-mini" onclick="indexRecommend('{{ d.activeId }}', 2)">取消</a>
     {{#  } else { }}
-    否
+    <a class="layui-btn layui-btn-mini" onclick="indexRecommend('{{ d.activeId }}', 1)">首页轮播</a>
     {{# } }}
     {{#  } else { }}
     否

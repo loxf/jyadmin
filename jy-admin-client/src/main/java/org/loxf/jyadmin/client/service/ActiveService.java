@@ -11,5 +11,11 @@ public interface ActiveService {
     BaseResult updateActive(ActiveDto activeDto);
     BaseResult deleteActive(String activeId);
     BaseResult onOrOffActive(String activeId, Integer status);
-    BaseResult sendIndexRecommend(String activeId);
+
+    /**
+     * @param activeId
+     * @param type 1: 设置首页轮播 2: 取消
+     * @return
+     */
+    BaseResult sendIndexRecommend(String activeId, Integer type);
 }

@@ -21,5 +21,12 @@ public interface OfferService {
     BaseResult onOrOffOffer(String offerId, Integer status);
     BaseResult<List<OfferDto>> showOfferRel(String offerId, String relType);
     BaseResult<List<OfferDto>> pagerOfferAndActive(String name);
-    BaseResult sendIndexRecommend(String offerId);
+
+    /**
+     * @param offerId
+     * @param type 1 设置首页轮播， 2 取消首页轮播
+     * @return
+     */
+    BaseResult sendIndexRecommend(String offerId, Integer type);
+    BaseResult<List<String>> queryOfferByChildOffer(String childOfferId);
 }

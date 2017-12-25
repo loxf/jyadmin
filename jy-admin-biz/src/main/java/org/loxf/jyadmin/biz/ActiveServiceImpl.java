@@ -135,28 +135,29 @@ public class ActiveServiceImpl implements ActiveService {
 
     @Override
     @Transactional
-    public BaseResult sendIndexRecommend(String activeId){
+    public BaseResult sendIndexRecommend(String activeId, Integer type){
         Active active = activeMapper.selectByActiveId(activeId);
         if(active==null){
             return new BaseResult(BaseConstant.FAILED, "活动不存在");
         }
         String metaData = active.getMetaData();
-        JSONObject metaJSON = null;
+        JSONObject metaJSON;
         if(StringUtils.isBlank(metaData)){
             metaJSON = new JSONObject();
         } else {
             metaJSON = JSON.parseObject(metaData);
         }
-        if(metaJSON.containsKey("INDEX")){
-            indexRecommendMapper.updateByPrimaryKey("ACTIVE", activeId);
-        } else {
+        if(type==1){
             indexRecommendMapper.insert("ACTIVE", activeId);
             metaJSON.put("INDEX", "on");
-            Active activeRefresh = new Active();
-            activeRefresh.setActiveId(activeId);
-            activeRefresh.setMetaData(metaJSON.toJSONString());
-            activeMapper.updateByActiveId(activeRefresh);
+        } else {
+            metaJSON.remove("INDEX");
+            indexRecommendMapper.delete("ACTIVE", activeId);
         }
+        Active activeRefresh = new Active();
+        activeRefresh.setActiveId(activeId);
+        activeRefresh.setMetaData(metaJSON.toJSONString());
+        activeMapper.updateByActiveId(activeRefresh);
         return new BaseResult();
     }
 }

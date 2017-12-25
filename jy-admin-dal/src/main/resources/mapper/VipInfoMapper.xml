@@ -61,10 +61,10 @@
       type = #{type,jdbcType=VARCHAR},
     </if>
     <if test="effDate!=null and effDate!=''">
-      eff_date = #{effDate,jdbcType=TIMESTAMP},
+      eff_date = #{effDate},
     </if>
     <if test="expDate!=null and expDate!=''">
-      exp_date = #{expDate,jdbcType=TIMESTAMP},
+      exp_date = #{expDate},
     </if>
       updated_at = now()
     where cust_id = #{custId}

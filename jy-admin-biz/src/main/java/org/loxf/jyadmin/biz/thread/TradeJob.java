@@ -47,17 +47,13 @@ public class TradeJob extends JOB {
             @Override
             public void run() {
                 // 获取交易订单
-                while (true) {
-                    List<Trade> list = tradeMapper.selectList(1, 200);
-                    if (CollectionUtils.isNotEmpty(list)) {
-                        for (Trade trade : list) {
-                            BaseResult baseResult = tradeService.completeTrade(trade.getOrderId(), 3, null);
-                            if(baseResult.getCode()== BaseConstant.FAILED){
-                                logger.error("订单交易处理失败[" + trade.getOrderId() + "]：" + baseResult.getMsg());
-                            }
+                List<Trade> list = tradeMapper.selectList(1, 200);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    for (Trade trade : list) {
+                        BaseResult baseResult = tradeService.completeTrade(trade.getOrderId(), 3, null);
+                        if(baseResult.getCode()== BaseConstant.FAILED){
+                            logger.error("订单交易处理失败[" + trade.getOrderId() + "]：" + baseResult.getMsg());
                         }
-                    } else {
-                        break;
                     }
                 }
             }

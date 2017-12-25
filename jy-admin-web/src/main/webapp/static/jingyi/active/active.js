@@ -173,8 +173,6 @@ table.on('tool(userDataTable)', function (obj) { //注：tool是工具条事件�
         editActive(data, layEvent, obj);
     } else if (layEvent === 'deleteActive') {// 删除活动
         deleteActive(data, layEvent, obj);
-    } else if(layEvent === 'indexShow'){// 首页推荐
-        indexRecommend(data, layEvent, obj);
     } else if (layEvent === 'sendWeiXin') {// 微信推送
         sendWeiXin(data, layEvent, obj);
     }
@@ -191,16 +189,20 @@ function addActive() {
     });
 }
 
-function indexRecommend(data, layEvent, obj) {
+function indexRecommend(activeId, type) {
     $.ajax({
         type: "POST",
         url:"indexRecommend.html",
         data : {
-            activeId : data.activeId
+            activeId : activeId,
+            type : type
         },
         dataType:"json",
         success: function(data) {
             layer.msg(data.msg);
+            if(data.code == 1){
+                searchList();
+            }
         }
     });
 }

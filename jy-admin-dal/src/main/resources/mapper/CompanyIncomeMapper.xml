@@ -58,7 +58,7 @@
       )
     values (#{id,jdbcType=BIGINT}, #{detailName,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, 
       #{custName,jdbcType=VARCHAR}, #{amount,jdbcType=DECIMAL}, #{scholarship,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER},
-      #{source,jdbcType=VARCHAR}, #{beneficiary} now(), now()
+      #{source,jdbcType=VARCHAR}, #{beneficiary}, now(), now()
       )
   </insert>
 

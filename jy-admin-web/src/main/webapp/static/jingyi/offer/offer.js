@@ -107,7 +107,7 @@ table.render({ //其它参数在此省略
         {
             field: 'offerId',
             title: '操作',
-            width: 300,
+            width: 250,
             fixed: 'right',
             align: 'center',
             toolbar: '#barTable'
@@ -144,8 +144,6 @@ table.on('tool(userDataTable)', function (obj) { //注：tool是工具条事件�
         onOffer(data, layEvent, obj);
     } else if (layEvent === 'offOffer') {// 下架
         offOffer(data, layEvent, obj);
-    } else if(layEvent === 'indexShow'){//首页轮播
-        indexRecommend(data, layEvent, obj);
     }
 });
 
@@ -164,16 +162,20 @@ function addOffer() {
     });
 }
 
-function indexRecommend(data, layEvent, obj) {
+function indexRecommend(offerId, type) {
     $.ajax({
         type: "POST",
         url:"indexRecommend.html",
         data : {
-            offerId : data.offerId
+            offerId : offerId,
+            type : type
         },
         dataType:"json",
         success: function(data) {
             layer.msg(data.msg);
+            if(data.code == 1){
+                searchList();
+            }
         }
     });
 }

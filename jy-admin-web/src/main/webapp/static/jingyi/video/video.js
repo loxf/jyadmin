@@ -88,6 +88,9 @@ function addVideo() {
         ,area: ['1000px', '600px']
         ,content: 'toAddVideo.html'
         ,shade: 0.3
+        ,cancel: function(index, layero){
+            searchList();
+        }
     });
 }
 
@@ -105,8 +108,8 @@ function updateVideo() {
             layer.msg(data.msg, {
                 time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
             }, function(){
-                parent.searchList();
-               parent.layer.closeAll();
+                searchList();
+                layer.closeAll();
             });
         }
     });

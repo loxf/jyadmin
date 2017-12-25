@@ -33,6 +33,7 @@ window.html5Upload = (function () {
         (function ($) {
             var defaults = {
                 uploadInitUrl: "",
+                status : 0,
                 uploadFinish: function (data) {
 
                 },
@@ -51,7 +52,6 @@ window.html5Upload = (function () {
                 return this.each(function () {
                     $(this).click(function () {
                         //上传
-                        alert("1");
                         videoUpload.tryUpload();
                     });
                 });
@@ -130,6 +130,7 @@ window.html5Upload = (function () {
             else {
                 if (!res.totalsize && res.status != '200') {
                     uploadOption.uploadError({ code: res.status, msg: res.msg });
+                    uploadOption.status = -3;
                     uploadCookie.removeCookie(html5Upload.exportObject.selectFile.fileKey);
                     videoUpload.xhrAbort();
                 }
@@ -138,6 +139,7 @@ window.html5Upload = (function () {
             if (res.transferedsize && res.transferedsize == res.totalsize) {
                 //文件上传完成
                 uploadOption.uploadFinish({ code: 0, msg: "上传完成" });
+                uploadOption.status = 3;
                 uploadCookie.removeCookie(html5Upload.exportObject.selectFile.fileKey);
                 videoUpload.xhrAbort();
             }
@@ -150,6 +152,7 @@ window.html5Upload = (function () {
             //在上传过程中如果用户在电脑上删除了视频，会触发视频丢失错误
             if (isNaN(pc)) {
                 uploadOption.uploadError({ code: 203, msg: "视频丢失" });
+                uploadOption.status = -3;
                 videoUpload.xhrAbort();
             }
             else {
@@ -161,6 +164,7 @@ window.html5Upload = (function () {
         };
         xhrEventCallback.error = function (e) {
             uploadOption.uploadError({ code: 404, msg: "网络异常" });
+            uploadOption.status = -3;
             videoUpload.xhrAbort();
         };
         xhrEventCallback.abort = function (e) {
@@ -220,7 +224,23 @@ window.html5Upload = (function () {
             xhr && xhr.abort();
         };
         videoUpload.tryUpload = function () {
-            alert("tryUpload");
+            if(html5Upload.exportObject.selectFile.file==undefined){
+                parent.layer.msg("请先添加视频");
+                return;
+            }
+            if(uploadOption.status==1){
+                parent.layer.msg("视频正在上传中，请耐心等候");
+                return;
+            } else if(uploadOption.status==3){
+                parent.layer.msg("视频已经上传完成，不能重复上传");
+                return;
+            } else if(uploadOption.status==-3){
+                parent.layer.msg("请稍后重试");
+                return;
+            } else {
+                // 上传
+                uploadOption.status = 1;
+            }
             var video_name = encodeURIComponent(html5Upload.exportObject.selectFile.file.name);
             var uploadtype = 1;
             var file_size = html5Upload.exportObject.selectFile.file.size;
@@ -253,12 +273,14 @@ window.html5Upload = (function () {
                                         videoUpload.tryUpload();
                                     } else {
                                         uploadOption.uploadAbort({ code: data.code, msg: data.message });
+                                        uploadOption.status = -3;
                                         tryNum = 0;
                                     }
                                 }
                                 break;
                             default:
                                 uploadOption.uploadAbort({ code: data.code, msg: data.message });
+                                uploadOption.status = -3;
                         }
                     }
                 }, function (data) {
@@ -270,6 +292,7 @@ window.html5Upload = (function () {
                     } else {
                         uploadOption.uploadAbort({ code: 206, msg: data.statusText });
                         tryNum = 0;
+                        uploadOption.status = -3;
                     }
                 });
             } catch (e) {
@@ -281,6 +304,7 @@ window.html5Upload = (function () {
                 } else {
                     uploadOption.uploadAbort({ code: 207, msg: e.message });
                     tryNum = 0;
+                    uploadOption.status = -3;
                 }
             }
         };
@@ -316,6 +340,12 @@ window.html5Upload = (function () {
         };
         //添加文件
         uploadFileOperation.addFile = function (e) {
+            if(uploadOption.status==1){
+                parent.layer.msg("视频正在上传中，请耐心等候");
+                return;
+            } else {
+                uploadOption.status = 0;
+            }
             var inpfile = document.getElementById("fileUploadId_Hsc");
             if (inpfile) {
                 inpfile.click && e.target != inpfile && inpfile.click();

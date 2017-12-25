@@ -66,11 +66,9 @@ public class DateUtils {
      * @return 该天的结束时间
      */
     public static Date getEndDate(Date date) {
-
         if (date == null) {
             return null;
         }
-
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
 
