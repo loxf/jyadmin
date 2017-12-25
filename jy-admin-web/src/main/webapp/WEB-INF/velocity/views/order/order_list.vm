@@ -89,7 +89,7 @@
 <script type="text/html" id="payTypeTpl">
     {{#  if(d.payType===1){ }}
     微信支付
-    {{#  } else if(d.payType==='3'){ }}
+    {{#  } else if(d.payType===3){ }}
     余额支付
     {{#  } else { }}
     未知
