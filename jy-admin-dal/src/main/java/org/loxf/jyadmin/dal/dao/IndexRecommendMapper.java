@@ -8,6 +8,8 @@ import java.util.List;
 public interface IndexRecommendMapper {
     int insert(@Param("type") String type,@Param("objId") String objId);
 
+    int exists(@Param("type") String type,@Param("objId") String objId);
+
     List<IndexRecommend> selectShow();
 
     int updateByPrimaryKey(@Param("type") String type,@Param("objId") String objId);

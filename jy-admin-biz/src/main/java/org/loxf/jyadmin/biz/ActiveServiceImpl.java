@@ -148,7 +148,9 @@ public class ActiveServiceImpl implements ActiveService {
             metaJSON = JSON.parseObject(metaData);
         }
         if(type==1){
-            indexRecommendMapper.insert("ACTIVE", activeId);
+            if(indexRecommendMapper.exists("ACTIVE", activeId)==0) {
+                indexRecommendMapper.insert("ACTIVE", activeId);
+            }
             metaJSON.put("INDEX", "on");
         } else {
             metaJSON.remove("INDEX");

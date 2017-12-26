@@ -33,4 +33,7 @@
   <delete id="delete">
     delete from tb_index_recommend where `type` = #{type,jdbcType=VARCHAR} and obj_id = #{objId,jdbcType=VARCHAR}
   </delete>
+  <select id="exists" resultType="int">
+    select count(1) from tb_index_recommend where `type` = #{type,jdbcType=VARCHAR} and obj_id = #{objId,jdbcType=VARCHAR}
+  </select>
 </mapper>
