@@ -157,8 +157,7 @@ public class SendWeixinMsgUtil {
      */
     public static void sendBuyOfferNotice( String openid, String nickname, String offerName, String url){
         Map data = new HashMap();
-        data.put("first", WeixinSender.createWXKeyWord("亲爱的" + nickname +"，您已成功购买以下商品", null));
-        data.put("keyword1", WeixinSender.createWXKeyWord(offerName, "#FF3030"));
+        data.put("name", WeixinSender.createWXKeyWord(offerName, "#FF3030"));
         data.put("remark", WeixinSender.createWXKeyWord("点击可查看商品详情。", null));
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(WxMsgTemplateConstant.BUY_OFFER,
                 openid, data, url));

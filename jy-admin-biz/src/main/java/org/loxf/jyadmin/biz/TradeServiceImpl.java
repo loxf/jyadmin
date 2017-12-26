@@ -63,16 +63,7 @@ public class TradeServiceImpl implements TradeService {
             return new BaseResult<>(BaseConstant.FAILED, "状态不正确");
         }
         String key = "COMPLETE_TRADE_" + orderId;
-        boolean lock = false;
         if (jedisUtil.setnx(key, System.currentTimeMillis() + "", 60) > 0) {
-            lock = true;
-        } else {
-            String oldTime = jedisUtil.get(key);
-            if (System.currentTimeMillis() - Long.valueOf(oldTime) > 60 * 1000) {
-                lock = true;
-            }
-        }
-        if (lock) {
             try {
                 Order orderAgain = orderMapper.selectByOrderId(orderId);
                 if (orderAgain == null) {

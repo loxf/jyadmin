@@ -180,16 +180,7 @@ public class OrderServiceImpl implements OrderService {
             return new BaseResult(BaseConstant.FAILED, "关键参数缺失");
         }
         String lockKey = "CREATE_ORDER_" + orderDto.getCustId();
-        boolean lock = false;
         if (jedisUtil.setnx(lockKey, System.currentTimeMillis() + "", 60) > 0) {
-            lock = true;
-        } else {
-            String oldTime = jedisUtil.get(lockKey);
-            if(System.currentTimeMillis() - Long.valueOf(oldTime)>60*1000){
-                lock = true;
-            }
-        }
-        if(lock) {
             orderDto.setOrderId(IdGenerator.generate(prefix));
             Order order = new Order();
             BeanUtils.copyProperties(orderDto, order);
@@ -276,16 +267,7 @@ public class OrderServiceImpl implements OrderService {
             return new BaseResult<>(BaseConstant.FAILED, "状态不正确");
         }
         String key = "COMPLETE_ORDER_" + orderId;
-        boolean lock = false;
         if (jedisUtil.setnx(key, System.currentTimeMillis() + "", 60) > 0) {
-            lock = true;
-        } else {
-            String oldTime = jedisUtil.get(key);
-            if(System.currentTimeMillis() - Long.valueOf(oldTime)>60*1000){
-                lock = true;
-            }
-        }
-        if(lock){
             try {
                 Order orderAgain = orderMapper.selectByOrderId(orderId);
                 if (orderAgain == null) {

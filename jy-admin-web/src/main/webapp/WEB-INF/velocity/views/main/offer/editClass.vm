@@ -95,8 +95,8 @@
     <div class="layui-form-item">
         <label class="layui-form-label">热门商品</label>
         <div class="layui-input-block">
-            <input type="checkbox" checked="" name="HOT"
-                #if(${metaDataJson} && ${metaDataJson.HOT} ) checked #end lay-skin="switch" lay-text="ON|OFF">
+            <input type="checkbox" name="HOT" lay-skin="switch" lay-text="ON|OFF"
+                #if(${metaDataJson} && ${metaDataJson.HOT} && ($!{metaDataJson.HOT}=="on"||$!{metaDataJson.HOT}=="ON") ) checked #end />
         </div>
     </div>
     <div class="layui-form-item" id="J_teacherDiv">

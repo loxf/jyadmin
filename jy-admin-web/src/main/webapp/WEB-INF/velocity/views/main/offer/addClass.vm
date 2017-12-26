@@ -86,7 +86,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">热门商品</label>
         <div class="layui-input-block">
-            <input type="checkbox" checked="" name="HOT" lay-skin="switch" lay-text="ON|OFF">
+            <input type="checkbox" name="HOT" lay-skin="switch" lay-text="ON|OFF">
         </div>
     </div>
     <div class="layui-form-item" id="J_teacherDiv">
