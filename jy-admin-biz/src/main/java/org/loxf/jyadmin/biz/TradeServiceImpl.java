@@ -1,6 +1,7 @@
 package org.loxf.jyadmin.biz;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
@@ -144,7 +145,7 @@ public class TradeServiceImpl implements TradeService {
                 detailName += "参加活动";
                 // 增加活动名单信息
                 Active active = activeMapper.selectByActiveId(order.getObjId());
-                ActiveCustList activeCustList = dealActive(order);
+                ActiveCustList activeCustList = dealActive(order.getCustId(), order.getObjId(), order.getOrderName(), orderId);
                 // 发送活动报名成功消息
                 SendWeixinMsgUtil.sendActiveInNotice(cust.getOpenid(), cust.getNickName(), active.getActiveName(),
                         DateUtils.formatHms(active.getActiveStartTime()) + " ~ " + DateUtils.formatHms(active.getActiveEndTime()),
@@ -169,6 +170,23 @@ public class TradeServiceImpl implements TradeService {
                     url = String.format(BaseConstant.CLASS_DETAIL_URL, order.getObjId());
                 } else if (offer.getOfferType().equals("OFFER")) {
                     url = String.format(BaseConstant.OFFER_DETAIL_URL, order.getObjId());
+                    // 处理套餐内的VIP 或者 ACTIVE
+                    List<Offer> offerRelList = offerMapper.showOfferByOfferIdAndRelType(order.getObjId(), "OFFER");
+                    for (Offer relOffer : offerRelList){
+                        if(relOffer.getOfferType().equals("VIP")){
+                            String vipType = relOffer.getOfferId().equals("OFFER001") ? "VIP" : "SVIP";
+                            dealVip(order.getCustId(), vipType);
+                            // 发送VIP通知
+                            SendWeixinMsgUtil.sendBeVipNotice(cust.getOpenid(), cust.getNickName(), vipType);
+                        } else if(relOffer.getOfferType().equals("ACTIVE")){
+                            Active active = activeMapper.selectByActiveId(relOffer.getOfferId());
+                            ActiveCustList activeCustList = dealActive(order.getCustId(), active.getActiveId(), active.getActiveName(), orderId);
+                            // 发送活动报名成功消息
+                            SendWeixinMsgUtil.sendActiveInNotice(cust.getOpenid(), cust.getNickName(), relOffer.getOfferName(),
+                                    DateUtils.formatHms(active.getActiveStartTime()) + " ~ " + DateUtils.formatHms(active.getActiveEndTime()),
+                                    activeCustList.getActiveTicketNo(), active.getAddr(), String.format(BaseConstant.ACTIVE_DETAIL_URL, active.getActiveId()));
+                        }
+                    }
                 }
                 // 购买课程通知
                 SendWeixinMsgUtil.sendBuyOfferNotice(cust.getOpenid(), cust.getNickName(), offer.getOfferName(), url);
@@ -291,18 +309,20 @@ public class TradeServiceImpl implements TradeService {
         return "";
     }
 
-    public ActiveCustList dealActive(Order order) {
+    public ActiveCustList dealActive(String custId, String activeId, String activeName, String orderId) {
         ActiveCustList activeCustList = new ActiveCustList();
         activeCustList.setActiveTicketNo(DateUtils.format(new Date(), "yyMMddHHmmss") + RandomUtils.getRandomStr(4));
-        activeCustList.setActiveId(order.getObjId());
-        activeCustList.setCustId(order.getCustId());
-        activeCustList.setActiveName(order.getOrderName());
-        List<OrderAttr> orderAttrs = orderAttrMapper.selectByOrderId(order.getOrderId());
-        for (OrderAttr attr : orderAttrs) {
-            if (attr.getAttrCode().equals("ACTIVITY_USER_NAME")) {
-                activeCustList.setName(attr.getAttrValue());
-            } else if (attr.getAttrCode().equals("ACTIVITY_CONTACT")) {
-                activeCustList.setPhone(attr.getAttrValue());
+        activeCustList.setActiveId(activeId);
+        activeCustList.setCustId(custId);
+        activeCustList.setActiveName(activeName);
+        List<OrderAttr> orderAttrs = orderAttrMapper.selectByOrderId(orderId);
+        if(CollectionUtils.isNotEmpty(orderAttrs)) {
+            for (OrderAttr attr : orderAttrs) {
+                if (attr.getAttrCode().equals("ACTIVITY_USER_NAME")) {
+                    activeCustList.setName(attr.getAttrValue());
+                } else if (attr.getAttrCode().equals("ACTIVITY_CONTACT")) {
+                    activeCustList.setPhone(attr.getAttrValue());
+                }
             }
         }
         activeCustList.setStatus(1);// 已付款
