@@ -89,7 +89,7 @@
                 <img class="layui-upload-img" style="max-width: 350px" id="offerPicImg"
                     #if(${offer.offerPic}) src="$!{basePic}$!{offer.offerPic}" #end >
             </div>
-            <input type="hidden" name="offerPic" value="$!{offer.offerPic}" id="offerPic">
+            <input type="hidden" name="offerPic" value="$!{offer.offerPic}" id="offerPic" lay-verify="required">
         </div>
     </div>
     <div class="layui-form-item">

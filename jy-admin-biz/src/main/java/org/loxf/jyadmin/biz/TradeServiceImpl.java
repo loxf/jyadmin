@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.biz;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -158,18 +159,31 @@ public class TradeServiceImpl implements TradeService {
                 }
             } else {
                 detailName += "购买课程";
-                if (custFirst != null) {
-                    firstScholarships = queryScholarshipsRate(custFirst, "OFFER", 1);
-                }
-                if (custSecond != null) {
-                    secondScholarships = queryScholarshipsRate(custSecond, "OFFER", 2);
-                }
                 Offer offer = offerMapper.selectByOfferId(order.getObjId());
                 String url = "";
                 if (offer.getOfferType().equals("CLASS")) {
                     url = String.format(BaseConstant.CLASS_DETAIL_URL, order.getObjId());
                 } else if (offer.getOfferType().equals("OFFER")) {
                     url = String.format(BaseConstant.OFFER_DETAIL_URL, order.getObjId());
+                    // 查询套餐是否有特殊分成
+                    String metaData = offer.getMetaData();
+                    if(StringUtils.isNotBlank(metaData)){
+                        JSONObject metaDataJson = JSON.parseObject(metaData);
+                        if(metaDataJson.containsKey("COMMISSION")){
+                            // {"MAXBP":"1","COMMISSION":{"NONE":"10","VIP":"12"}}
+                            JSONObject commissionJson = metaDataJson.getJSONObject("COMMISSION");
+                            if (StringUtils.isBlank(firstScholarships) && custFirst != null) {
+                                firstScholarships = queryOfferScholarshipRate(commissionJson, custFirst.getIsAgent(), custFirst.getUserLevel());
+                            } else {
+                                firstScholarships = "0";
+                            }
+                            if (StringUtils.isBlank(secondScholarships) && custSecond != null) {
+                                secondScholarships = queryOfferScholarshipRate(commissionJson, custSecond.getIsAgent(), custSecond.getUserLevel());
+                            } else {
+                                secondScholarships = "0";
+                            }
+                        }
+                    }
                     // 处理套餐内的VIP 或者 ACTIVE
                     List<Offer> offerRelList = offerMapper.showOfferByOfferIdAndRelType(order.getObjId(), "OFFER");
                     for (Offer relOffer : offerRelList){
@@ -188,13 +202,20 @@ public class TradeServiceImpl implements TradeService {
                         }
                     }
                 }
+                //
+                if (StringUtils.isBlank(firstScholarships) && custFirst != null) {
+                    firstScholarships = queryScholarshipsRate(custFirst, "OFFER", 1);
+                }
+                if (StringUtils.isBlank(secondScholarships) && custSecond != null) {
+                    secondScholarships = queryScholarshipsRate(custSecond, "OFFER", 2);
+                }
                 // 购买课程通知
                 SendWeixinMsgUtil.sendBuyOfferNotice(cust.getOpenid(), cust.getNickName(), offer.getOfferName(), url);
             }
             // 分成计算 代理商分成 如果是代理商，先检查是否有免费名额，如果有先用免费名额
             BigDecimal companyAmount = order.getOrderMoney();
             BigDecimal scholarship = BigDecimal.ZERO;
-            if (StringUtils.isNotBlank(firstScholarships)) {
+            if (StringUtils.isNotBlank(firstScholarships) && custFirst!=null) {
                 // 模板消息接口 发送通知
                 BigDecimal first = dealScholarship(firstScholarships, order.getOrderMoney(), custFirst.getCustId(), orderId,
                         userName + detailName + "(1级奖)", cust.getCustId());
@@ -202,7 +223,7 @@ public class TradeServiceImpl implements TradeService {
                 scholarship = scholarship.add(first);
                 SendWeixinMsgUtil.sendScholarshipMsg(custFirst.getOpenid(), first.toPlainString(), custFirst.getNickName());
             }
-            if (StringUtils.isNotBlank(secondScholarships) && companyAmount.compareTo(BigDecimal.ZERO) > 0) {
+            if (StringUtils.isNotBlank(secondScholarships) && custSecond != null && companyAmount.compareTo(BigDecimal.ZERO) > 0) {
                 BigDecimal second = dealScholarship(secondScholarships, order.getOrderMoney(), custSecond.getCustId(), orderId,
                         userName + detailName + "(2级奖)", cust.getCustId());
                 companyAmount = companyAmount.subtract(second);
@@ -215,6 +236,14 @@ public class TradeServiceImpl implements TradeService {
         tradeMapper.updateByOrderId(orderId, status, msg);
     }
 
+    private String queryOfferScholarshipRate(JSONObject commissionJson, int agentLv, String userLevel){
+        if(agentLv>0){
+            String agentLevel = agentLv==1?"AGENT": (agentLv==2?"PARTNER":"COMPANY");
+            return commissionJson.getString(agentLevel);
+        } else {
+            return commissionJson.getString(userLevel);
+        }
+    }
 
     private String queryFirstCustAgentScholarship(String custId, String vipType) {
         // 推荐注册 如果是代理商及以上身份，检查是否有免费名额

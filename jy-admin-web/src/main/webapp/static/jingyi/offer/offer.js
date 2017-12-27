@@ -59,6 +59,12 @@ table.render({ //其它参数在此省略
             templet : '#maxBpTpl'
         },
         {
+            field: 'commission',
+            title: '特殊分成',
+            width: 100 ,
+            templet : '#commissionTpl'
+        },
+        {
             field: 'indexShow',
             title: '首页轮播',
             width: 100,

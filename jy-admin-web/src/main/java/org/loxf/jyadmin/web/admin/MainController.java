@@ -30,6 +30,9 @@ public class MainController {
     @RequestMapping("/admin/index")
     public String index(Model model, HttpServletRequest request, HttpServletResponse response){
         AdminDto adminDto = CookieUtil.getAdmin(request);
+        if(adminDto==null){
+            return "login";
+        }
         model.addAttribute("isIndex", true);
         model.addAttribute("username", adminDto.getRealName());
         return "index";

@@ -38,6 +38,9 @@ public class InitController {
     @RequestMapping("/index")
     public String toIndex(Model model, HttpServletRequest request) {
         AdminDto adminDto = CookieUtil.getAdmin(request);
+        if(adminDto==null){
+            return "login";
+        }
         if (adminDto.getUserName().equals("admin")) {
             return "system/index";
         } else {

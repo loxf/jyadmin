@@ -135,6 +135,26 @@
     {{#  } }}
 </script>
 
+<script type="text/html" id="commissionTpl">
+    {{#  if(d.metaData){ }}
+    {{#  var json = eval("("+d.metaData+")");}}
+    {{# if(json.COMMISSION){ }}
+    {{#  var result = "";
+    result += (json.COMMISSION.NONE?" 普通：" + json.COMMISSION.NONE:"");
+    result += (json.COMMISSION.VIP?" VIP：" + json.COMMISSION.VIP:"");
+    result += (json.COMMISSION.SVIP?" SVIP：" + json.COMMISSION.SVIP:"");
+    result += (json.COMMISSION.AGENT?" 代理商：" + json.COMMISSION.AGENT:"");
+    result += (json.COMMISSION.PARTNER?" 合伙人：" + json.COMMISSION.PARTNER:"");
+    result += (json.COMMISSION.COMPANY?" 分公司：" + json.COMMISSION.COMPANY:"");}}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ result }}', 'TEXT')"><i class="layui-icon">&#xe60e;</i>查看</a>
+    {{#  } else { }}
+    无
+    {{# } }}
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+
 <script type="text/html" id="statusTpl">
     {{#  if(d.status===0){ }}
     下架

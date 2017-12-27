@@ -87,6 +87,40 @@
             <input type="checkbox" name="HOT" lay-skin="switch" lay-text="是|否">
         </div>
     </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">特殊分成</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="COMMISSION" value="on" lay-filter="commission" lay-skin="switch" lay-text="开启|关闭">
+        </div>
+    </div>
+    <div class="layui-form-item commissionDiv" style="display: none">
+        <label class="layui-form-label">分成比例</label>
+        <div class="layui-input-inline" style="width: 100px;">
+        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_NONE" placeholder="普通"
+               autocomplete="off" class="layui-input" lay-verify="commissionRate" />
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_VIP" placeholder="VIP"
+               autocomplete="off" class="layui-input" lay-verify="commissionRate">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_SVIP" placeholder="SVIP"
+               autocomplete="off" class="layui-input" lay-verify="commissionRate">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_AGENT" placeholder="代理商"
+               autocomplete="off" class="layui-input" lay-verify="commissionRate">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_PARTNER" placeholder="合伙人"
+               autocomplete="off" class="layui-input" lay-verify="commissionRate">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_COMPANY" placeholder="分公司"
+               autocomplete="off" class="layui-input" lay-verify="commissionRate">
+        </div>
+    </div>
+
     <div class="layui-form-item layui-form-text">
         <label class="layui-form-label">套餐详情</label>
         #parse("/views/common/editor.vm")
@@ -168,6 +202,11 @@
             } else if(value.length >20){
                 return '标题超过20个字';
             }
+        },
+        commissionRate : function (value) {
+            if(value<0 || value>100){
+                return '分成比例在0-100之间';
+            }
         }
     });
 
@@ -206,6 +245,29 @@
             HOT: data.field.HOT,
             MAXBP: data.field.MAXBP
         };
+
+        if(data.field.COMMISSION){
+            var commissionJson = {};
+            if(data.field.COMMISSION_NONE){
+                commissionJson.NONE = data.field.COMMISSION_NONE;
+            }
+            if(data.field.COMMISSION_VIP){
+                commissionJson.VIP = data.field.COMMISSION_VIP;
+            }
+            if(data.field.COMMISSION_SVIP){
+                commissionJson.SVIP = data.field.COMMISSION_SVIP;
+            }
+            if(data.field.COMMISSION_AGENT){
+                commissionJson.AGENT = data.field.COMMISSION_AGENT;
+            }
+            if(data.field.COMMISSION_PARTNER){
+                commissionJson.PARTNER = data.field.COMMISSION_PARTNER;
+            }
+            if(data.field.COMMISSION_COMPANY){
+                commissionJson.COMPANY = data.field.COMMISSION_COMPANY;
+            }
+            metaData.COMMISSION = commissionJson;
+        }
 
         $.ajax({
             type: "POST",
@@ -255,6 +317,14 @@
             } else {
                 $(".svipDiv").hide();
             }
+        }
+    });
+    //控制特殊分成权限
+    form.on('switch(commission)', function(data){
+        if(data.elem.checked){
+            $(".commissionDiv").show();
+        } else {
+            $(".commissionDiv").hide();
         }
     });
 
