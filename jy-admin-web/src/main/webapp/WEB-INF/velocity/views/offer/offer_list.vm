@@ -108,7 +108,7 @@
 </script>
 
 <script type="text/html" id="indexShowTpl">
-    {{#  if(d.metaData){ }}
+    {{#  if(d.status===1 && d.metaData){ }}
         {{#  var json = eval("("+d.metaData+")");}}
         {{# if(json.INDEX){ }}
     <a class="layui-btn layui-btn-mini" onclick="indexRecommend('{{ d.offerId }}', 2)">取消</a>

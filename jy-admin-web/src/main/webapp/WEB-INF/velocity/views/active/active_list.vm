@@ -89,13 +89,13 @@
 </script>
 
 <script type="text/html" id="indexShowTpl">
-    {{#  if(d.metaData){ }}
-    {{#  var json = eval("("+d.metaData+")");}}
-    {{# if(json.INDEX){ }}
-    <a class="layui-btn layui-btn-mini" onclick="indexRecommend('{{ d.activeId }}', 2)">取消</a>
-    {{#  } else { }}
-    <a class="layui-btn layui-btn-mini" onclick="indexRecommend('{{ d.activeId }}', 1)">首页轮播</a>
-    {{# } }}
+    {{#  if(d.status===1 && d.metaData){ }}
+        {{#  var json = eval("("+d.metaData+")");}}
+        {{# if(json.INDEX){ }}
+        <a class="layui-btn layui-btn-mini" onclick="indexRecommend('{{ d.activeId }}', 2)">取消</a>
+        {{#  } else { }}
+        <a class="layui-btn layui-btn-mini" onclick="indexRecommend('{{ d.activeId }}', 1)">首页轮播</a>
+        {{# } }}
     {{#  } else { }}
     否
     {{#  } }}
