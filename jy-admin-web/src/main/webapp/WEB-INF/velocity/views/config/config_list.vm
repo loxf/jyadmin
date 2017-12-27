@@ -73,8 +73,8 @@
     图片
     {{#  } else if(d.type=='MP4'){ }}
     视频
-    {{#  } else if(d.type=='链接'){ }}
-    URL
+    {{#  } else if(d.type=='URL'){ }}
+    链接
     {{#  } else if(d.type=='HTML'){ }}
     富文本
     {{#  } else { }}
