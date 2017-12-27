@@ -8,6 +8,9 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
     <context:component-scan base-package="org.loxf.jyadmin.biz"/>
+    <import resource="jy-admin-dal.xml"/>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <bean id="jedisUtil" class="org.loxf.jyadmin.base.util.JedisUtil" >
         <constructor-arg index="0" ref="jedisPool"/>
@@ -35,8 +38,6 @@
             </map>
         </property>
     </bean>
-    <tx:annotation-driven/>
 
     <import resource="job.xml"/>
-    <import resource="jy-admin-dal.xml"/>
 </beans>
