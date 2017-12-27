@@ -259,6 +259,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
+    @Transactional
     public BaseResult<String> completeOrder(String orderId, String partnerOrderId, Integer status, String msg) {
         if (StringUtils.isBlank(orderId)) {
             return new BaseResult<>(BaseConstant.FAILED, "订单号为空");
@@ -289,7 +290,6 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    @Transactional
     public void dealCompleteOrder(String orderId, String partnerOrderId, Integer status, String msg) {
         // 更新订单
         orderMapper.updateByOrderId(orderId, partnerOrderId, status, msg);

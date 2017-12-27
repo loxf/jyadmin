@@ -48,9 +48,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">购买权限</label>
         <div class="layui-input-block">
-            <input type="checkbox" value="NONE" title="普通">
-            <input type="checkbox" value="VIP" title="VIP">
-            <input type="checkbox" value="SVIP" title="SVIP">
+            <input type="checkbox" name="noneCheck" value="NONE" title="普通">
+            <input type="checkbox" name="vipCheck" value="VIP" title="VIP">
+            <input type="checkbox" name="svipCheck" value="SVIP" title="SVIP">
         </div>
     </div>
     <div class="layui-form-item noneDiv" style="display: none">
@@ -86,7 +86,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">热门商品</label>
         <div class="layui-input-block">
-            <input type="checkbox" name="HOT" lay-skin="switch" lay-text="ON|OFF">
+            <input type="checkbox" name="HOT" lay-skin="switch" lay-text="是|否">
         </div>
     </div>
     <div class="layui-form-item" id="J_teacherDiv">
@@ -230,13 +230,13 @@
     //监听提交
     form.on('submit(offerData)', function(data){
         var buyPrivi = {};
-        if(data.field.buyPrivi_NONE){
+        if(data.field.noneCheck && data.field.buyPrivi_NONE){
             buyPrivi.NONE = data.field.buyPrivi_NONE;
         }
-        if(data.field.buyPrivi_VIP){
+        if(data.field.vipCheck && data.field.buyPrivi_VIP){
             buyPrivi.VIP = data.field.buyPrivi_VIP;
         }
-        if(data.field.buyPrivi_SVIP){
+        if(data.field.svipCheck && data.field.buyPrivi_SVIP){
             buyPrivi.SVIP = data.field.buyPrivi_SVIP;
         }
         var teacher = [];

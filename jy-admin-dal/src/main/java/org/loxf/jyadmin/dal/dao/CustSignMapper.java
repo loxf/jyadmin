@@ -7,4 +7,6 @@ public interface CustSignMapper {
 
     int selectByCustAndSignDate(@Param("custId") String custId, @Param("signDate") String signDate);
 
+    int selectByCustBeforeSignDate(@Param("custId") String custId, @Param("signDate") String signDate);
+
 }

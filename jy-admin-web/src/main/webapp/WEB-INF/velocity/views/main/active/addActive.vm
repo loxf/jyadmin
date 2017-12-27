@@ -58,9 +58,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">购买权限</label>
         <div class="layui-input-block">
-            <input type="checkbox" value="NONE" title="普通">
-            <input type="checkbox" value="VIP" title="VIP">
-            <input type="checkbox" value="SVIP" title="SVIP">
+            <input type="checkbox" name="noneCheck" value="NONE" title="普通">
+            <input type="checkbox" name="vipCheck" value="VIP" title="VIP">
+            <input type="checkbox" name="svipCheck" value="SVIP" title="SVIP">
         </div>
     </div>
     <div class="layui-form-item noneDiv" style="display: none">
@@ -188,13 +188,13 @@
         }
 
         var activePrivi = {};
-        if(data.field.activePrivi_NONE){
+        if(data.field.noneCheck && data.field.activePrivi_NONE){
             activePrivi.NONE = data.field.activePrivi_NONE;
         }
-        if(data.field.activePrivi_VIP){
+        if(data.field.vipCheck && data.field.activePrivi_VIP){
             activePrivi.VIP = data.field.activePrivi_VIP;
         }
-        if(data.field.activePrivi_SVIP){
+        if(data.field.svipCheck && data.field.activePrivi_SVIP){
             activePrivi.SVIP = data.field.activePrivi_SVIP;
         }
         var metaData = {

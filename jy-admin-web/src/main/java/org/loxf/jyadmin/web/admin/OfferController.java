@@ -70,6 +70,7 @@ public class OfferController extends BaseControl<OfferDto> {
             String htmlId = offerDto.getHtmlId();
             String htmlInfo = htmlInfoService.getHtml(htmlId).getData();
             model.addAttribute("htmlInfo", htmlInfo);
+            model.addAttribute("htmlId", htmlId);
             String buyPrivi = offerDto.getBuyPrivi();
             if (StringUtils.isNotBlank(buyPrivi)) {
                 JSONObject buyJson = JSONObject.parseObject(buyPrivi);

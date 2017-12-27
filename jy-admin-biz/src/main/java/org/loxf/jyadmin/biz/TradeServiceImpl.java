@@ -56,6 +56,7 @@ public class TradeServiceImpl implements TradeService {
     private AgentInfoMapper agentInfoMapper;
 
     @Override
+    @Transactional
     public BaseResult<String> completeTrade(String orderId, Integer status, String msg) {
         if (StringUtils.isBlank(orderId)) {
             return new BaseResult<>(BaseConstant.FAILED, "订单号为空");
@@ -95,7 +96,6 @@ public class TradeServiceImpl implements TradeService {
         }
     }
 
-    @Transactional
     public void dealTrade(Cust cust, String recommend, String orderId, int status, String msg, Order order) {
         Cust custFirst = null;
         Cust custSecond = null;

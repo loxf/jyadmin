@@ -65,9 +65,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">购买权限</label>
         <div class="layui-input-block">
-            <input type="checkbox" value="NONE" #if(${activePriviJson} && ${activePriviJson.NONE} ) checked #end title="普通">
-            <input type="checkbox" value="VIP" #if(${activePriviJson} && ${activePriviJson.VIP} ) checked #end title="VIP">
-            <input type="checkbox" value="SVIP" #if(${activePriviJson} && ${activePriviJson.SVIP} ) checked #end title="SVIP">
+            <input type="checkbox" name="noneCheck" value="NONE" #if(${activePriviJson} && ${activePriviJson.NONE} ) checked #end title="普通">
+            <input type="checkbox" name="vipCheck" value="VIP" #if(${activePriviJson} && ${activePriviJson.VIP} ) checked #end title="VIP">
+            <input type="checkbox" name="svipCheck" value="SVIP" #if(${activePriviJson} && ${activePriviJson.SVIP} ) checked #end title="SVIP">
         </div>
     </div>
     <div class="layui-form-item noneDiv" #if(${activePriviJson} && ${activePriviJson.NONE} )  style="display: block" #else  style="display: none" #end>
@@ -201,13 +201,13 @@
         }
 
         var activePrivi = {};
-        if(data.field.activePrivi_NONE){
+        if(data.field.noneCheck && data.field.activePrivi_NONE){
             activePrivi.NONE = data.field.activePrivi_NONE;
         }
-        if(data.field.activePrivi_VIP){
+        if(data.field.vipCheck && data.field.activePrivi_VIP){
             activePrivi.VIP = data.field.activePrivi_VIP;
         }
-        if(data.field.activePrivi_SVIP){
+        if(data.field.svipCheck && data.field.activePrivi_SVIP){
             activePrivi.SVIP = data.field.activePrivi_SVIP;
         }
         var metaData = {

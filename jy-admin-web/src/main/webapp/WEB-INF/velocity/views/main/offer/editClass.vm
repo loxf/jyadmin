@@ -52,9 +52,9 @@
     <div class="layui-form-item">
         <label class="layui-form-label">购买权限</label>
         <div class="layui-input-block">
-            <input type="checkbox" value="NONE" #if(${buyJson} && ${buyJson.NONE} ) checked #end title="普通">
-            <input type="checkbox" value="VIP" #if(${buyJson} && ${buyJson.VIP} ) checked #end title="VIP">
-            <input type="checkbox" value="SVIP" #if(${buyJson} && ${buyJson.SVIP} ) checked #end title="SVIP">
+            <input type="checkbox" name="noneCheck" value="NONE" #if(${buyJson} && ${buyJson.NONE} ) checked #end title="普通">
+            <input type="checkbox" name="vipCheck" value="VIP" #if(${buyJson} && ${buyJson.VIP} ) checked #end title="VIP">
+            <input type="checkbox" name="svipCheck" value="SVIP" #if(${buyJson} && ${buyJson.SVIP} ) checked #end title="SVIP">
         </div>
     </div>
     <div class="layui-form-item noneDiv" #if(${buyJson} && ${buyJson.NONE} )  style="display: block" #else  style="display: none" #end>
@@ -95,7 +95,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">热门商品</label>
         <div class="layui-input-block">
-            <input type="checkbox" name="HOT" lay-skin="switch" lay-text="ON|OFF"
+            <input type="checkbox" name="HOT" lay-skin="switch" lay-text="是|否"
                 #if(${metaDataJson} && ${metaDataJson.HOT} && ($!{metaDataJson.HOT}=="on"||$!{metaDataJson.HOT}=="ON") ) checked #end />
         </div>
     </div>
@@ -289,13 +289,13 @@
     //监听提交
     form.on('submit(offerData)', function(data){
         var buyPrivi = {};
-        if(data.field.buyPrivi_NONE){
+        if(data.field.noneCheck && data.field.buyPrivi_NONE){
             buyPrivi.NONE = data.field.buyPrivi_NONE;
         }
-        if(data.field.buyPrivi_VIP){
+        if(data.field.vipCheck && data.field.buyPrivi_VIP){
             buyPrivi.VIP = data.field.buyPrivi_VIP;
         }
-        if(data.field.buyPrivi_SVIP){
+        if(data.field.svipCheck && data.field.buyPrivi_SVIP){
             buyPrivi.SVIP = data.field.buyPrivi_SVIP;
         }
         var teacher = [];

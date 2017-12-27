@@ -112,8 +112,12 @@
 </script>
 <script type="text/html" id="activePriviTpl">
     {{#  if(d.activePrivi){ }}
-    {{#  var json = eval("("+d.activePrivi+")"); }}
-    {{#  return "普通：" + json.NONE + ", VIP：" + json.NONE + ", SVIP：" + json.SVIP }}
+    {{#  var result = "", json = eval("("+d.activePrivi+")"); result += (json.NONE?" 普通：" + json.NONE:""); result += (json.VIP?" VIP：" + json.VIP:""); result += (json.SVIP?" SVIP：" + json.SVIP:"");}}
+        {{#  if(result){ }}
+        {{#  return result; }}
+        {{#  } else { }}
+        不允许直接购买
+        {{#  } }}
     {{#  } else { }}
     不允许直接购买
     {{#  } }}
