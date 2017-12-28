@@ -287,7 +287,11 @@ public class CustServiceImpl implements CustService {
         BeanUtils.copyProperties(userAccessToken, wxUserToken);
         // 设置userToken 30天刷新时间
         wxUserToken.setRefresh_time((System.currentTimeMillis() + 30 * 24 * 60 * 60 * 1000) + "");
-        wxUserTokenMapper.updateByPrimaryKey(wxUserToken);
+        if(wxUserTokenMapper.selectByPrimaryKey(wxUserToken.getOpenid())!=null) {
+            wxUserTokenMapper.updateByPrimaryKey(wxUserToken);
+        } else {
+            wxUserTokenMapper.insert(wxUserToken);
+        }
         return new BaseResult<>();
     }
 

@@ -37,4 +37,10 @@
       scope = #{scope,jdbcType=VARCHAR}
     where openid = #{openid,jdbcType=VARCHAR}
   </update>
+  <select id="queryNeedRefreshToken" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_wx_usertoken
+    where TIMESTAMPDIFF(SECOND,from_unixtime(expires_in/1000), CURRENT_TIMESTAMP)> -100
+  </select>
 </mapper>
