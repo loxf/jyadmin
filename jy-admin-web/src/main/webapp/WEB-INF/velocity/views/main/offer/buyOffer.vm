@@ -20,7 +20,7 @@
         </div>
         <div class="layui-form-item" #if(${buyJson} && ${buyJson.SVIP} ) style="display: block" #else  style="display: none" #end>
             <label class="layui-form-label">SVIP价格</label>
-            <label class="layui-form-label" style="width: auto">￥ $!{buyJson.VIP}</label>
+            <label class="layui-form-label" style="width: auto">￥ $!{buyJson.SVIP}</label>
         </div>
         <div class="layui-form-item">
             <label class="layui-form-label">选择客户</label>
