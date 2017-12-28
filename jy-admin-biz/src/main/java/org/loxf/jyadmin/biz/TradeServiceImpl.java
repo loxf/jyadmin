@@ -219,15 +219,20 @@ public class TradeServiceImpl implements TradeService {
                 // 模板消息接口 发送通知
                 BigDecimal first = dealScholarship(firstScholarships, order.getOrderMoney(), custFirst.getCustId(), orderId,
                         userName + detailName + "(1级奖)", cust.getCustId());
-                companyAmount = companyAmount.subtract(first);
-                scholarship = scholarship.add(first);
-                SendWeixinMsgUtil.sendScholarshipMsg(custFirst.getOpenid(), first.toPlainString(), custFirst.getNickName());
+                if(first.compareTo(BigDecimal.ZERO)>0) {
+                    companyAmount = companyAmount.subtract(first);
+                    scholarship = scholarship.add(first);
+                    SendWeixinMsgUtil.sendScholarshipMsg(custFirst.getOpenid(), first.toPlainString(), custFirst.getNickName());
+                }
             }
             if (StringUtils.isNotBlank(secondScholarships) && custSecond != null && companyAmount.compareTo(BigDecimal.ZERO) > 0) {
                 BigDecimal second = dealScholarship(secondScholarships, order.getOrderMoney(), custSecond.getCustId(), orderId,
                         userName + detailName + "(2级奖)", cust.getCustId());
-                companyAmount = companyAmount.subtract(second);
-                scholarship = scholarship.add(second);
+                if(second.compareTo(BigDecimal.ZERO)>0) {
+                    companyAmount = companyAmount.subtract(second);
+                    scholarship = scholarship.add(second);
+                    SendWeixinMsgUtil.sendScholarshipMsg(custSecond.getOpenid(), second.toPlainString(), custSecond.getNickName());
+                }
             }
             // 计算公司收入
             companyIncomeMapper.insert(createCompanyIncome(cust.getCustId(), userName, detailName,
@@ -273,10 +278,12 @@ public class TradeServiceImpl implements TradeService {
     private BigDecimal dealScholarship(String scholarships, BigDecimal orderMoney, String custId, String orderId, String detailName, String sourceCustId) {
         BigDecimal first = orderMoney.multiply(new BigDecimal(scholarships)).
                 divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
-        BaseResult<Boolean> baseResult = accountService.increase(custId, first, null, orderId,
-                detailName, sourceCustId);
-        if (baseResult.getCode() == BaseConstant.FAILED) {
-            throw new BizException(baseResult.getMsg());
+        if(first.compareTo(BigDecimal.ZERO)>0) {
+            BaseResult<Boolean> baseResult = accountService.increase(custId, first, null, orderId,
+                    detailName, sourceCustId);
+            if (baseResult.getCode() == BaseConstant.FAILED) {
+                throw new BizException(baseResult.getMsg());
+            }
         }
         return first;
     }
