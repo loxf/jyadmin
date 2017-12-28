@@ -110,13 +110,18 @@ public class OrderController extends BaseControl<OrderDto> {
         orderDto.setBp(BigDecimal.ZERO);
         orderDto.setDiscount(10L);
         String ip = IPUtil.getIpAddr(request);
-        BaseResult<Map<String, String>> orderResult = orderService.createOrder(custDto.getOpenid(), ip, orderDto, null);
-        if(orderResult.getCode()==BaseConstant.SUCCESS){
-            orderResult.getData().put("orderName", orderDto.getOrderName());
-            orderResult.getData().put("orderMoney", orderDto.getOrderMoney().toPlainString());
-            orderResult.getData().put("nickName", custDto.getNickName());
+        try {
+            BaseResult<Map<String, String>> orderResult = orderService.createOrder(custDto.getOpenid(), ip, orderDto, null);
+            if(orderResult.getCode()==BaseConstant.SUCCESS){
+                orderResult.getData().put("orderName", orderDto.getOrderName());
+                orderResult.getData().put("orderMoney", orderDto.getOrderMoney().toPlainString());
+                orderResult.getData().put("nickName", custDto.getNickName());
+            }
+            return orderResult;
+        } catch (Exception e){
+            logger.error("创建订单失败", e);
+            return new BaseResult(BaseConstant.FAILED, e.getMessage());
         }
-        return orderResult;
     }
 
 

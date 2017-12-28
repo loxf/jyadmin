@@ -218,7 +218,7 @@ public class OrderServiceImpl implements OrderService {
                 }
             } catch (Exception e) {
                 logger.error("生成订单失败", e);
-                return new BaseResult<>(BaseConstant.FAILED, "生成订单失败");
+                throw new BizException("生成订单失败");
             } finally {
                 jedisUtil.del(lockKey);
             }

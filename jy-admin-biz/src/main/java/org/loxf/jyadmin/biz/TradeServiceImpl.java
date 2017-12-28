@@ -88,7 +88,7 @@ public class TradeServiceImpl implements TradeService {
                 return new BaseResult<>();
             } catch (Exception e) {
                 logger.error("交易失败" + orderId, e);
-                return new BaseResult(BaseConstant.FAILED, "交易失败");
+                throw new BizException(e);
             } finally {
                 jedisUtil.del(key);
             }

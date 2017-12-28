@@ -211,9 +211,10 @@ public class AccountServiceImpl implements AccountService {
                 if (accountMapper.updateBalanceOrBp(newAccountInfo) <= 0) {
                     throw new RuntimeException("增加余额失败");
                 }
-            } else {
-                return new BaseResult<>(BaseConstant.FAILED, "记录账户明细失败");
             }
+        } catch (Exception e){
+            logger.error("支付异常", e);
+            throw new RuntimeException(e);
         } finally {
             accountMapper.unlockAccount(custId);
         }
