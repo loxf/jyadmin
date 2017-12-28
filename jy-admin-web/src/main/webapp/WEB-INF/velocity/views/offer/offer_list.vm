@@ -72,6 +72,7 @@
     <a class="layui-btn layui-btn-mini" lay-event="offOffer">下架</a>
     <a class="layui-btn layui-btn-mini copy-btn" data-offertype="{{d.offerType}}" data-offerid="{{d.offerId}}">复制链接</a>
     <a class="layui-btn layui-btn-mini" lay-event="sendWeiXin">微信推送</a>
+    <a class="layui-btn layui-btn-mini" lay-event="buyOffer">代购</a>
     {{#  } }}
     {{#  } }}
 </script>

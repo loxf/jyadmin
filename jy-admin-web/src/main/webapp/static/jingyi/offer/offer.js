@@ -150,6 +150,8 @@ table.on('tool(userDataTable)', function (obj) { //注：tool是工具条事件�
         onOffer(data, layEvent, obj);
     } else if (layEvent === 'offOffer') {// 下架
         offOffer(data, layEvent, obj);
+    } else if (layEvent === 'buyOffer') {// 管理员代购
+        buyOffer(data, layEvent, obj);
     }
 });
 
@@ -204,6 +206,19 @@ function editOffer(data, layEvent, obj) {
         ,id: layEvent //防止重复弹出
         ,area: ['1000px', '600px']
         ,content: 'toEditOffer.html?offerId=' + data.offerId
+        ,maxmin:true
+        ,shade: 0.3
+    });
+}
+
+// 代购商品
+function buyOffer(data, layEvent, obj) {
+    var buyLayer = layer.open({
+        type: 2
+        //,offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+        ,id: layEvent //防止重复弹出
+        ,area: ['800px', '600px']
+        ,content: 'toBuyOffer.html?offerId=' + data.offerId
         ,maxmin:true
         ,shade: 0.3
     });

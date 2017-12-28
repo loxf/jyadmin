@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -97,6 +98,28 @@ public class OfferController extends BaseControl<OfferDto> {
             }
         } else {
             model.addAttribute("errorMsg", "商品不存在或已上架");
+            return "main/error";
+        }
+    }
+
+    @RequestMapping("/toBuyOffer")
+    public String toBuyOffer(String offerId, Model model){
+        // 获取商品
+        OfferDto offerDto = offerService.queryOffer(offerId).getData();
+        if(offerDto!=null && offerDto.getStatus()==1) {
+            model.addAttribute("offer", offerDto);
+            String buyPrivi = offerDto.getBuyPrivi();
+            if (StringUtils.isNotBlank(buyPrivi)) {
+                JSONObject buyJson = JSONObject.parseObject(buyPrivi);
+                if(buyJson.size()>0) {
+                    model.addAttribute("buyJson", buyJson);
+                    return "main/offer/buyOffer";
+                }
+            }
+            model.addAttribute("errorMsg", "不能直接购买此商品");
+            return "main/error";
+        } else {
+            model.addAttribute("errorMsg", "商品不存在或已下架");
             return "main/error";
         }
     }

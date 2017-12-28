@@ -65,7 +65,7 @@ public class CustTokenRefreshJob extends JOB {
                             wxUserToken.setRefresh_token(userAccessToken.getRefresh_token());
                             wxUserTokenMapper.updateByPrimaryKey(wxUserToken);
                         } else {
-                            wxUserToken.setExpires_in((Integer.valueOf(userAccessToken.getExpires_in()) * 1000 + System.currentTimeMillis()) + "");
+                            wxUserToken.setExpires_in((3600 * 1000 + System.currentTimeMillis()) + "");
                             wxUserTokenMapper.updateByPrimaryKey(wxUserToken);
                         }
                     }

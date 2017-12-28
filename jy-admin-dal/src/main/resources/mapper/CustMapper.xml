@@ -102,10 +102,10 @@
       and user_level = #{userLevel}
     </if>
     <if test="phone!=null and phone!=''">
-      and phone = #{phone}
+      and phone like CONCAT(#{phone},'%')
     </if>
     <if test="email!=null and email!=''">
-      and email = #{email}
+      and email like CONCAT(#{email},'%')
     </if>
     <if test="isChinese!=null and isChinese!=-1">
       and is_chinese = #{isChinese}

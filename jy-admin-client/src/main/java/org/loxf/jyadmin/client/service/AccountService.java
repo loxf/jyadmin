@@ -37,6 +37,17 @@ public interface AccountService {
     BaseResult<JSONObject> queryBasicInfo(String custId);
 
     /**
+     * 管理员支付--不用密码，只是用于记录消费信息
+     * @param custId
+     * @param money
+     * @param bp
+     * @param orderId
+     * @param detailName
+     * @return
+     */
+    BaseResult<Boolean> payByAdmin(String custId, BigDecimal money, BigDecimal bp, String orderId, String detailName);
+
+    /**
      * 减款
      * @param custId
      * @param password

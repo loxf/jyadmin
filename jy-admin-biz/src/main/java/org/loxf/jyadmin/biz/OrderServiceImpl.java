@@ -95,7 +95,7 @@ public class OrderServiceImpl implements OrderService {
             if (orderInfoUpload.getPayType().equals("微信支付")) {
                 order.setPayType(1);
             } else {
-                order.setPayType(2);
+                order.setPayType(3);
             }
             if (orderInfoUpload.getOrderType().equalsIgnoreCase("vip")) {
                 // VIP
