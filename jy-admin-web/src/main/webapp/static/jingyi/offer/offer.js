@@ -61,7 +61,7 @@ table.render({ //其它参数在此省略
         {
             field: 'commission',
             title: '特殊分成',
-            width: 100 ,
+            width: 120,
             templet : '#commissionTpl'
         },
         {

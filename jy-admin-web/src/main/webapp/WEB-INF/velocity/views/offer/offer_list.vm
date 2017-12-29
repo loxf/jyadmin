@@ -141,13 +141,23 @@
     {{#  var json = eval("("+d.metaData+")");}}
     {{# if(json.COMMISSION){ }}
     {{#  var result = "";
-    result += (json.COMMISSION.NONE?" 普通：" + json.COMMISSION.NONE:"");
-    result += (json.COMMISSION.VIP?" VIP：" + json.COMMISSION.VIP:"");
-    result += (json.COMMISSION.SVIP?" SVIP：" + json.COMMISSION.SVIP:"");
-    result += (json.COMMISSION.AGENT?" 代理商：" + json.COMMISSION.AGENT:"");
-    result += (json.COMMISSION.PARTNER?" 合伙人：" + json.COMMISSION.PARTNER:"");
-    result += (json.COMMISSION.COMPANY?" 分公司：" + json.COMMISSION.COMPANY:"");}}
-    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ result }}', 'TEXT')"><i class="layui-icon">&#xe60e;</i>查看</a>
+    result += (json.COMMISSION.FIRST_NONE?" 普通：" + json.COMMISSION.FIRST_NONE:"");
+    result += (json.COMMISSION.FIRST_VIP?" VIP：" + json.COMMISSION.FIRST_VIP:"");
+    result += (json.COMMISSION.FIRST_SVIP?" SVIP：" + json.COMMISSION.FIRST_SVIP:"");
+    result += "<br>";
+    result += (json.COMMISSION.FIRST_AGENT?" 代理商：" + json.COMMISSION.FIRST_AGENT:"");
+    result += (json.COMMISSION.FIRST_PARTNER?" 合伙人：" + json.COMMISSION.FIRST_PARTNER:"");
+    result += (json.COMMISSION.FIRST_COMPANY?" 分公司：" + json.COMMISSION.FIRST_COMPANY:"");}}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ result }}', 'TEXT')">一级</a>
+    {{#  var result2 = "";
+    result2 += (json.COMMISSION.SECOND_NONE?" 普通：" + json.COMMISSION.SECOND_NONE:"");
+    result2 += (json.COMMISSION.SECOND_VIP?" VIP：" + json.COMMISSION.SECOND_VIP:"");
+    result2 += (json.COMMISSION.SECOND_SVIP?" SVIP：" + json.COMMISSION.SECOND_SVIP:"");
+    result2 += "<br>";
+    result2 += (json.COMMISSION.SECOND_AGENT?" 代理商：" + json.COMMISSION.SECOND_AGENT:"");
+    result2 += (json.COMMISSION.SECOND_PARTNER?" 合伙人：" + json.COMMISSION.SECOND_PARTNER:"");
+    result2 += (json.COMMISSION.SECOND_COMPANY?" 分公司：" + json.COMMISSION.SECOND_COMPANY:"");}}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ result2 }}', 'TEXT')">二级</a>
     {{#  } else { }}
     无
     {{# } }}

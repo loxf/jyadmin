@@ -99,7 +99,7 @@ public class CustController extends BaseControl<CustDto> {
 
     @RequestMapping("/delCust")
     @ResponseBody
-    public BaseResult queryChildList(String custId){
+    public BaseResult delCust(String custId){
         return custService.delCust(custId);
     }
 }

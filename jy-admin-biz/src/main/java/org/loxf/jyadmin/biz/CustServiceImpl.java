@@ -452,6 +452,7 @@ public class CustServiceImpl implements CustService {
         // 获取客户信息
         Cust cust = custMapper.selectByCustId(custId);
         updateRecommendChildNbr(cust.getRecommend(), 2);
+        accountMapper.deleteByCustId(custId);
         return new BaseResult(custMapper.deleteCust(custId));
     }
 
