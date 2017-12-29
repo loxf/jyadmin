@@ -210,6 +210,7 @@ function showObj(objId, type) {
             dataType:"json",
             success: function(data) {
                 if(data.code == 1){
+                    var userName = data.data.userName;
                     var bank = data.data.bank;
                     var bankNo = data.data.bankNo;
                     var zhName = data.data.zhName;
@@ -219,6 +220,7 @@ function showObj(objId, type) {
                         ,id: "showOjb" //防止重复弹出
                         ,title : '客户银行卡信息'
                         ,content: '<div style="padding: 15px ">'
+                        + '<div><label class="layui-input-inline">持卡人：</label><label class="layui-input-inline">' + userName + '</label></div>'
                         + '<div><label class="layui-input-inline">银行：</label><label class="layui-input-inline">' + bank + '</label></div>'
                         + '<div><label class="layui-input-inline">账号：</label><label class="layui-input-inline">' + bankNo + '</label></div>'
                         + '<div><label class="layui-input-inline">支行：</label><label class="layui-input-inline">' + zhName + '</label></div>'
