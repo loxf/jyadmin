@@ -94,30 +94,57 @@
         </div>
     </div>
     <div class="layui-form-item commissionDiv" style="display: none">
-        <label class="layui-form-label">分成比例</label>
+        <label class="layui-form-label">一级分成</label>
         <div class="layui-input-inline" style="width: 100px;">
-        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_NONE" placeholder="普通"
-               autocomplete="off" class="layui-input" lay-verify="commissionRate" />
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_FIRST_NONE" placeholder="普通"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate" />
         </div>
         <div class="layui-input-inline" style="width: 100px;">
-        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_VIP" placeholder="VIP"
-               autocomplete="off" class="layui-input" lay-verify="commissionRate">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_FIRST_VIP" placeholder="VIP"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate">
         </div>
         <div class="layui-input-inline" style="width: 100px;">
-        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_SVIP" placeholder="SVIP"
-               autocomplete="off" class="layui-input" lay-verify="commissionRate">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_FIRST_SVIP" placeholder="SVIP"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate">
         </div>
         <div class="layui-input-inline" style="width: 100px;">
-        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_AGENT" placeholder="代理商"
-               autocomplete="off" class="layui-input" lay-verify="commissionRate">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_FIRST_AGENT" placeholder="代理商"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate">
         </div>
         <div class="layui-input-inline" style="width: 100px;">
-        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_PARTNER" placeholder="合伙人"
-               autocomplete="off" class="layui-input" lay-verify="commissionRate">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_FIRST_PARTNER" placeholder="合伙人"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate">
         </div>
         <div class="layui-input-inline" style="width: 100px;">
-        <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_COMPANY" placeholder="分公司"
-               autocomplete="off" class="layui-input" lay-verify="commissionRate">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_FIRST_COMPANY" placeholder="分公司"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate">
+        </div>
+    </div>
+    <div class="layui-form-item commissionDiv" style="display: none">
+        <label class="layui-form-label">二级分成</label>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_SECOND_NONE" placeholder="普通"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate" />
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_SECOND_VIP" placeholder="VIP"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_SECOND_SVIP" placeholder="SVIP"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_SECOND_AGENT" placeholder="代理商"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_SECOND_PARTNER" placeholder="合伙人"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="number" min="0" max="100"  style="width: 80px" name="COMMISSION_SECOND_COMPANY" placeholder="分公司"
+                   autocomplete="off" class="layui-input" lay-verify="commissionRate">
         </div>
     </div>
 
@@ -248,23 +275,42 @@
 
         if(data.field.COMMISSION){
             var commissionJson = {};
-            if(data.field.COMMISSION_NONE){
-                commissionJson.NONE = data.field.COMMISSION_NONE;
+            if(data.field.COMMISSION_FIRST_NONE){
+                commissionJson.FIRST_NONE = data.field.COMMISSION_FIRST_NONE;
             }
-            if(data.field.COMMISSION_VIP){
-                commissionJson.VIP = data.field.COMMISSION_VIP;
+            if(data.field.COMMISSION_FIRST_VIP){
+                commissionJson.FIRST_VIP = data.field.COMMISSION_FIRST_VIP;
             }
-            if(data.field.COMMISSION_SVIP){
-                commissionJson.SVIP = data.field.COMMISSION_SVIP;
+            if(data.field.COMMISSION_FIRST_SVIP){
+                commissionJson.FIRST_SVIP = data.field.COMMISSION_FIRST_SVIP;
             }
-            if(data.field.COMMISSION_AGENT){
-                commissionJson.AGENT = data.field.COMMISSION_AGENT;
+            if(data.field.COMMISSION_FIRST_AGENT){
+                commissionJson.FIRST_AGENT = data.field.COMMISSION_FIRST_AGENT;
             }
-            if(data.field.COMMISSION_PARTNER){
-                commissionJson.PARTNER = data.field.COMMISSION_PARTNER;
+            if(data.field.COMMISSION_FIRST_PARTNER){
+                commissionJson.FIRST_PARTNER = data.field.COMMISSION_FIRST_PARTNER;
             }
-            if(data.field.COMMISSION_COMPANY){
-                commissionJson.COMPANY = data.field.COMMISSION_COMPANY;
+            if(data.field.COMMISSION_FIRST_COMPANY){
+                commissionJson.FIRST_COMPANY = data.field.COMMISSION_FIRST_COMPANY;
+            }
+
+            if(data.field.COMMISSION_SECOND_NONE){
+                commissionJson.SECOND_NONE = data.field.COMMISSION_SECOND_NONE;
+            }
+            if(data.field.COMMISSION_SECOND_VIP){
+                commissionJson.SECOND_VIP = data.field.COMMISSION_SECOND_VIP;
+            }
+            if(data.field.COMMISSION_SECOND_SVIP){
+                commissionJson.SECOND_SVIP = data.field.COMMISSION_SECOND_SVIP;
+            }
+            if(data.field.COMMISSION_SECOND_AGENT){
+                commissionJson.SECOND_AGENT = data.field.COMMISSION_SECOND_AGENT;
+            }
+            if(data.field.COMMISSION_SECOND_PARTNER){
+                commissionJson.SECOND_PARTNER = data.field.COMMISSION_SECOND_PARTNER;
+            }
+            if(data.field.COMMISSION_SECOND_COMPANY){
+                commissionJson.SECOND_COMPANY = data.field.COMMISSION_SECOND_COMPANY;
             }
             metaData.COMMISSION = commissionJson;
         }

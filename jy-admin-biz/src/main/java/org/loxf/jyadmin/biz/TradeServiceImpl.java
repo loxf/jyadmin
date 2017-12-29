@@ -173,12 +173,12 @@ public class TradeServiceImpl implements TradeService {
                             // {"MAXBP":"1","COMMISSION":{"NONE":"10","VIP":"12"}}
                             JSONObject commissionJson = metaDataJson.getJSONObject("COMMISSION");
                             if (StringUtils.isBlank(firstScholarships) && custFirst != null) {
-                                firstScholarships = queryOfferScholarshipRate(commissionJson, custFirst.getIsAgent(), custFirst.getUserLevel());
+                                firstScholarships = queryOfferScholarshipRate(true, commissionJson, custFirst.getIsAgent(), custFirst.getUserLevel());
                             } else {
                                 firstScholarships = "0";
                             }
                             if (StringUtils.isBlank(secondScholarships) && custSecond != null) {
-                                secondScholarships = queryOfferScholarshipRate(commissionJson, custSecond.getIsAgent(), custSecond.getUserLevel());
+                                secondScholarships = queryOfferScholarshipRate(false, commissionJson, custSecond.getIsAgent(), custSecond.getUserLevel());
                             } else {
                                 secondScholarships = "0";
                             }
@@ -241,12 +241,13 @@ public class TradeServiceImpl implements TradeService {
         tradeMapper.updateByOrderId(orderId, status, msg);
     }
 
-    private String queryOfferScholarshipRate(JSONObject commissionJson, int agentLv, String userLevel){
+    private String queryOfferScholarshipRate(boolean isFirst, JSONObject commissionJson, int agentLv, String userLevel){
+        String prefix = isFirst?"FIRST":"SECOND";
         if(agentLv>0){
             String agentLevel = agentLv==1?"AGENT": (agentLv==2?"PARTNER":"COMPANY");
-            return commissionJson.getString(agentLevel);
+            return commissionJson.getString(prefix + "_" + agentLevel);
         } else {
-            return commissionJson.getString(userLevel);
+            return commissionJson.getString(prefix + "_" + userLevel);
         }
     }
 
