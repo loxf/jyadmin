@@ -19,7 +19,7 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, order_id, cust_id, (select real_name from tb_cust b where b.cust_id = a.cust_id) as cust_name,  balance, fact_balance, cmms_amt,
+    id, order_id, cust_id, (select nick_name from tb_cust b where b.cust_id = a.cust_id) as cust_name,  balance, fact_balance, cmms_amt,
     `type`, obj_id, status, remark, `lock`, created_at, updated_at
   </sql>
   <select id="count" resultType="java.lang.Integer">
