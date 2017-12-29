@@ -87,6 +87,19 @@
       #{userName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 1, now(), now())
   </insert>
 
+  <insert id="insertList" parameterType="java.util.List">
+    insert into tb_cust_bank (id, card_id, cust_id, bank, bank_code,
+    bank_no, province, city, zh_name,
+    user_name, phone, status,
+    created_at, updated_at)
+    values
+     <foreach collection="list" item="item" separator=",">
+     (null, #{item.cardId}, #{item.custId,jdbcType=VARCHAR}, #{item.bank,jdbcType=VARCHAR}, #{item.bankCode,jdbcType=VARCHAR},
+    #{item.bankNo,jdbcType=VARCHAR}, #{item.province,jdbcType=VARCHAR}, #{item.city,jdbcType=VARCHAR}, #{item.zhName,jdbcType=VARCHAR},
+    #{item.userName,jdbcType=VARCHAR}, #{item.phone,jdbcType=VARCHAR}, #{item.status}, #{item.createdAt}, now())
+     </foreach>
+  </insert>
+
   <update id="update" parameterType="org.loxf.jyadmin.dal.po.CustBank" >
     update tb_cust_bank
     <set >

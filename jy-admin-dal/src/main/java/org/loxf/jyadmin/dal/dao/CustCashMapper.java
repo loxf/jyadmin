@@ -10,6 +10,8 @@ public interface CustCashMapper {
 
     int insert(CustCash record);
 
+    int insertList(List<CustCash> list);
+
     int update(@Param("orderId") String orderId, @Param("status") Integer status, @Param("remark") String remark);
 
     List<CustCash> pager(CustCash custCash);

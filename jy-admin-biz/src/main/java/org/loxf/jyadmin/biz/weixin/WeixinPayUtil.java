@@ -27,7 +27,7 @@ public class WeixinPayUtil {
     private static Logger logger = LoggerFactory.getLogger(WeixinPayUtil.class);
 
     public static void main(String[] args) throws Exception {
-        System.out.println(payForBank("CASH000002", "6214831202576416", "罗洪佳", "1001",100));
+        logger.info(payForBank("CASH000002", "6214831202576416", "罗洪佳", "1001",100));
     }
 
     /**
@@ -97,7 +97,7 @@ public class WeixinPayUtil {
 
         try {
             Map<String, String> resp = wxpay.orderQuery(data);
-            System.out.println(resp);
+            logger.info(JSON.toJSONString(resp));
         } catch (Exception e) {
             logger.error("获取微信订单失败", e);
         }
@@ -124,7 +124,7 @@ public class WeixinPayUtil {
         while (true) {
             String resultStr = HttpsUtil.handlePostWithSSL(BaseConstant.WEIXIN_PAY_OPENID, queryXML,
                     null, WeixinPayConfig.queryWeixinSSL());
-            System.out.println(resultStr);
+            logger.info("提现到微信-{}", resultStr);
             Map<String, String> resultMap = WXPayUtil.xmlToMap(resultStr);
             if (resultMap.get("return_code").equals("FAIL")) {
                 logger.error("付款到微信失败：" + resultMap.get("return_msg"));
@@ -184,7 +184,7 @@ public class WeixinPayUtil {
         while (true) {
             String resultStr = HttpsUtil.handlePostWithSSL(BaseConstant.WEIXIN_PAY_BANK, queryXml,
                     null, WeixinPayConfig.queryWeixinSSL());
-            System.out.println(resultStr);
+            logger.info("提现到银行卡-{}", resultStr);
             Map<String, String> resultMap = WXPayUtil.xmlToMap(resultStr);
             if (resultMap.get("return_code").equals("FAIL")) {
                 logger.error("付款到银行异常：" + resultMap.get("return_msg"));
@@ -229,12 +229,11 @@ public class WeixinPayUtil {
         String xml = WXPayUtil.generateSignedXml(reqData, config.getKey());
         String resultStr = HttpsUtil.handlePostWithSSL(BaseConstant.WEIXIN_RSA_API, xml,
                 null, WeixinPayConfig.queryWeixinSSL());
-        System.out.println(resultStr);
+        logger.info("微信RSA：" + resultStr);
         Map<String, String> resultMap = WXPayUtil.xmlToMap(resultStr);
         if (resultMap.get("return_code").equals("SUCCESS")) {
             if (resultMap.get("result_code").equals("SUCCESS")) {
                 if (resultMap.get("mch_id").equals(config.getMchID())) {
-                    System.out.println(resultMap.get("pub_key"));
                     return new BaseResult<>(resultMap.get("pub_key"));
                 } else {
                     return new BaseResult<>(BaseConstant.FAILED, "商户ID不一致");

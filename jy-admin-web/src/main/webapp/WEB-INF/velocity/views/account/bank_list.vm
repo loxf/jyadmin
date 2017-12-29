@@ -16,7 +16,7 @@
         </div>
         <div class="layui-inline layui-col-lg3">
             <div class="layui-input-inline" >
-                <input type="text" name="bankNo" placeholder="银行卡卡号" class="layui-input">
+                <input type="text" name="bankno" placeholder="银行卡卡号" class="layui-input">
             </div>
         </div>
         <div class="layui-inline layui-col-lg2">

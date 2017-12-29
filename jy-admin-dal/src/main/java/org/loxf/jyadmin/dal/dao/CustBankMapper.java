@@ -1,6 +1,5 @@
 package org.loxf.jyadmin.dal.dao;
 
-import org.apache.ibatis.annotations.Param;
 import org.loxf.jyadmin.dal.po.CustBank;
 
 import java.util.List;
@@ -14,6 +13,8 @@ public interface CustBankMapper {
     List<CustBank> pager(CustBank record);
 
     int insert(CustBank record);
+
+    int insertList(List<CustBank> list);
 
     int update(CustBank record);
 

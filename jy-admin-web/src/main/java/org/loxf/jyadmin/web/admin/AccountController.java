@@ -120,7 +120,7 @@ public class AccountController extends BaseControl {
     @RequestMapping("/pendingCustCash")
     @ResponseBody
     public BaseResult pendingCustCash(String orderId, Integer status, String remark) {
-        return custCashService.pendingCustCashRecord(orderId, status, remark);
+        return custCashService.pendingCustCashRecord(orderId, status, StringUtils.isNotBlank(remark)?remark:"管理员打款");
     }
 
     @RequestMapping("/queryCompanyIncomeList")

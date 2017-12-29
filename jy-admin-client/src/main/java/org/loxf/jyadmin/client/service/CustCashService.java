@@ -3,10 +3,16 @@ package org.loxf.jyadmin.client.service;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.client.dto.CustCashDto;
+import org.loxf.jyadmin.client.tmp.CustCashUpload;
 
 import java.util.List;
 
 public interface CustCashService {
+    /**
+     * @param custCashUploads 提现记录
+     * @return
+     */
+    BaseResult initCustCash(List<CustCashUpload> custCashUploads);
     /**
      * @param custCashDto 获取提现记录
      * @return

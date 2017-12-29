@@ -136,9 +136,9 @@ public class SendWeixinMsgUtil {
     public static void sendVipExpNotice( String openid, String nickname, String userLevel, String expDate){
         String url = "";
         if(userLevel.equals("VIP")){
-            url = "https://www.jingyizaixian.com/confirmOrder?type=VIP&id=OFFER001";
+            url = BaseConstant.BE_VIP_URL;
         } else if(userLevel.equals("SVIP")){
-            url = "https://www.jingyizaixian.com/confirmOrder?type=VIP&id=OFFER002";
+            url = BaseConstant.BE_SVIP_URL;
         }
         Map data = new HashMap();
         data.put("first", WeixinSender.createWXKeyWord("亲爱的" + nickname +"，您的" + userLevel + "即将到期", null));

@@ -89,6 +89,8 @@ public class BaseConstant {
     public static String JYZX_INDEX_URL =  "https://www.jingyizaixian.com";
     // 奖学金页面
     public static String JYZX_ACCOUNT_URL =  "https://www.jingyizaixian.com/myAccount";
+    // 申请代理商
+    public static String JYZX_BE_AGENT_URL = "https://www.jingyizaixian.com/beTheAgent";
     // APP主页推广二维码地址
     public static String JYZX_INDEX_RECOMMEND_URL =  "https://www.jingyizaixian.com?recommend=%s";
     // 套餐详情
@@ -97,6 +99,10 @@ public class BaseConstant {
     public static String ACTIVE_DETAIL_URL =  "https://www.jingyizaixian.com/activityDetail?id=%s";
     // 课程详情
     public static String CLASS_DETAIL_URL =  "https://www.jingyizaixian.com/lessonDetail?id=%s";
+    // 升级VIP
+    public static String BE_VIP_URL = "https://www.jingyizaixian.com/confirmOrder?type=VIP&id=OFFER001&otherId=OFFER002";
+    // 升级SVIP
+    public static String BE_SVIP_URL = "https://www.jingyizaixian.com/confirmOrder?type=VIP&id=OFFER002";
 
     // 微信菜单
     // 创建

@@ -84,6 +84,20 @@
        #{cmmsAmt,jdbcType=DECIMAL}, #{type,jdbcType=INTEGER}, #{objId,jdbcType=VARCHAR}, 1, 0,  #{remark}, now(), now() )
   </insert>
 
+  <insert id="insertList" parameterType="java.util.List" >
+    insert into tb_cust_cash (id, order_id, cust_id, balance, fact_balance, cmms_amt,
+    `type`, obj_id, status, `lock`, remark,
+    created_at, updated_at)
+    values
+    <foreach collection="list" item="item" separator=",">
+    (null, #{item.orderId,jdbcType=VARCHAR}, #{item.custId,jdbcType=VARCHAR},
+      #{item.balance,jdbcType=DECIMAL}, #{item.factBalance,jdbcType=DECIMAL},
+    #{item.cmmsAmt,jdbcType=DECIMAL}, #{item.type,jdbcType=INTEGER}, #{item.objId,jdbcType=VARCHAR}, #{item.status}, 0,
+      #{item.remark}, #{item.createdAt}, now() )
+    </foreach>
+  </insert>
+
+
   <update id="update" >
     update tb_cust_cash
     <set >

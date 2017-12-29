@@ -4,21 +4,20 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
+import org.loxf.jyadmin.base.bean.Pager;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.exception.BizException;
+import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.util.MD5;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.biz.weixin.WeixinPayUtil;
-import org.loxf.jyadmin.client.dto.ConfigDto;
-import org.loxf.jyadmin.client.dto.CustBankDto;
-import org.loxf.jyadmin.client.dto.CustCashDto;
-import org.loxf.jyadmin.client.dto.CustDto;
-import org.loxf.jyadmin.client.service.AccountService;
-import org.loxf.jyadmin.client.service.CustBankService;
-import org.loxf.jyadmin.client.service.CustCashService;
-import org.loxf.jyadmin.client.service.CustService;
+import org.loxf.jyadmin.client.dto.*;
+import org.loxf.jyadmin.client.service.*;
+import org.loxf.jyadmin.client.tmp.CustCashUpload;
+import org.loxf.jyadmin.dal.dao.CustBankMapper;
 import org.loxf.jyadmin.dal.dao.CustCashMapper;
+import org.loxf.jyadmin.dal.po.CustBank;
 import org.loxf.jyadmin.dal.po.CustCash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +29,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service("custCashService")
 public class CustCashServiceImpl implements CustCashService {
@@ -43,8 +44,92 @@ public class CustCashServiceImpl implements CustCashService {
     private CustService custService;
     @Autowired
     private CustBankService custBankService;
+    @Autowired
+    private CustBankMapper custBankMapper;
+    @Autowired
+    private ProvinceAndCityService provinceAndCityService;
     @Value("#{configProperties['SERVER.IP']}")
     private String SERVER_IP;
+
+    @Override
+    @Transactional
+    public BaseResult initCustCash(List<CustCashUpload> custCashUploads) {
+        if(CollectionUtils.isNotEmpty(custCashUploads)) {
+            List<CustCash> custCashes = new ArrayList<>();
+            List<CustBank> custBanks = new ArrayList<>();
+            Map<String, String> bankCardMap = new HashMap<>();
+            for(CustCashUpload custCashUpload : custCashUploads){
+                CustCash custCash = new CustCash();
+                String phone = custCashUpload.getPhone();
+                CustDto custDto = custService.queryCust(1, phone).getData();
+                if(custDto==null){
+                    continue;
+                }
+                custCash.setCustId(custDto.getCustId());
+                if(custCashUpload.getType().equals("提现到微信")){
+                    custCash.setType(1);
+                    custCash.setObjId(custDto.getOpenid());
+                } else {
+                    custCash.setType(2);
+                    String bankNo = custCashUpload.getBankno().replaceAll(" ", "");
+                    if(bankCardMap.containsKey(bankNo)){
+                        // 存在此卡
+                        String cardId = bankCardMap.get(bankNo);
+                        custCash.setObjId(cardId);
+                    } else {
+                        String cardId = IdGenerator.generate("CARD");
+                        custCash.setObjId(cardId);
+                        bankCardMap.put(bankNo, cardId);
+                        // 新增银行卡
+                        CustBank custBank = new CustBank();
+                        custBank.setCardId(cardId);
+                        custBank.setBank(custCashUpload.getBank());
+                        if (custCashUpload.getBank().equals("中国工商银行")) {
+                            custBank.setBankCode("1002");
+                        } else if (custCashUpload.getBank().equals("中国建设银行")) {
+                            custBank.setBankCode("1003");
+                        } else {
+                            custBank.setBankCode("-1");
+                        }
+                        custBank.setBankNo(bankNo);
+                        custBank.setPhone(phone);
+                        custBank.setStatus(1);//绑定
+                        custBank.setUserName(custCashUpload.getUsername());
+                        ProvinceDto provinceDto = new ProvinceDto();
+                        provinceDto.setProvince(custCashUpload.getProvince());
+                        List<ProvinceDto> provinceDtoList = provinceAndCityService.queryProvince(provinceDto).getData();
+                        if(CollectionUtils.isNotEmpty(provinceDtoList)) {
+                            custBank.setProvince(provinceDtoList.get(0).getProvinceid());
+                        }
+                        CityDto cityDto = new CityDto();
+                        cityDto.setCity(custCashUpload.getCity());
+                        List<CityDto> cityDtos = provinceAndCityService.queryCity(cityDto).getData();
+                        if(CollectionUtils.isNotEmpty(cityDtos)) {
+                            custBank.setCity(cityDtos.get(0).getCityid());
+                        }
+                        custBank.setZhName(custCashUpload.getZhname());
+                        custBank.setCustId(custDto.getCustId());
+                        custBank.setCreatedAt(DateUtils.toDate(custCashUpload.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+                        custBanks.add(custBank);
+                    }
+                }
+                custCash.setBalance(new BigDecimal(custCashUpload.getAmount()));
+                custCash.setCmmsAmt(new BigDecimal(custCashUpload.getCmms()));
+                custCash.setFactBalance(new BigDecimal(custCashUpload.getAmount()));
+                custCash.setOrderId(IdGenerator.generate("CASH"));
+                custCash.setStatus(3);// 以前的数据统一设置为已支付
+                custCash.setCreatedAt(DateUtils.toDate(custCashUpload.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
+                custCashes.add(custCash);
+            }
+            if(CollectionUtils.isNotEmpty(custBanks)){
+                custBankMapper.insertList(custBanks);
+            }
+            if(CollectionUtils.isNotEmpty(custCashes)){
+                custCashMapper.insertList(custCashes);
+            }
+        }
+        return new BaseResult();
+    }
 
     @Override
     public PageResult<CustCashDto> queryCustCash(CustCashDto custCashDto) {
@@ -70,6 +155,7 @@ public class CustCashServiceImpl implements CustCashService {
     }
 
     @Override
+    @Transactional
     public BaseResult<Boolean> addCustCashRecord(CustCashDto custCashDto, String password, String sign) {
         if (custCashDto == null) {
             return new BaseResult<>(BaseConstant.FAILED, "参数为空");
@@ -133,7 +219,6 @@ public class CustCashServiceImpl implements CustCashService {
         }
     }
 
-    @Transactional
     public BaseResult<Boolean> dealTaskCash(CustCashDto custCashDto, String password) {
         // 扣减余额
         BaseResult<Boolean> reduce = accountService.reduce(custCashDto.getCustId(),
@@ -158,7 +243,7 @@ public class CustCashServiceImpl implements CustCashService {
         if (orderId == null || status == null) {
             return new BaseResult<>(BaseConstant.FAILED, "参数为空");
         }
-        if (status != 3 && status != -3) {
+        if (status != 3 && status!=-3) {
             return new BaseResult<>(BaseConstant.FAILED, "审核状态不正确");
         }
         CustCash custCash = custCashMapper.selectById(orderId);
@@ -207,7 +292,7 @@ public class CustCashServiceImpl implements CustCashService {
             } catch (Exception e) {
                 logger.error("提现失败", e);
                 if(e instanceof BizException){
-                    remark = ((BizException) e).getCode() + ((BizException) e).getName();
+                    remark = ((BizException) e).getCode() + ":" + ((BizException) e).getName();
                 } else {
                     remark = e.getMessage();
                 }

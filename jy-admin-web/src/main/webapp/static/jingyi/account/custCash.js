@@ -42,8 +42,9 @@ table.render({ //其它参数在此省略
         },
         {
             field: 'objId',
-            title: '银行卡/微信ID',
-            width: 240
+            title: '银行卡/微信',
+            width: 120,
+            templet : '#objTpl'
         },
         {
             field: 'status',
@@ -90,7 +91,7 @@ table.on('tool(userDataTable)', function (obj) { //注：tool是工具条事件�
     var data = obj.data; //获得当前行数据
     var layEvent = obj.event; //获得 lay-event 对应的值
 
-    if(data.status==1) {
+    if(data.status==-9) {
         if (layEvent === 'passPending') { // 已打款
             passPending(data, layEvent, obj);
         } else if (layEvent === 'notpassPending') {// 拒绝打款
@@ -120,7 +121,7 @@ function notpassPending(data, layEvent, obj) {
                 type: "POST",
                 url:"pendingCustCash.html",
                 data : {
-                    id : data.id,
+                    orderId : data.orderId,
                     remark : $("#J_remark").val(),
                     status : -3
                 },
@@ -130,9 +131,7 @@ function notpassPending(data, layEvent, obj) {
                         time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
                     }, function(){
                         if(data.code == 1){
-                            obj.update({
-                                status : -3
-                            });
+                            searchList();
                         }
                         layer.close(index);
                     });
@@ -150,7 +149,7 @@ function passPending(data, layEvent, obj) {
             type: "POST",
             url:"pendingCustCash.html",
             data : {
-                id : data.id,
+                orderId : data.orderId,
                 status : 3
             },
             dataType:"json",
@@ -159,9 +158,7 @@ function passPending(data, layEvent, obj) {
                     time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
                 }, function(){
                     if(data.code == 1){
-                        obj.update({
-                            status : 3
-                        });
+                        searchList();
                     }
                     layer.close(index);
                 });
@@ -170,6 +167,76 @@ function passPending(data, layEvent, obj) {
     });
 }
 
+function showObj(objId, type) {
+    if(type=='WX'){
+        // 查看微信客户
+        $.ajax({
+            type: "POST",
+            url: contextPath + "/admin/cust/custInfo.html",
+            data : {
+                custId : objId
+            },
+            dataType:"json",
+            success: function(data) {
+                if(data.code == 1){
+                    var openid = data.data.openid;
+                    layer.open({
+                        type: 1
+                        ,offset: '200px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                        ,id: "showOjb" //防止重复弹出
+                        ,title : '微信客户信息'
+                        ,content: '<div style="padding: 15px">'
+                        + '<div><label class="layui-input-inline">微信OPENID：</label><label class="layui-input-inline">' + openid + '</label></div>'
+                        + '</div>'
+                        ,btn: '关闭'
+                        ,yes: function(index, layero){
+                            layer.closeAll();
+                        }
+                        ,btnAlign: 'c' //按钮居中
+                        ,shade: 0.3
+                    });
+                } else {
+                    layer.msg(data.msg);
+                }
+            }
+        });
+    } else if(type=='CARD'){
+        $.ajax({
+            type: "POST",
+            url: contextPath + "/admin/cust/custBankCard.html",
+            data : {
+                cardId : objId
+            },
+            dataType:"json",
+            success: function(data) {
+                if(data.code == 1){
+                    var bank = data.data.bank;
+                    var bankNo = data.data.bankNo;
+                    var zhName = data.data.zhName;
+                    layer.open({
+                        type: 1
+                        ,offset: '200px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                        ,id: "showOjb" //防止重复弹出
+                        ,title : '客户银行卡信息'
+                        ,content: '<div style="padding: 15px ">'
+                        + '<div><label class="layui-input-inline">银行：</label><label class="layui-input-inline">' + bank + '</label></div>'
+                        + '<div><label class="layui-input-inline">账号：</label><label class="layui-input-inline">' + bankNo + '</label></div>'
+                        + '<div><label class="layui-input-inline">支行：</label><label class="layui-input-inline">' + zhName + '</label></div>'
+                        + '</div>'
+                        ,btn: '关闭'
+                        ,yes: function(index, layero){
+                            layer.closeAll();
+                        }
+                        ,btnAlign: 'c' //按钮居中
+                        ,shade: 0.3
+                    });
+                } else {
+                    layer.msg(data.msg);
+                }
+            }
+        });
+    }
+}
 function searchList(){
     $("#searchList").click();
 }

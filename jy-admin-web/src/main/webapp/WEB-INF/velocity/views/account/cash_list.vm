@@ -22,7 +22,7 @@
                 <option value="1">待打款</option>
                 <option value="3">已打款</option>
                 <option value="-3">拒绝打款</option>
-                <option value="-9">系统异常</option>
+                <option value="-9">提现异常</option>
             </select>
         </div>
     </div>
@@ -47,7 +47,7 @@
     <table id="dataTable" lay-filter="userDataTable"></table>
 </div>
 <script type="text/html" id="barTable">
-    {{#  if(d.status===1 && d.type==2){ }}
+    {{#  if(d.status===-9){ }}
     <a class="layui-btn layui-btn-mini" lay-event="passPending">已打款</a>
     <a class="layui-btn layui-btn-mini" lay-event="notpassPending">拒绝打款</a>
     {{#  } }}
@@ -69,6 +69,18 @@
     已打款
     {{#  } else if(d.status===-3){ }}
     拒绝打款
+    {{#  } else if(d.status===-9){ }}
+    提现异常
+    {{#  } else { }}
+    未知
+    {{#  } }}
+</script>
+
+<script type="text/html" id="objTpl">
+    {{#  if(d.type===1){ }}
+    <a class="layui-btn layui-btn-mini" onclick="showObj('{{ d.objId }}', 'WX')">微信客户</a>
+    {{#  } else if(d.type===2){ }}
+    <a class="layui-btn layui-btn-mini" onclick="showObj('{{ d.objId }}', 'CARD')">银行卡</a>
     {{#  } else { }}
     未知
     {{#  } }}

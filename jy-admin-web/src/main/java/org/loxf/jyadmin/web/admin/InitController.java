@@ -6,6 +6,7 @@ import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.ExcelImportUtil;
 import org.loxf.jyadmin.client.dto.AdminDto;
 import org.loxf.jyadmin.client.service.*;
+import org.loxf.jyadmin.client.tmp.CustCashUpload;
 import org.loxf.jyadmin.client.tmp.CustInfoUpload;
 import org.loxf.jyadmin.client.tmp.IncomeUpload;
 import org.loxf.jyadmin.client.tmp.OrderInfoUpload;
@@ -34,6 +35,8 @@ public class InitController {
     private OrderService orderService;
     @Autowired
     private CompanyIncomeService companyIncomeService;
+    @Autowired
+    private CustCashService custCashService;
 
     @RequestMapping("/index")
     public String toIndex(Model model, HttpServletRequest request) {
@@ -107,9 +110,16 @@ public class InitController {
 
     @RequestMapping("/takeCashInit")
     @ResponseBody
-    public String takeCashInit(HttpServletRequest request,
+    public BaseResult takeCashInit(HttpServletRequest request,
                                @RequestParam(value = "file", required = false) MultipartFile file) {
-        return "";
+        // 提现初始化
+        try {
+            List<CustCashUpload> list = ExcelImportUtil.parseUploadDataToList(file.getInputStream(), file.getOriginalFilename(), CustCashUpload.class);
+            return custCashService.initCustCash(list);
+        } catch (Exception e) {
+            logger.error("上传失败", e);
+            return new BaseResult(BaseConstant.FAILED, e.getMessage());
+        }
     }
 
 }

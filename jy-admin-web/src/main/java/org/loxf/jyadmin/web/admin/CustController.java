@@ -7,7 +7,9 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.JedisUtil;
+import org.loxf.jyadmin.client.dto.CustBankDto;
 import org.loxf.jyadmin.client.dto.CustDto;
+import org.loxf.jyadmin.client.service.CustBankService;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.client.service.VipInfoService;
 import org.slf4j.Logger;
@@ -25,6 +27,8 @@ public class CustController extends BaseControl<CustDto> {
     @Autowired
     private CustService custService;
     @Autowired
+    private CustBankService custBankService;
+    @Autowired
     private VipInfoService vipInfoService;
     @Autowired
     private JedisUtil jedisUtil;
@@ -32,6 +36,18 @@ public class CustController extends BaseControl<CustDto> {
     @RequestMapping("/index")
     public String index(){
         return "cust/cust_list";
+    }
+
+    @RequestMapping("/custInfo")
+    @ResponseBody
+    public BaseResult<CustDto> queryCust(String custId){
+        return custService.queryCustByCustId(custId);
+    }
+
+    @RequestMapping("/custBankCard")
+    @ResponseBody
+    public BaseResult<CustBankDto> queryCustBankCard(String cardId){
+        return custBankService.queryBank(cardId);
     }
 
     @RequestMapping("/list")
