@@ -275,7 +275,8 @@ public class CustCashServiceImpl implements CustCashService {
                 if (custCashDto.getType() == 1) {
                     // 微信提现
                     remark = WeixinPayUtil.payForWeixin(custDto.getOpenid(), custCashDto.getOrderId(),
-                            custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue(), SERVER_IP);
+                            custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue(),
+                            StringUtils.isBlank(SERVER_IP)?"118.31.18.166":SERVER_IP);
                 } else {
                     // 银行卡提现
                     BaseResult<CustBankDto> bankDtoBaseResult = custBankService.queryBank(custCashDto.getObjId());
