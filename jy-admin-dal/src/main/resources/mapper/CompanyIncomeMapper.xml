@@ -23,7 +23,7 @@
     from tb_company_income
     where 1=1
     <include refid="WHERE_SQL"/>
-    order by id
+    order by id desc
     <if test="pager!=null">
       limit #{pager.start}, #{pager.size}
     </if>
@@ -48,6 +48,12 @@
     </if>
     <if test="source!=null and source!=''">
       and source = #{source}
+    </if>
+    <if test="startDate!=null and startDate!=''">
+      and created_at >= #{startDate}
+    </if>
+    <if test="endDate!=null and endDate!='' ">
+      and created_at &lt; date_add(#{endDate}, INTERVAL 1 DAY)
     </if>
   </sql>
 

@@ -12,9 +12,9 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">联系电话</label>
+        <label class="layui-form-label">联系方式</label>
         <div class="layui-input-block">
-            <input type="text" name="phone" value="$!{agent.phone}" autocomplete="off" placeholder="请输入代理商联系电话（可不同于绑定号码）"
+            <input type="text" name="phone" value="$!{agent.phone}" autocomplete="off" placeholder="请输入代理商联系电话/邮箱（可不同于绑定信息）"
                    class="layui-input">
         </div>
     </div>

@@ -119,14 +119,14 @@ public class PartnerController extends BaseControl<AgentInfoDto> {
         }
         // 执行修改逻辑
         BaseResult baseResult = agentInfoService.updateAgent(agentInfoDto);
-        if(baseResult.getCode()==BaseConstant.SUCCESS) {
+        /*if(baseResult.getCode()==BaseConstant.SUCCESS) {
             if (StringUtils.isNotBlank(agentInfoDto.getRealName())) {
                 CustDto custDto = new CustDto();
                 custDto.setRealName(agentInfoDto.getRealName());
                 custDto.setCustId(agentInfoDto.getCustId());
                 custService.updateCust(custDto);
             }
-        }
+        }*/
         return baseResult;
     }
 
