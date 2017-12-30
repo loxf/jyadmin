@@ -38,7 +38,7 @@ table.render({ //其它参数在此省略
         {
             field: 'detailName',
             title: '明细内容',
-            width: 300
+            width: 450
         },
         {
             field: 'amount',

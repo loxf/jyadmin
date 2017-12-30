@@ -235,7 +235,7 @@ public class TradeServiceImpl implements TradeService {
                 }
             }
             // 计算公司收入
-            companyIncomeMapper.insert(createCompanyIncome(cust.getCustId(), userName, detailName,
+            companyIncomeMapper.insert(createCompanyIncome(cust.getCustId(), userName, detailName + ":" + order.getOrderName(),
                     companyAmount, scholarship, (custFirst == null ? null : custFirst.getCustId()), orderId, order.getOrderType()));
         }
         tradeMapper.updateByOrderId(orderId, status, msg);
