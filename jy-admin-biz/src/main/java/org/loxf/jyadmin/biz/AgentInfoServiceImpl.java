@@ -7,6 +7,7 @@ import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.client.dto.AgentInfoDto;
 import org.loxf.jyadmin.client.service.AgentInfoService;
+import org.loxf.jyadmin.client.service.ProvinceAndCityService;
 import org.loxf.jyadmin.dal.dao.AgentInfoMapper;
 import org.loxf.jyadmin.dal.po.AgentInfo;
 import org.springframework.beans.BeanUtils;
@@ -21,6 +22,8 @@ import java.util.List;
 public class AgentInfoServiceImpl implements AgentInfoService {
     @Autowired
     private AgentInfoMapper agentInfoMapper;
+    @Autowired
+    private ProvinceAndCityService provinceAndCityService;
 
     @Override
     public PageResult<AgentInfoDto> pager(AgentInfoDto agentInfoDto) {
@@ -37,6 +40,9 @@ public class AgentInfoServiceImpl implements AgentInfoService {
                 for (AgentInfo agent : agentInfos) {
                     AgentInfoDto tmp = new AgentInfoDto();
                     BeanUtils.copyProperties(agent, tmp);
+                    tmp.setProvince(provinceAndCityService.query("P", tmp.getProvince()).getData());
+                    tmp.setCity(provinceAndCityService.query("C", tmp.getCity()).getData());
+                    provinceAndCityService.query("C", tmp.getCity());
                     list.add(tmp);
                 }
             }
