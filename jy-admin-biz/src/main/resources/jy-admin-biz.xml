@@ -35,6 +35,7 @@
         <property name="properties">
             <map>
                 <entry key="IMAGE.SERVER.PATH" value="${IMAGE.SERVER.PATH}"></entry>
+                <entry key="SERVER.IP" value="${SERVER.IP}"></entry>
             </map>
         </property>
     </bean>

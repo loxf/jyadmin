@@ -3,10 +3,8 @@ package org.loxf.jyadmin.web.admin;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
-import org.loxf.jyadmin.client.service.ConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +23,6 @@ import java.util.UUID;
 @RequestMapping("/upload")
 public class FileUploadController {
     private static Logger logger = LoggerFactory.getLogger(FileUploadController.class);
-
-    @Autowired
-    private ConfigService configService;
 
     @Value("#{configProperties['IMAGE.SERVER.PATH']}")
     private String IMG_SERVER_PATH;

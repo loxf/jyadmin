@@ -104,7 +104,7 @@ public class TradeServiceImpl implements TradeService {
             custFirst = custMapper.selectByCustId(recommend);
             if (custFirst != null) {
                 if (StringUtils.isNotBlank(custFirst.getRecommend())) {
-                    custSecond = custMapper.selectByCustId(recommend);
+                    custSecond = custMapper.selectByCustId(custFirst.getRecommend());
                 }
             }
         }

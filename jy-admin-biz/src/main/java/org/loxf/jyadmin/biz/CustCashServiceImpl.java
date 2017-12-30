@@ -68,7 +68,7 @@ public class CustCashServiceImpl implements CustCashService {
                 custCash.setCustId(custDto.getCustId());
                 if(custCashUpload.getType().equals("提现到微信")){
                     custCash.setType(1);
-                    custCash.setObjId(custDto.getOpenid());
+                    custCash.setObjId(custDto.getCustId());
                 } else {
                     custCash.setType(2);
                     String bankNo = custCashUpload.getBankno().replaceAll(" ", "");
