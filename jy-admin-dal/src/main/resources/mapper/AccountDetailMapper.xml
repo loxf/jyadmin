@@ -16,9 +16,9 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, (select real_name from tb_cust b where b.cust_id = a.cust_id) as cust_name,
+    id, cust_id, (select nick_name from tb_cust b where b.cust_id = a.cust_id) as cust_name,
     order_id, detail_name, `type`, balance, change_balance, source_cust_id,
-    (select real_name from tb_cust bb where bb.cust_id = a.source_cust_id) as source_cust_name, created_at, updated_at
+    (select nick_name from tb_cust bb where bb.cust_id = a.source_cust_id) as source_cust_name, created_at, updated_at
   </sql>
 
   <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String">
