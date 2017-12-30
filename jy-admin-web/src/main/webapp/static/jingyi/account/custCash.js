@@ -35,6 +35,16 @@ table.render({ //其它参数在此省略
             width: 120
         },
         {
+            field: 'factBalance',
+            title: '实际到账(元)',
+            width: 120
+        },
+        {
+            field: 'cmmsAmt',
+            title: '手续费(元)',
+            width: 100
+        },
+        {
             field: 'type',
             title: '提现类型',
             width: 120,
@@ -55,7 +65,7 @@ table.render({ //其它参数在此省略
         {
             field: 'remark',
             title: '备注',
-            width: 240
+            width: 220
         },
         {
             field: 'createdAt',
