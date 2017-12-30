@@ -94,7 +94,7 @@ public class ShareServiceImpl implements ShareService {
                     } else if (type.equals("PAGE")) {
                         bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_BP, "BP_SHARE_OTHER", "5").getConfigValue();
                     } else {
-                        bp = "1";
+                        bp = "5";
                     }
                     // 新增积分
                     BaseResult baseResult = accountService.increase(custId, null, new BigDecimal(bp), null, "分享" + detailName, null);

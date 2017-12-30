@@ -101,6 +101,10 @@ public class OrderServiceImpl implements OrderService {
                 // VIP
                 order.setOrderType(3);
                 order.setObjId("OFFER001");
+            } else if (orderInfoUpload.getOrderType().equalsIgnoreCase("svip")) {
+                // VIP
+                order.setOrderType(3);
+                order.setObjId("OFFER002");
             } else if (orderInfoUpload.getOrderType().equalsIgnoreCase("activity")) {
                 // 活动
                 order.setOrderType(5);

@@ -113,9 +113,9 @@ public class CustCashServiceImpl implements CustCashService {
                         custBanks.add(custBank);
                     }
                 }
-                custCash.setBalance(new BigDecimal(custCashUpload.getAmount()));
                 custCash.setCmmsAmt(new BigDecimal(custCashUpload.getCmms()));
                 custCash.setFactBalance(new BigDecimal(custCashUpload.getAmount()));
+                custCash.setBalance(custCash.getFactBalance().add(custCash.getCmmsAmt()));
                 custCash.setOrderId(IdGenerator.generate("CASH"));
                 custCash.setStatus(3);// 以前的数据统一设置为已支付
                 custCash.setCreatedAt(DateUtils.toDate(custCashUpload.getCreatedAt(), "yyyy-MM-dd HH:mm:ss"));
