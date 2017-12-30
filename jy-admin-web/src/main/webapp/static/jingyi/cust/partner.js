@@ -84,7 +84,7 @@ table.render({ //其它参数在此省略
         {
             field: 'custId',
             title: '操作',
-            width: 250,
+            width: 330,
             align: 'center',
             toolbar: '#barTable'
         }
@@ -116,7 +116,8 @@ table.on('tool(userDataTable)', function (obj) { //注：tool是工具条事件�
         editAgent(data, layEvent, obj);
     } else if (layEvent === 'cancelAgent') {// 取消代理
         cancelAgent(data, layEvent, obj);
-
+    } else if (layEvent === 'editInfo') {// 编辑信息
+        editInfo(data, layEvent, obj);
     }
 });
 
@@ -250,6 +251,18 @@ function editAgent(data, layEvent, obj){
             });
         }
         ,btnAlign: 'c' //按钮居中
+        ,shade: 0.3
+    });
+}
+
+function editInfo(data, layEvent, obj){
+    var editLayer = layer.open({
+        type: 2
+        //,offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+        ,id: layEvent //防止重复弹出
+        ,area: ['1000px', '600px']
+        ,content: 'toEditAgent.html?custId=' + data.custId
+        ,maxmin:true
         ,shade: 0.3
     });
 }

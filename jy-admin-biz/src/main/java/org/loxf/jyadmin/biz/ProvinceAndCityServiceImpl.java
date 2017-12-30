@@ -39,12 +39,19 @@ public class ProvinceAndCityServiceImpl implements ProvinceAndCityService {
             return new BaseResult(BaseConstant.FAILED, "获取地域的类型不正确");
         }
         if(type.equals("P")){
-            return new BaseResult(provinceMapper.selectProvince(id).getProvince());
+            Province province = provinceMapper.selectProvince(id);
+            if(province!=null)
+                return new BaseResult(province.getProvince());
         } else if(type.equals("C")){
-            return new BaseResult(cityMapper.selectCity(id).getCity());
+            City city = cityMapper.selectCity(id);
+            if(city!=null)
+                return new BaseResult(city.getCity());
         } else {
-            return new BaseResult(areaMapper.selectArea(id).getArea());
+            Area area = areaMapper.selectArea(id);
+            if(area!=null)
+                return new BaseResult(area.getArea());
         }
+        return new BaseResult<>();
     }
 
     @Override

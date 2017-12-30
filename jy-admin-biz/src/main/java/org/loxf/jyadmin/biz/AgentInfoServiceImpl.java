@@ -40,9 +40,12 @@ public class AgentInfoServiceImpl implements AgentInfoService {
                 for (AgentInfo agent : agentInfos) {
                     AgentInfoDto tmp = new AgentInfoDto();
                     BeanUtils.copyProperties(agent, tmp);
-                    tmp.setProvince(provinceAndCityService.query("P", tmp.getProvince()).getData());
-                    tmp.setCity(provinceAndCityService.query("C", tmp.getCity()).getData());
-                    provinceAndCityService.query("C", tmp.getCity());
+                    if(StringUtils.isNotBlank(tmp.getProvince())) {
+                        tmp.setProvince(provinceAndCityService.query("P", tmp.getProvince()).getData());
+                    }
+                    if(StringUtils.isNotBlank(tmp.getCity())) {
+                        tmp.setCity(provinceAndCityService.query("C", tmp.getCity()).getData());
+                    }
                     list.add(tmp);
                 }
             }

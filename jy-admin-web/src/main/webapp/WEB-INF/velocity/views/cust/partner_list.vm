@@ -52,6 +52,7 @@
 <script type="text/html" id="barTable">
     <a class="layui-btn layui-btn-mini" lay-event="editVipNbr">赠送名额</a>
     <a class="layui-btn layui-btn-mini" lay-event="editAgent">修改身份</a>
+    <a class="layui-btn layui-btn-mini" lay-event="editInfo">修改信息</a>
     <a class="layui-btn layui-btn-mini" lay-event="cancelAgent">取消代理</a>
 </script>
 

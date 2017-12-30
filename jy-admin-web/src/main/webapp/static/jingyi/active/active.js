@@ -62,6 +62,12 @@ table.render({ //其它参数在此省略
             templet : '#maxBpTpl'
         },
         {
+            field: 'studentsNbr',
+            title: '活动名单',
+            width: 90,
+            templet : '#studentsTpl'
+        },
+        {
             field: 'indexShow',
             title: '首页轮播',
             width: 100,
@@ -105,12 +111,6 @@ table.render({ //其它参数在此省略
             title: '限定人数',
             width: 90,
             templet : '#metaDataTpl'
-        },
-        {
-            field: 'studentsNbr',
-            title: '参加人员',
-            width: 90,
-            templet : '#studentsTpl'
         },
         {
             field: 'activeDesc',

@@ -7,10 +7,7 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.DateUtils;
-import org.loxf.jyadmin.client.dto.AgentInfoDto;
-import org.loxf.jyadmin.client.dto.ConfigDto;
-import org.loxf.jyadmin.client.dto.CustDto;
-import org.loxf.jyadmin.client.dto.ProvinceDto;
+import org.loxf.jyadmin.client.dto.*;
 import org.loxf.jyadmin.client.service.AgentInfoService;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.client.service.ProvinceAndCityService;
@@ -59,6 +56,21 @@ public class PartnerController extends BaseControl<AgentInfoDto> {
         model.addAttribute("provinceList", baseResult.getData());
         return "cust/partner_pend";
     }
+    @RequestMapping("/toEditAgent")
+    public String toEditAgent(Model model, String custId){
+        BaseResult<AgentInfoDto> baseResult = agentInfoService.queryAgent(custId);
+        model.addAttribute("agent", baseResult.getData());
+
+        BaseResult<List<ProvinceDto>> baseResultProvince = provinceAndCityService.queryProvince(null);
+        model.addAttribute("provinceList", baseResultProvince.getData());
+        if (StringUtils.isNotBlank(baseResult.getData().getProvince())) {
+            CityDto cityDto = new CityDto();
+            cityDto.setProvinceid(baseResult.getData().getProvince());
+            BaseResult<List<CityDto>> baseResultCity = provinceAndCityService.queryCity(cityDto);
+            model.addAttribute("cityList", baseResultCity.getData());
+        }
+        return "main/cust/editPartnerInfo";
+    }
 
     @RequestMapping("/pendList")
     @ResponseBody
@@ -97,6 +109,25 @@ public class PartnerController extends BaseControl<AgentInfoDto> {
             return agentInfoService.updateAgent(dto);
         }
         return agentBaseResult;
+    }
+
+    @RequestMapping("/modifyAgentInfo")
+    @ResponseBody
+    public BaseResult modifyAgentInfo(AgentInfoDto agentInfoDto){
+        if(StringUtils.isBlank(agentInfoDto.getCustId()) ){
+            return new BaseResult(BaseConstant.FAILED, "客户ID不能为空");
+        }
+        // 执行修改逻辑
+        BaseResult baseResult = agentInfoService.updateAgent(agentInfoDto);
+        if(baseResult.getCode()==BaseConstant.SUCCESS) {
+            if (StringUtils.isNotBlank(agentInfoDto.getRealName())) {
+                CustDto custDto = new CustDto();
+                custDto.setRealName(agentInfoDto.getRealName());
+                custDto.setCustId(agentInfoDto.getCustId());
+                custService.updateCust(custDto);
+            }
+        }
+        return baseResult;
     }
 
     @RequestMapping("/modifyAgentType")

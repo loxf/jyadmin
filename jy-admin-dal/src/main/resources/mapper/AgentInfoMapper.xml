@@ -92,6 +92,16 @@
     values (#{custId,jdbcType=VARCHAR}, 0, #{realName,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
       #{phone,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{type,jdbcType=INTEGER}, null, null, null, now(), now())
   </insert>
+
+  <insert id="insertList" parameterType="org.loxf.jyadmin.dal.po.AgentInfo" >
+    insert into tb_agent_info (cust_id, status, real_name, province, city, phone, email,
+    type, eff_date, exp_date, meta_data, created_at, updated_at)
+    values
+    <foreach collection="list" item="item" separator=",">
+    (#{item.custId,jdbcType=VARCHAR}, #{item.status}, #{item.realName,jdbcType=VARCHAR}, #{item.province,jdbcType=VARCHAR}, #{item.city,jdbcType=VARCHAR},
+    #{item.phone,jdbcType=VARCHAR},#{item.email,jdbcType=VARCHAR},#{item.type,jdbcType=INTEGER}, #{item.effDate}, #{item.expDate}, #{item.metaData}, #{item.createdAt}, now())
+    </foreach>
+  </insert>
   <update id="updateByCustId" parameterType="org.loxf.jyadmin.dal.po.AgentInfo">
     update tb_agent_info
     set
@@ -109,6 +119,18 @@
     </if>
     <if test="expDate!=null and expDate!=''">
       exp_date = #{expDate,jdbcType=VARCHAR},
+    </if>
+    <if test="realName!=null and realName!=''">
+      real_name = #{realName,jdbcType=VARCHAR},
+    </if>
+    <if test="phone!=null and phone!=''">
+      phone = #{phone,jdbcType=VARCHAR},
+    </if>
+    <if test="province!=null and province!=''">
+      province = #{province,jdbcType=VARCHAR},
+    </if>
+    <if test="city!=null and city!=''">
+      city = #{city,jdbcType=VARCHAR},
     </if>
     updated_at = now()
     where cust_id = #{custId,jdbcType=VARCHAR}

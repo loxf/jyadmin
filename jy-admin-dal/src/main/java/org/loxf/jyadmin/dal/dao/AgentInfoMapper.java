@@ -8,6 +8,8 @@ import java.util.List;
 public interface AgentInfoMapper {
     int insert(AgentInfo record);
 
+    int insertList(List<AgentInfo> record);
+
     int updateByCustId(AgentInfo record);
 
     AgentInfo selectByCustId(String custId);

@@ -75,17 +75,17 @@ public class CustServiceImpl implements CustService {
                     cust.setUserLevel("SVIP");
                     cust.setIsAgent(1);
                     vipInfoList.add(createVipInfo(custId, custInfoUpload.getUserLevel(), custInfoUpload.getVipDate(), now));
-                    agentInfoList.add(createAgentInfo(custId, 1, custInfoUpload.getVipDate(), now));
+                    agentInfoList.add(createAgentInfo(custId, 1, custInfoUpload.getPhone(), custInfoUpload.getVipDate(), now));
                 } else if (StringUtils.isNotBlank(custInfoUpload.getUserLevel()) && custInfoUpload.getUserLevel().equals("合伙人")) {
                     cust.setUserLevel("SVIP");
                     cust.setIsAgent(2);
                     vipInfoList.add(createVipInfo(custId, custInfoUpload.getUserLevel(), custInfoUpload.getVipDate(), now));
-                    agentInfoList.add(createAgentInfo(custId, 2, custInfoUpload.getVipDate(), now));
+                    agentInfoList.add(createAgentInfo(custId, 2, custInfoUpload.getPhone(), custInfoUpload.getVipDate(), now));
                 } else if (StringUtils.isNotBlank(custInfoUpload.getUserLevel()) && custInfoUpload.getUserLevel().equals("分公司")) {
                     cust.setUserLevel("SVIP");
                     cust.setIsAgent(3);
                     vipInfoList.add(createVipInfo(custId, custInfoUpload.getUserLevel(), custInfoUpload.getVipDate(), now));
-                    agentInfoList.add(createAgentInfo(custId, 3, custInfoUpload.getVipDate(), now));
+                    agentInfoList.add(createAgentInfo(custId, 3, custInfoUpload.getPhone(), custInfoUpload.getVipDate(), now));
                 }
                 cust.setRecommend(custInfoUpload.getRecommend());
                 cust.setIsChinese(1);
@@ -146,9 +146,7 @@ public class CustServiceImpl implements CustService {
             }
         }
         if (CollectionUtils.isNotEmpty(agentInfoList)) {
-            for (AgentInfo agentInfo : agentInfoList) {
-                agentInfoMapper.insert(agentInfo);
-            }
+            agentInfoMapper.insertList(agentInfoList);
         }
         if (CollectionUtils.isNotEmpty(vipInfoList)) {
             vipInfoMapper.insertList(vipInfoList);
@@ -166,7 +164,7 @@ public class CustServiceImpl implements CustService {
         return vipInfo;
     }
 
-    private AgentInfo createAgentInfo(String custId, Integer type, String effDate, Date now) {
+    private AgentInfo createAgentInfo(String custId, Integer type, String phone, String effDate, Date now) {
         AgentInfo agentInfo = new AgentInfo();
         agentInfo.setType(type);
         agentInfo.setEffDate(effDate);
@@ -174,6 +172,7 @@ public class CustServiceImpl implements CustService {
         agentInfo.setExpDate(DateUtils.formatHms(end));
         agentInfo.setCustId(custId);
         agentInfo.setStatus(1);
+        agentInfo.setPhone(phone);
         return agentInfo;
     }
 
