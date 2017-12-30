@@ -309,9 +309,10 @@
         }
         var metaData = {
             HOT: data.field.HOT,
-            MAXBP: data.field.MAXBP,
             TEACHER:teacher
         };
+        if(data.field.MAXBP)
+            metaData.MAXBP=data.field.MAXBP;
 
         var htmlId = saveHtml(data.field.htmlId);
         if(!htmlId){

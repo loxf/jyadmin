@@ -302,9 +302,10 @@
             buyPrivi.SVIP = data.field.buyPrivi_SVIP;
         }
         var metaData = {
-            HOT: data.field.HOT,
-            MAXBP: data.field.MAXBP
+            HOT: data.field.HOT
         };
+        if(data.field.MAXBP)
+            metaData.MAXBP=data.field.MAXBP;
 
         if(data.field.COMMISSION){
             var commissionJson = {};

@@ -210,10 +210,11 @@
         if(data.field.svipCheck && data.field.activePrivi_SVIP){
             activePrivi.SVIP = data.field.activePrivi_SVIP;
         }
-        var metaData = {
-            LIMIT: data.field.LIMIT,
-            MAXBP: data.field.MAXBP
-        };
+        var metaData = {};
+        if(data.field.LIMIT)
+            metaData.LIMIT=data.field.LIMIT;
+        if(data.field.MAXBP)
+            metaData.MAXBP=data.field.MAXBP;
         $.ajax({
             type: "POST",
             url:"editActive.html",
