@@ -240,6 +240,16 @@ public class CustServiceImpl implements CustService {
     }
 
     @Override
+    @Transactional
+    public BaseResult bindCust(CustDto custDto) {
+        int count = custMapper.existsByPhoneOrEmail(custDto.getIsChinese(), (custDto.getIsChinese()==1?custDto.getPhone():custDto.getEmail()));
+        if(count>0){
+            return new BaseResult(BaseConstant.FAILED, "当前" + (custDto.getIsChinese()==1?"手机":"邮箱") + "已被绑定，请更换。");
+        }
+        return updateCust(custDto);
+    }
+
+    @Override
     public BaseResult<CustDto> queryOldCust(String phone) {
         Cust cust = custMapper.selectOldCust(phone);
         if (cust == null) {

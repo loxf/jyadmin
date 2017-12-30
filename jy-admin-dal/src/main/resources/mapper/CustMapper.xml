@@ -72,6 +72,18 @@
     </if>
   </select>
 
+  <select id="existsByPhoneOrEmail" resultType="int" >
+    select count(1)
+    from tb_cust a
+    where is_deleted = 0 and is_chinese = #{isChinese}
+    <if test="isChinese==1">
+      and phone = #{phone}
+    </if>
+    <if test="isChinese==2">
+      and email = #{phone}
+    </if>
+  </select>
+
   <select id="pager" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Cust" >
     select
     <include refid="Base_Column_List" />

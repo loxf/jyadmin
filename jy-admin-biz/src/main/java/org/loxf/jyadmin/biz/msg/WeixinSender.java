@@ -21,7 +21,7 @@ public class WeixinSender implements ISender {
     public boolean send(Map params, String target) {
         String touser = (String)params.get("touser");
         if(StringUtils.isBlank(touser)||!touser.equals(target)){
-            logger.error("发送参数错误");
+            logger.error("发送参数错误：target={}, params={}", target, JSON.toJSONString(params));
             return false;
         }
         String accessToken = jedisUtil().get(BaseConstant.WX_ACCESS_TOKEN);
@@ -30,11 +30,11 @@ public class WeixinSender implements ISender {
                 String result = WeixinUtil.sendTemplateMsg(JSON.toJSONString(params), accessToken).getData();
                 JSONObject resultJson = JSON.parseObject(result);
                 if(resultJson.getIntValue("errcode")!=0){
-                    logger.error("发送微信消息失败：" + result);
+                    logger.error("发送微信消息失败：result={}, params=", result, JSON.toJSONString(params));
                     return false;
                 }
             } catch (Exception e) {
-                logger.error("发送微信消息失败", e);
+                logger.error("发送微信消息异常", e);
                 return false;
             }
             return true;

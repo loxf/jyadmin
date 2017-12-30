@@ -14,7 +14,7 @@ public interface CustService {
     BaseResult<String> addCust(CustDto custDto, UserAccessToken userAccessToken);
     PageResult<CustDto> pager(CustDto custDto);
     BaseResult<CustDto> queryCust(int type, String phoneOrEmail);
-
+    BaseResult bindCust(CustDto custDto);
     /**
      * 根据电话/邮箱获取老客户
      * @param phoneOrEmail

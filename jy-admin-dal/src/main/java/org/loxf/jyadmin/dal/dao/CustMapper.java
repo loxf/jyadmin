@@ -21,6 +21,8 @@ public interface CustMapper {
 
     Cust selectByPhoneOrEmail(@Param("isChinese") int isChinese, @Param("phone") String phone);
 
+    int existsByPhoneOrEmail(@Param("isChinese") int isChinese, @Param("phone") String phone);
+
     int count(Cust cust);
 
     List<Cust> pager(Cust cust);

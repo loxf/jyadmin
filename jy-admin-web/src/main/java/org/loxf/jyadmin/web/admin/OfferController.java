@@ -10,6 +10,7 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.bean.Pager;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.base.util.JedisUtil;
 import org.loxf.jyadmin.biz.util.SendWeixinMsgUtil;
 import org.loxf.jyadmin.client.dto.*;
 import org.loxf.jyadmin.client.service.*;
@@ -40,6 +41,8 @@ public class OfferController extends BaseControl<OfferDto> {
     private VideoConfigService videoConfigService;
     @Autowired
     private CustService custService;
+    @Autowired
+    private JedisUtil jedisUtil;
 
     @RequestMapping("/index")
     public String index(Model model){
@@ -217,16 +220,23 @@ public class OfferController extends BaseControl<OfferDto> {
     @RequestMapping("/sendWeiXin")
     @ResponseBody
     public BaseResult sendWeiXin(String offerId, String type, String offerName, String addr, String teachers){
-        CustDto custDto = new CustDto();
-        custDto.setPager(new Pager(1, 100000));
-        List<CustDto> custDtoList = custService.pager(custDto).getData();
-        if(CollectionUtils.isNotEmpty(custDtoList)){
-            String url = getUrl(offerId, type);
-            for(CustDto cust :custDtoList){
-                SendWeixinMsgUtil.sendClassOfferNotice(cust.getOpenid(), offerName, addr, teachers, url);
+        String key = "SEND_CLASS_NOTICE_" + offerId;
+        if(jedisUtil.setnx(key,"true", 300)>0) {
+            CustDto custDto = new CustDto();
+            custDto.setPager(new Pager(1, 100000));
+            List<CustDto> custDtoList = custService.pager(custDto).getData();
+            if (CollectionUtils.isNotEmpty(custDtoList)) {
+                String url = getUrl(offerId, type);
+                for (CustDto cust : custDtoList) {
+                    if (StringUtils.isNotBlank(cust.getOpenid())) {
+                        SendWeixinMsgUtil.sendClassOfferNotice(cust.getOpenid(), offerName, addr, teachers, url);
+                    }
+                }
             }
+            return new BaseResult();
+        } else {
+            return new BaseResult(BaseConstant.FAILED, "五分钟内，不能重复发送。");
         }
-        return new BaseResult();
     }
     private String getUrl(String offerId, String type){
         if(type.equals("ACTIVE")) {

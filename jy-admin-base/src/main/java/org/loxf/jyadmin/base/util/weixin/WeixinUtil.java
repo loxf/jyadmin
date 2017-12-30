@@ -123,7 +123,7 @@ public class WeixinUtil {
                 if(json.getIntValue("errcode")==0){
                     return result;
                 } else {
-                    logger.error("微信接口返回错误: {}", result);
+                    logger.error("微信接口返回错误: url= {}, result= {}", url, result);
                 }
             } else {
                 return result;
@@ -142,7 +142,7 @@ public class WeixinUtil {
                 if(json.getIntValue("errcode")==0){
                     return JSON.parseObject(result, clazz);
                 } else {
-                    logger.error("微信接口返回错误: {}", result);
+                    logger.error("微信接口返回错误: url= {}, result= {}", url, result);
                 }
             } else {
                 return JSON.parseObject(result, clazz);
