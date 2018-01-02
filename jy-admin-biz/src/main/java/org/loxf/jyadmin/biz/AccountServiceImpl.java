@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +47,9 @@ public class AccountServiceImpl implements AccountService {
     private VerifyCodeService verifyCodeService;
     @Autowired
     private CustMapper custMapper;
+    @Value("#{configProperties['JYZX.INDEX.URL']}")
+    private String JYZX_INDEX_URL;
+
 
     @Override
     public PageResult<JSONObject> queryBalanceList(CustDto custDto) {
@@ -204,7 +208,8 @@ public class AccountServiceImpl implements AccountService {
                 insertDetail = custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBp(), bp, detailName,
                         orderId, 1)) > 0;
                 Cust cust = custMapper.selectByCustId(custId);
-                SendWeixinMsgUtil.sendGetBpNotice(cust.getOpenid(), cust.getNickName(), detailName, bp.toPlainString(), newAccountInfo.getBp().toPlainString());
+                SendWeixinMsgUtil.sendGetBpNotice(cust.getOpenid(), cust.getNickName(), detailName,
+                        bp.toPlainString(), newAccountInfo.getBp().toPlainString(), JYZX_INDEX_URL );
             }
             newAccountInfo.setCustId(custId);
             if (insertDetail) {

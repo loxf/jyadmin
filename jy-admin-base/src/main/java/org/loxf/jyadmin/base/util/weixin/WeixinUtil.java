@@ -36,11 +36,11 @@ public class WeixinUtil {
         return (AccessToken)commonGet(String.format(BaseConstant.ACCESS_TOKEN_URL, appId, wxAppSecret), AccessToken.class);
     }
 
-    public static String getLoginUrl(String appId, String url, String code){
+    public static String getLoginUrl(String appId, String url, String code, String indexUrl){
         String redirectUrl = "";
         try {
             redirectUrl = String.format(BaseConstant.LOGIN_URL, URLEncoder.encode(url, "UTF-8"));
-            redirectUrl = URLEncoder.encode(redirectUrl, "UTF-8");
+            redirectUrl = URLEncoder.encode(indexUrl + redirectUrl, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             logger.error("Url decode failed." , e);
         }

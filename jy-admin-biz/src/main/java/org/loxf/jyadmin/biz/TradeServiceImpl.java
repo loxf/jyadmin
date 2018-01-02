@@ -20,6 +20,7 @@ import org.loxf.jyadmin.dal.po.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +56,8 @@ public class TradeServiceImpl implements TradeService {
     private CompanyIncomeMapper companyIncomeMapper;
     @Autowired
     private AgentInfoMapper agentInfoMapper;
+    @Value("#{configProperties['JYZX.INDEX.URL']}")
+    private String JYZX_INDEX_URL;
 
     @Override
     @Transactional
@@ -141,7 +144,7 @@ public class TradeServiceImpl implements TradeService {
                 // 处理VIP_INFO CUST_INFO
                 dealVip(order.getCustId(), vipType);
                 // 发送VIP通知
-                SendWeixinMsgUtil.sendBeVipNotice(cust.getOpenid(), cust.getNickName(), vipType);
+                SendWeixinMsgUtil.sendBeVipNotice(cust.getOpenid(), cust.getNickName(), vipType, JYZX_INDEX_URL);
             } else if (order.getOrderType() == 5) {
                 detailName += "参加活动";
                 // 增加活动名单信息
@@ -150,7 +153,7 @@ public class TradeServiceImpl implements TradeService {
                 // 发送活动报名成功消息
                 SendWeixinMsgUtil.sendActiveInNotice(cust.getOpenid(), cust.getNickName(), active.getActiveName(),
                         DateUtils.formatHms(active.getActiveStartTime()) + " ~ " + DateUtils.formatHms(active.getActiveEndTime()),
-                        activeCustList.getActiveTicketNo(), active.getAddr(), String.format(BaseConstant.ACTIVE_DETAIL_URL, active.getActiveId()));
+                        activeCustList.getActiveTicketNo(), active.getAddr(), String.format(JYZX_INDEX_URL + BaseConstant.ACTIVE_DETAIL_URL, active.getActiveId()));
                 if (custFirst != null) {
                     firstScholarships = queryScholarshipsRate(custFirst, "ACTIVE", 1);
                 }
@@ -162,9 +165,9 @@ public class TradeServiceImpl implements TradeService {
                 Offer offer = offerMapper.selectByOfferId(order.getObjId());
                 String url = "";
                 if (offer.getOfferType().equals("CLASS")) {
-                    url = String.format(BaseConstant.CLASS_DETAIL_URL, order.getObjId());
+                    url = String.format(JYZX_INDEX_URL + BaseConstant.CLASS_DETAIL_URL, order.getObjId());
                 } else if (offer.getOfferType().equals("OFFER")) {
-                    url = String.format(BaseConstant.OFFER_DETAIL_URL, order.getObjId());
+                    url = String.format(JYZX_INDEX_URL + BaseConstant.OFFER_DETAIL_URL, order.getObjId());
                     // 查询套餐是否有特殊分成
                     String metaData = offer.getMetaData();
                     if(StringUtils.isNotBlank(metaData)){
@@ -191,14 +194,15 @@ public class TradeServiceImpl implements TradeService {
                             String vipType = relOffer.getOfferId().equals("OFFER001") ? "VIP" : "SVIP";
                             dealVip(order.getCustId(), vipType);
                             // 发送VIP通知
-                            SendWeixinMsgUtil.sendBeVipNotice(cust.getOpenid(), cust.getNickName(), vipType);
+                            SendWeixinMsgUtil.sendBeVipNotice(cust.getOpenid(), cust.getNickName(), vipType, JYZX_INDEX_URL);
                         } else if(relOffer.getOfferType().equals("ACTIVE")){
                             Active active = activeMapper.selectByActiveId(relOffer.getOfferId());
                             ActiveCustList activeCustList = dealActive(order.getCustId(), active.getActiveId(), active.getActiveName(), orderId);
                             // 发送活动报名成功消息
                             SendWeixinMsgUtil.sendActiveInNotice(cust.getOpenid(), cust.getNickName(), relOffer.getOfferName(),
                                     DateUtils.formatHms(active.getActiveStartTime()) + " ~ " + DateUtils.formatHms(active.getActiveEndTime()),
-                                    activeCustList.getActiveTicketNo(), active.getAddr(), String.format(BaseConstant.ACTIVE_DETAIL_URL, active.getActiveId()));
+                                    activeCustList.getActiveTicketNo(), active.getAddr(), String.format(JYZX_INDEX_URL +
+                                            BaseConstant.ACTIVE_DETAIL_URL, active.getActiveId()));
                         }
                     }
                 }
@@ -222,7 +226,7 @@ public class TradeServiceImpl implements TradeService {
                 if(first.compareTo(BigDecimal.ZERO)>0) {
                     companyAmount = companyAmount.subtract(first);
                     scholarship = scholarship.add(first);
-                    SendWeixinMsgUtil.sendScholarshipMsg(custFirst.getOpenid(), first.toPlainString(), custFirst.getNickName());
+                    SendWeixinMsgUtil.sendScholarshipMsg(custFirst.getOpenid(), first.toPlainString(), custFirst.getNickName(), JYZX_INDEX_URL);
                 }
             }
             if (StringUtils.isNotBlank(secondScholarships) && custSecond != null && companyAmount.compareTo(BigDecimal.ZERO) > 0) {
@@ -231,7 +235,7 @@ public class TradeServiceImpl implements TradeService {
                 if(second.compareTo(BigDecimal.ZERO)>0) {
                     companyAmount = companyAmount.subtract(second);
                     scholarship = scholarship.add(second);
-                    SendWeixinMsgUtil.sendScholarshipMsg(custSecond.getOpenid(), second.toPlainString(), custSecond.getNickName());
+                    SendWeixinMsgUtil.sendScholarshipMsg(custSecond.getOpenid(), second.toPlainString(), custSecond.getNickName(), JYZX_INDEX_URL);
                 }
             }
             // 计算公司收入

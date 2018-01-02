@@ -390,9 +390,6 @@
             <properties>
                 <env>rd</env>
             </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
         <profile>
             <id>qa</id>
@@ -405,6 +402,9 @@
             <properties>
                 <env>online</env>
             </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
     </profiles>
 

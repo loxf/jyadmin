@@ -17,19 +17,8 @@ public class BaseConstant {
     public static String JY_CUST_ID = "JY_CUST_ID";
     public static String ADMIN_COOKIE_NAME = "JYADMIN_TOKEN";
     public static String WX_JS_TICKET = "WX_JS_TICKET";
-    // 登录地址
-    public static String LOGIN_URL = "https://www.jingyizaixian.com/api/loginByWx?targetUrl=%s";
     // 微信相关
     public static String WX_ACCESS_TOKEN = "WX_ACCESS_TOKEN";
-    // public static String WX_BODYPREFIX = "静怡雅学馆";
-    // public static String WX_APPSECRET = "8a51e801fcc89fc9aab671737560b4ed";
-    // public static String WX_APPID = "wxf45ae0ff3e1bd94e";
-    // public static String WX_MCHID = "1243841702";
-    // public static String WX_MCH_KEY = "198842500kaikaikaikaikaikaikaika";
-    // public static String WX_TOKEN = "jyzx2015weixin";
-    // public static String WX_EncodingAESKey = "OTHx0cgmgNyHHJFxyuKeVQz7Ovzntifve1k6HJUWE1P";
-    // 微信回调地址
-    public static String WX_PAY_CALLBACK = "https://www.jingyizaixian.com/api/weixin/payorder";
     // 微信证书
     public static String WEIXIN_APICLIENT_CERT = "/home/jingyiweb/weixin_cert/apiclient_cert.p12";
     // 微信RSA加密公钥
@@ -87,22 +76,26 @@ public class BaseConstant {
 
     // APP主页
     public static String JYZX_INDEX_URL =  "https://www.jingyizaixian.com";
+    // 登录地址
+    public static String LOGIN_URL = "/api/loginByWx?targetUrl=%s";
+    // 微信回调地址
+    public static String WX_PAY_CALLBACK = "/api/weixin/payorder";
     // 奖学金页面
-    public static String JYZX_ACCOUNT_URL =  "https://www.jingyizaixian.com/myAccount";
+    public static String JYZX_ACCOUNT_URL =  "/myAccount";
     // 申请代理商
-    public static String JYZX_BE_AGENT_URL = "https://www.jingyizaixian.com/beTheAgent";
+    public static String JYZX_BE_AGENT_URL = "/beTheAgent";
     // APP主页推广二维码地址
-    public static String JYZX_INDEX_RECOMMEND_URL =  "https://www.jingyizaixian.com?recommend=%s";
+    public static String JYZX_INDEX_RECOMMEND_URL =  "?recommend=%s";
     // 套餐详情
-    public static String OFFER_DETAIL_URL =  "https://www.jingyizaixian.com/packageDetail?id=%s";
+    public static String OFFER_DETAIL_URL =  "/packageDetail?id=%s";
     // 活动详情
-    public static String ACTIVE_DETAIL_URL =  "https://www.jingyizaixian.com/activityDetail?id=%s";
+    public static String ACTIVE_DETAIL_URL =  "/activityDetail?id=%s";
     // 课程详情
-    public static String CLASS_DETAIL_URL =  "https://www.jingyizaixian.com/lessonDetail?id=%s";
+    public static String CLASS_DETAIL_URL =  "/lessonDetail?id=%s";
     // 升级VIP
-    public static String BE_VIP_URL = "https://www.jingyizaixian.com/confirmOrder?type=VIP&id=OFFER001&otherId=OFFER002";
+    public static String BE_VIP_URL = "/confirmOrder?type=VIP&id=OFFER001&otherId=OFFER002";
     // 升级SVIP
-    public static String BE_SVIP_URL = "https://www.jingyizaixian.com/confirmOrder?type=VIP&id=OFFER002";
+    public static String BE_SVIP_URL = "/confirmOrder?type=VIP&id=OFFER002";
 
     // 微信菜单
     // 创建

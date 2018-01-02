@@ -18,6 +18,7 @@ import org.loxf.jyadmin.dal.dao.*;
 import org.loxf.jyadmin.dal.po.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,9 @@ public class CustServiceImpl implements CustService {
     private VipInfoMapper vipInfoMapper;
     @Autowired
     private AgentInfoMapper agentInfoMapper;
+    @Value("#{configProperties['JYZX.INDEX.URL']}")
+    private String JYZX_INDEX_URL;
+
 
     @Override
     @Transactional
@@ -207,7 +211,7 @@ public class CustServiceImpl implements CustService {
         account.setCustId(custId);
         accountMapper.insert(account);
         // 注册通知
-        SendWeixinMsgUtil.sendRegisterNotice(custDto.getOpenid(), custDto.getNickName());
+        SendWeixinMsgUtil.sendRegisterNotice(custDto.getOpenid(), custDto.getNickName(), JYZX_INDEX_URL);
         return new BaseResult<>(custId);
     }
 

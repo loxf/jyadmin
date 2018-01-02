@@ -36,6 +36,7 @@
             <map>
                 <entry key="IMAGE.SERVER.PATH" value="${IMAGE.SERVER.PATH}"></entry>
                 <entry key="SERVER.IP" value="${SERVER.IP}"></entry>
+                <entry key="JYZX.INDEX.URL" value="${JYZX.INDEX.URL}"></entry>
             </map>
         </property>
     </bean>

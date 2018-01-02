@@ -9,6 +9,7 @@ import org.loxf.jyadmin.dal.dao.VipInfoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,9 @@ public class DeadlineNoticeJob extends JOB {
     private VipInfoMapper vipInfoMapper;
     @Autowired
     private AgentInfoMapper agentInfoMapper;
-    @Autowired
-    private CustService custService;
+    @Value("#{configProperties['JYZX.INDEX.URL']}")
+    private String JYZX_INDEX_URL;
+
 
     /**
      * @param expireLockMSecd 锁失效时间
@@ -52,7 +54,7 @@ public class DeadlineNoticeJob extends JOB {
                 if (CollectionUtils.isNotEmpty(vipInfoList)) {
                     for (HashMap vipInfo : vipInfoList) {
                         SendWeixinMsgUtil.sendVipExpNotice((String)vipInfo.get("openid"), (String)vipInfo.get("nick_name"),
-                                (String)vipInfo.get("type") + "会员" , (String)vipInfo.get("exp_date"));
+                                (String)vipInfo.get("type") + "会员" , (String)vipInfo.get("exp_date"), JYZX_INDEX_URL);
                     }
                 }
                 // 获取失效代理
@@ -70,7 +72,7 @@ public class DeadlineNoticeJob extends JOB {
                         }
                         if(StringUtils.isNotBlank(typeStr)) {
                             SendWeixinMsgUtil.sendVipExpNotice((String) agentInfo.get("openid"), (String) agentInfo.get("nick_name"),
-                                    typeStr + "身份", (String) agentInfo.get("exp_date"));
+                                    typeStr + "身份", (String) agentInfo.get("exp_date"), JYZX_INDEX_URL);
                         }
                     }
                 }

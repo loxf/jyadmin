@@ -19,14 +19,14 @@ public class SendWeixinMsgUtil {
      * @param money
      * @param nickName
      */
-    public static void sendScholarshipMsg( String openid, String money,String nickName){
+    public static void sendScholarshipMsg( String openid, String money,String nickName, String JYZX_INDEX_URL){
         Map data = new HashMap();
         data.put("first", WeixinSender.createWXKeyWord("恭喜您，获得了一笔奖学金。", null));
         data.put("keyword1", WeixinSender.createWXKeyWord(money, "#FF3030"));
         data.put("keyword2", WeixinSender.createWXKeyWord(nickName, null));
         data.put("remark", WeixinSender.createWXKeyWord("可通过菜单“奖学金”进行余额查询，余额提现，清单明细查询等操作", null));
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(WxMsgTemplateConstant.JXJ,
-                openid, data, BaseConstant.JYZX_ACCOUNT_URL));
+                openid, data, JYZX_INDEX_URL + BaseConstant.JYZX_ACCOUNT_URL));
     }
     /**
      * 课程通知
@@ -51,14 +51,14 @@ public class SendWeixinMsgUtil {
      * 注册通知
      * @param openid
      */
-    public static void sendRegisterNotice( String openid, String nickname){
+    public static void sendRegisterNotice( String openid, String nickname, String JYZX_INDEX_URL){
         Map data = new HashMap();
         data.put("first", WeixinSender.createWXKeyWord("亲爱的会员，欢迎来到静怡雅学文化", null));
         data.put("keyword1", WeixinSender.createWXKeyWord(nickname, "#FF3030"));
         data.put("keyword2", WeixinSender.createWXKeyWord(DateUtils.formatHms(new Date()), null));
         data.put("remark", WeixinSender.createWXKeyWord("畅享优雅世界，邀请朋友一起学习可获奖学金。请尽快绑定手机/邮箱。", null));
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(WxMsgTemplateConstant.REGISTER,
-                openid, data, BaseConstant.JYZX_INDEX_URL));
+                openid, data, JYZX_INDEX_URL));
     }
     /**
      * 会员升级
@@ -66,14 +66,14 @@ public class SendWeixinMsgUtil {
      * @param nickname
      * @param userLevel
      */
-    public static void sendBeVipNotice( String openid, String nickname, String userLevel){
+    public static void sendBeVipNotice( String openid, String nickname, String userLevel, String JYZX_INDEX_URL){
         Map data = new HashMap();
         data.put("first", WeixinSender.createWXKeyWord("亲爱的" + nickname + "，您已经成功升级会员", null));
         data.put("keyword1", WeixinSender.createWXKeyWord(userLevel, "#FF3030"));
         data.put("keyword2", WeixinSender.createWXKeyWord("升级成功", null));
         data.put("remark", WeixinSender.createWXKeyWord("畅享名师干活，分享可得奖学金。快邀请您的朋友一起学习吧！", null));
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(WxMsgTemplateConstant.BE_VIP,
-                openid, data, BaseConstant.JYZX_INDEX_URL));
+                openid, data, JYZX_INDEX_URL));
     }
     /**
      * 积分到账通知
@@ -83,7 +83,7 @@ public class SendWeixinMsgUtil {
      * @param bp
      * @param bpBalance
      */
-    public static void sendGetBpNotice( String openid, String nickname, String detailName, String bp, String bpBalance){
+    public static void sendGetBpNotice( String openid, String nickname, String detailName, String bp, String bpBalance, String JYZX_INDEX_URL){
         Map data = new HashMap();
         data.put("first", WeixinSender.createWXKeyWord("亲爱的" + nickname + "，您的积分已经到账", null));
         data.put("keyword1", WeixinSender.createWXKeyWord(nickname, "#FF3030"));
@@ -93,7 +93,7 @@ public class SendWeixinMsgUtil {
         data.put("keyword5", WeixinSender.createWXKeyWord(bpBalance, null));
         data.put("remark", WeixinSender.createWXKeyWord("邀请好友，得积分；看视频，得积分；每日签到，同样得积分！", null));
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(WxMsgTemplateConstant.BP,
-                openid, data, BaseConstant.JYZX_INDEX_URL));
+                openid, data, JYZX_INDEX_URL));
     }
     /**
      * TODO 活动即将开始
@@ -117,14 +117,14 @@ public class SendWeixinMsgUtil {
      * @param nickname
      * @param contact
      */
-    public static void sendUserBindNotice( String openid, String nickname, String contact){
+    public static void sendUserBindNotice( String openid, String nickname, String contact, String JYZX_INDEX_URL){
         Map data = new HashMap();
         data.put("first", WeixinSender.createWXKeyWord("亲爱的会员，您已使用" + contact + "绑定", null));
         data.put("keyword1", WeixinSender.createWXKeyWord(nickname, "#FF3030"));
         data.put("keyword2", WeixinSender.createWXKeyWord(DateUtils.formatHms(new Date()), null));
         data.put("remark", WeixinSender.createWXKeyWord("若非本人操作，请联系班主任，谢谢。", null));
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(WxMsgTemplateConstant.BIND_USER,
-                openid, data, BaseConstant.JYZX_INDEX_URL));
+                openid, data, JYZX_INDEX_URL));
     }
     /**
      * 会员到期通知
@@ -133,12 +133,12 @@ public class SendWeixinMsgUtil {
      * @param userLevel
      * @param expDate
      */
-    public static void sendVipExpNotice( String openid, String nickname, String userLevel, String expDate){
+    public static void sendVipExpNotice( String openid, String nickname, String userLevel, String expDate, String JYZX_INDEX_URL){
         String url = "";
         if(userLevel.equals("VIP")){
-            url = BaseConstant.BE_VIP_URL;
+            url = JYZX_INDEX_URL + BaseConstant.BE_VIP_URL;
         } else if(userLevel.equals("SVIP")){
-            url = BaseConstant.BE_SVIP_URL;
+            url = JYZX_INDEX_URL + BaseConstant.BE_SVIP_URL;
         }
         Map data = new HashMap();
         data.put("first", WeixinSender.createWXKeyWord("亲爱的" + nickname +"，您的" + userLevel + "即将到期", null));

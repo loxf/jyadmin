@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +58,8 @@ public class OrderServiceImpl implements OrderService {
     private AccountDetailMapper accountDetailMapper;
     @Autowired
     private JedisUtil jedisUtil;
+    @Value("#{configProperties['JYZX.INDEX.URL']}")
+    private String JYZX_INDEX_URL;
 
     @Override
     @Transactional
@@ -193,7 +196,7 @@ public class OrderServiceImpl implements OrderService {
             try {
                 if (orderDto.getPayType() == 1) {
                     // 微信支付
-                    BaseResult<OrderDto> orderDtoBaseResult = WeixinPayUtil.createOrder(openid, ip, orderDto, jsonObject.toJSONString());
+                    BaseResult<OrderDto> orderDtoBaseResult = WeixinPayUtil.createOrder(openid, ip, orderDto, jsonObject.toJSONString(), JYZX_INDEX_URL);
                     if (orderDtoBaseResult.getCode() == BaseConstant.SUCCESS) {
                         if (orderMapper.insert(order) > 0) {
                             // 插入订单属性

@@ -39,7 +39,7 @@ public class WeixinPayUtil {
      * @param attach   JSON透传
      * @throws Exception
      */
-    public static BaseResult<OrderDto> createOrder(String openid, String ip, OrderDto orderDto, String attach) throws Exception {
+    public static BaseResult<OrderDto> createOrder(String openid, String ip, OrderDto orderDto, String attach, String indexUrl) throws Exception {
         WeixinPayConfig config = new WeixinPayConfig();
         WXPay wxpay = new WXPay(config);
 
@@ -52,7 +52,7 @@ public class WeixinPayUtil {
         data.put("fee_type", "CNY");
         data.put("total_fee", orderDto.getOrderMoney().multiply(new BigDecimal(100)).longValue() + "");
         data.put("spbill_create_ip", ip);
-        data.put("notify_url", BaseConstant.WX_PAY_CALLBACK);
+        data.put("notify_url", indexUrl + BaseConstant.WX_PAY_CALLBACK);
         data.put("trade_type", "JSAPI");  // JSAPI--公众号支付、NATIVE--原生扫码支付、APP--app支付，统一下单接口trade_type的传参可参考这里
         data.put("product_id", orderDto.getObjId());
         data.put("time_start", DateUtils.format(new Date(), "yyyyMMddHHmmss"));

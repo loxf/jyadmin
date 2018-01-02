@@ -17,6 +17,7 @@ import org.loxf.jyadmin.client.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,6 +44,9 @@ public class OfferController extends BaseControl<OfferDto> {
     private CustService custService;
     @Autowired
     private JedisUtil jedisUtil;
+    @Value("#{configProperties['JYZX.INDEX.URL']}")
+    private String JYZX_INDEX_URL;
+
 
     @RequestMapping("/index")
     public String index(Model model){
@@ -240,11 +244,11 @@ public class OfferController extends BaseControl<OfferDto> {
     }
     private String getUrl(String offerId, String type){
         if(type.equals("ACTIVE")) {
-            return String.format(BaseConstant.ACTIVE_DETAIL_URL, offerId);
+            return String.format(JYZX_INDEX_URL + BaseConstant.ACTIVE_DETAIL_URL, offerId);
         } else if(type.equals("OFFER")){
-            return String.format(BaseConstant.OFFER_DETAIL_URL, offerId);
+            return String.format(JYZX_INDEX_URL + BaseConstant.OFFER_DETAIL_URL, offerId);
         } else if(type.equals("CLASS")){
-            return String.format(BaseConstant.CLASS_DETAIL_URL, offerId);
+            return String.format(JYZX_INDEX_URL + BaseConstant.CLASS_DETAIL_URL, offerId);
         }
         return null;
     }
