@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.wxpay.sdk.WXPay;
 import com.github.wxpay.sdk.WXPayUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.ssl.SSLContexts;
 import org.bouncycastle.util.encoders.Base64;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
@@ -17,7 +18,11 @@ import org.loxf.jyadmin.client.dto.OrderDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.io.FileInputStream;
 import java.math.BigDecimal;
+import java.security.KeyStore;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,7 +32,34 @@ public class WeixinPayUtil {
     private static Logger logger = LoggerFactory.getLogger(WeixinPayUtil.class);
 
     public static void main(String[] args) throws Exception {
-        logger.info(payForBank("CASH000002", "6214831202576416", "罗洪佳", "1001",100));
+        Map<String, String> reqData = new HashMap<>();
+        reqData.put("mch_id", "1420280202");
+        reqData.put("nonce_str", WXPayUtil.generateNonceStr());
+        reqData.put("sign_type", "MD5");
+        String xml = WXPayUtil.generateSignedXml(reqData, "198842500JyzxOLkaikaikaikaikaika");
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        FileInputStream instream = new FileInputStream(new File("C:\\Users\\lenovo\\Desktop\\apiclient_cert.p12"));
+        keyStore.load(instream, "1420280202".toCharArray());
+        instream.close();
+        // Trust own CA and all self-signed certs
+        SSLContext sslContextWeixin = SSLContexts.custom()
+                .loadKeyMaterial(keyStore, "1420280202".toCharArray())
+                .build();
+        String resultStr = HttpsUtil.handlePostWithSSL(BaseConstant.WEIXIN_RSA_API, xml,
+                null, sslContextWeixin);
+        logger.info("微信RSA：" + resultStr);
+        Map<String, String> resultMap = WXPayUtil.xmlToMap(resultStr);
+        if (resultMap.get("return_code").equals("SUCCESS")) {
+            if (resultMap.get("result_code").equals("SUCCESS")) {
+                if (resultMap.get("mch_id").equals("1420280202")) {
+                    System.out.println(resultMap.get("pub_key"));
+                }
+            } else {
+                throw new BizException(resultMap.get("err_code_des"), resultMap.get("err_code"));
+            }
+        } else {
+            throw new BizException(resultMap.get("return_msg"));
+        }
     }
 
     /**

@@ -74,8 +74,6 @@ public class BaseConstant {
      */
     public static String WEIXIN_TEMPLATE_MSG = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s";
 
-    // APP主页
-    public static String JYZX_INDEX_URL =  "https://www.jingyizaixian.com";
     // 登录地址
     public static String LOGIN_URL = "/api/loginByWx?targetUrl=%s";
     // 微信回调地址
