@@ -44,7 +44,7 @@ public class SendSmsMsgUtil {
             if (sendSmsResponse.getCode() != null && sendSmsResponse.getCode().equals("OK")) {//请求成功
                 return true;
             }
-            logger.error("短信发送失败：" + sendSmsResponse.getMessage());
+            logger.error("短信发送失败：{}，原因：{}", phoneNumbers, sendSmsResponse.getMessage());
             return false;
         } catch (Exception e) {//请求失败这里会抛ClientException异常
             logger.error("短信发送异常:", e);

@@ -129,6 +129,9 @@
     <if test="catalogId!=null and catalogId!=''">
       catalog_id = #{catalogId,jdbcType=VARCHAR},
     </if>
+    <if test="catalogId=='-1'">
+      catalog_id = '',
+    </if>
     <if test="offerType!=null and offerType!=''">
       offer_type = #{offerType,jdbcType=VARCHAR},
     </if>

@@ -61,9 +61,9 @@ public class VideoController {
                 video_name = URLDecoder.decode(video_name, "UTF-8");
                 video_name = video_name.substring(0, video_name.lastIndexOf("."));
                 String result = cloudInit.videoUploadInit(video_name, client_ip, file_size, uploadtype);
-                logger.info("上传返回内容：", result);
+                logger.info("上传返回内容：{}", result);
                 JSONObject resultJSON = JSON.parseObject(result);
-                if(resultJSON.getIntValue("code")==0) {
+                if (resultJSON.containsKey("code") && resultJSON.getIntValue("code") == 0) {
                     JSONObject json = JSON.parseObject(result);
                     JSONObject data = json.getJSONObject("data");
                     VideoConfigDto dto = new VideoConfigDto();
@@ -83,7 +83,7 @@ public class VideoController {
             } else {
                 //视频上传续传
                 String result = cloudInit.videoUploadResume(token, uploadtype);
-                logger.info("上传返回内容：", result);
+                logger.info("上传返回内容：{}", result);
                 return result;
             }
         } catch (Exception e){
@@ -100,7 +100,7 @@ public class VideoController {
         }
         try {
             String response = cloudInit.videoUpdate(Integer.valueOf(videoOutId), videoName);
-            logger.info("更新乐视视频返回：", response);
+            logger.info("更新乐视视频返回：{}", response);
             JSONObject rep = JSON.parseObject(response);
             if(rep.getIntValue("code")==0) {
                 VideoConfigDto video = new VideoConfigDto();
