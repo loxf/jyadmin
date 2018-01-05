@@ -10,10 +10,10 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <select id="selectShow" resultType="org.loxf.jyadmin.dal.po.IndexRecommend" >
-    SELECT	type,	obj_id as objId, IF (	type = 'ACTIVE',
-    ( SELECT b.pic FROM tb_active b
+    SELECT	type,	obj_id as objId, IF (type = 'ACTIVE',
+    ( SELECT if(locate('"INDEXPIC"', b.meta_data)>0,b.meta_data,b.pic) FROM tb_active b
             WHERE a.obj_id = b.active_id ),
-    ( SELECT c.offer_pic FROM tb_offer c
+    ( SELECT if(locate('"INDEXPIC"', c.meta_data)>0,c.meta_data,c.offer_pic) FROM tb_offer c
         WHERE a.obj_id = c.offer_id )
     ) AS pic FROM tb_index_recommend a
       ORDER BY updated_at DESC LIMIT 0, 5

@@ -330,15 +330,8 @@ public class TradeServiceImpl implements TradeService {
                         "COMPANY_FIRST_" + type, "30,5").getConfigValue();
             }
         } else if (StringUtils.isNotBlank(cust.getUserLevel())) {
-            if (cust.getUserLevel().equals("NONE")) {
-                // 非会员
-                firstAndSecondScholarships = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY,
-                        "NONE_FIRST_" + type, "30,5").getConfigValue();
-            } else {
-                // 会员
-                firstAndSecondScholarships = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY,
-                        "VIP_FIRST_" + type, "30,5").getConfigValue();
-            }
+            firstAndSecondScholarships = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY,
+                    cust.getUserLevel() + "_FIRST_" + type, "30,5").getConfigValue();
         }
         if (StringUtils.isNotBlank(firstAndSecondScholarships)) {
             String[] tmp = firstAndSecondScholarships.split(",");

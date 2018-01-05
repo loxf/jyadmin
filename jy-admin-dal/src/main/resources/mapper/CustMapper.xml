@@ -287,15 +287,16 @@
   </update>
 
   <select id="queryCustIncreaseLast7Day" resultType="java.util.HashMap">
-    select date_format(created_at, '%Y-%m-%d') as `name`, count(1) as `value` from tb_cust where  TO_DAYS(NOW())-TO_DAYS(created_at)&lt;=7
+    select date_format(created_at, '%Y-%m-%d') as `name`, count(1) as `value` from tb_cust where is_deleted=0
+      and TO_DAYS(NOW())-TO_DAYS(created_at)&lt;=7
     group by date_format(created_at, '%Y-%m-%d')
   </select>
 
   <select id="queryCustUserLevelDistribute" resultType="java.util.HashMap">
-    select if(user_level='NONE','普通会员',user_level) as name, count(1) as value from tb_cust GROUP BY user_level
+    select if(user_level='NONE','普通会员',user_level) as name, count(1) as value from tb_cust where is_deleted=0 GROUP BY user_level
     union all
     select if(is_agent=1,'代理商', if(is_agent=2,'合伙人','分公司')) as name, count(1) as value from tb_cust
-     where is_agent &lt;&gt; 0 GROUP BY is_agent
+      where is_deleted=0 and is_agent &lt;&gt; 0 GROUP BY is_agent
   </select>
 
   <select id="selectOldCust" resultMap="BaseResultMap" >

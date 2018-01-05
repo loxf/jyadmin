@@ -6,11 +6,12 @@
     <result column="catalog_id" property="catalogId" jdbcType="VARCHAR" />
     <result column="catalog_name" property="catalogName" jdbcType="VARCHAR" />
     <result column="pic" property="pic" jdbcType="VARCHAR" />
+    <result column="index_pic" property="indexPic" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, catalog_id, `catalog_name`, pic, created_at, updated_at
+    id, catalog_id, `catalog_name`, pic, index_pic, created_at, updated_at
   </sql>
   <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
     select
@@ -55,10 +56,10 @@
   </delete>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
     insert into tb_offer_catalog (catalog_id, `catalog_name`,
-      pic, created_at, updated_at
+      pic, index_pic, created_at, updated_at
       )
     values (#{catalogId,jdbcType=VARCHAR}, #{catalogName,jdbcType=VARCHAR},
-      #{pic,jdbcType=VARCHAR}, now(), now()
+      #{pic,jdbcType=VARCHAR}, #{indexPic,jdbcType=VARCHAR}, now(), now()
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
@@ -69,6 +70,9 @@
     </if>
     <if test="pic!=null and pic!=''">
       pic = #{pic,jdbcType=VARCHAR},
+    </if>
+    <if test="indexPic!=null and indexPic!=''">
+      index_pic = #{indexPic,jdbcType=VARCHAR},
     </if>
       updated_at = now()
     where catalog_id = #{catalogId,jdbcType=VARCHAR}

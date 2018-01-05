@@ -23,6 +23,17 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">首页图片</label>
+        <div class="layui-input-inline">
+            <a class="layui-btn uploadImg" id="indexPicBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=INDEX'}">
+                <i class="layui-icon">&#xe62f;</i>上传首页图片（宽1000*高380）</a>
+            <div class="layui-upload-list">
+                <img class="layui-upload-img" style="max-width: 350px;" id="indexPicImg">
+            </div>
+            <input type="hidden" name="indexPic" id="indexPic">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <div class="layui-input-block">
             <button class="layui-btn" lay-submit="" lay-filter="offerCatalogData">立即提交</button>
         </div>
@@ -74,7 +85,8 @@
             url:"newOfferCatalog.html",
             data : {
                 catalogName:data.field.catalogName,
-                pic:data.field.pic
+                pic:data.field.pic,
+                indexPic:data.field.indexPic
             },
             dataType:"json",
             success: function(data) {

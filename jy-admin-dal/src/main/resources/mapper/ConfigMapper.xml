@@ -76,7 +76,7 @@
       and `catalog` = #{catalog}
     </if>
     <if test="configCode!=null and configCode!=''">
-      and config_code = #{configCode}
+      and config_code like concat('%', #{configCode} ,'%')
     </if>
     <if test="configName!=null and configName!=''">
       and `config_name` like concat('%', #{configName} ,'%')

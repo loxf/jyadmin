@@ -9,6 +9,8 @@ public class OfferCatalog extends BaseModel {
 
     private String pic;
 
+    private String indexPic;
+
     public String getCatalogId() {
         return catalogId;
     }
@@ -33,4 +35,11 @@ public class OfferCatalog extends BaseModel {
         this.pic = pic == null ? null : pic.trim();
     }
 
+    public String getIndexPic() {
+        return indexPic;
+    }
+
+    public void setIndexPic(String indexPic) {
+        this.indexPic = indexPic;
+    }
 }

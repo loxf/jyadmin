@@ -107,6 +107,12 @@ table.render({ //其它参数在此省略
             templet : '#picTpl'
         },
         {
+            field: 'indexPic',
+            title: '首页图片',
+            width: 100 ,
+            templet : '#indexPicTpl'
+        },
+        {
             field: 'metaData',
             title: '限定人数',
             width: 90,

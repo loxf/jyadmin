@@ -36,6 +36,12 @@ table.render({ //其它参数在此省略
             templet : '#picTpl'
         },
         {
+            field: 'indexPic',
+            title: '首页图片',
+            width: 100 ,
+            templet : '#indexPicTpl'
+        },
+        {
             field: 'createdAt',
             title: '创建时间',
             width: 180

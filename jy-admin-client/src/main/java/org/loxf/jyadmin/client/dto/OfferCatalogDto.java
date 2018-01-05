@@ -10,6 +10,8 @@ public class OfferCatalogDto extends BaseModel {
 
     private String pic;
 
+    private String indexPic;
+
     public String getCatalogId() {
         return catalogId;
     }
@@ -32,5 +34,13 @@ public class OfferCatalogDto extends BaseModel {
 
     public void setPic(String pic) {
         this.pic = pic;
+    }
+
+    public String getIndexPic() {
+        return indexPic;
+    }
+
+    public void setIndexPic(String indexPic) {
+        this.indexPic = indexPic;
     }
 }

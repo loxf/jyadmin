@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.biz;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
@@ -27,6 +28,11 @@ public class IndexRecommendServiceImpl implements IndexRecommendService {
             for(IndexRecommend indexRecommend : list){
                 IndexRecommendDto dto = new IndexRecommendDto();
                 BeanUtils.copyProperties(indexRecommend, dto);
+                if(dto.getPic().startsWith("{")){
+                    // metadata
+                    JSONObject metaData = JSONObject.parseObject(dto.getPic());
+                    dto.setPic(metaData.getString("INDEXPIC"));
+                }
                 result.add(dto);
             }
             return new BaseResult<>(result);

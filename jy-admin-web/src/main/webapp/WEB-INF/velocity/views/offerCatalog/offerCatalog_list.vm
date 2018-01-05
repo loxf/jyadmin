@@ -34,5 +34,12 @@
     无
     {{#  } }}
 </script>
+<script type="text/html" id="indexPicTpl">
+    {{#  if(d.indexPic){ }}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.indexPic }}', 'PIC')"><i class="layui-icon">&#xe64a;</i>查看</a>
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
 <script src="${rc.contextPath}/static/jingyi/common.js"></script>
 <script src="${rc.contextPath}/static/jingyi/offerCatalog/offerCatalog.js"></script>

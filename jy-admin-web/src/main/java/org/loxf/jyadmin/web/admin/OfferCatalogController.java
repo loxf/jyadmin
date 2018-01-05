@@ -40,7 +40,6 @@ public class OfferCatalogController extends BaseControl<OfferCatalogDto> {
         BaseResult<OfferCatalogDto> catalogDtoBaseResult = offerCatalogService.queryById(catalogId);
         if(catalogDtoBaseResult.getCode()== BaseConstant.SUCCESS || catalogDtoBaseResult.getData()!=null) {
             model.addAttribute("offerCatalog", catalogDtoBaseResult.getData());
-            model.addAttribute("basePic", configService.queryConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "PIC_SERVER_URL"));
         }
         return "main/offerCatalog/editOfferCatalog";
     }
