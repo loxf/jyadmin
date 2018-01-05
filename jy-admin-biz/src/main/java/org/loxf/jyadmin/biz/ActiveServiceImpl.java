@@ -150,6 +150,8 @@ public class ActiveServiceImpl implements ActiveService {
         if(type==1){
             if(indexRecommendMapper.exists("ACTIVE", activeId)==0) {
                 indexRecommendMapper.insert("ACTIVE", activeId);
+            } else {
+                indexRecommendMapper.updateByPrimaryKey("ACTIVE", activeId);
             }
             metaJSON.put("INDEX", "on");
         } else {
