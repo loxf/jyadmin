@@ -175,7 +175,11 @@ public class OfferServiceImpl implements OfferService {
             metaJSON = JSON.parseObject(metaData);
         }
         if(type==1){
-            indexRecommendMapper.insert(offer.getOfferType(), offerId);
+            if(indexRecommendMapper.exists(offer.getOfferType(), offerId)==0) {
+                indexRecommendMapper.insert(offer.getOfferType(), offerId);
+            } else {
+                indexRecommendMapper.updateByPrimaryKey(offer.getOfferType(), offerId);
+            }
             metaJSON.put("INDEX", "on");
         } else {
             // 取消
