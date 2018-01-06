@@ -9,6 +9,7 @@ import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.JedisUtil;
 import org.loxf.jyadmin.client.dto.CustBankDto;
 import org.loxf.jyadmin.client.dto.CustDto;
+import org.loxf.jyadmin.client.service.AccountService;
 import org.loxf.jyadmin.client.service.CustBankService;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.client.service.VipInfoService;
@@ -19,6 +20,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/cust")
@@ -32,6 +36,8 @@ public class CustController extends BaseControl<CustDto> {
     private VipInfoService vipInfoService;
     @Autowired
     private JedisUtil jedisUtil;
+    @Autowired
+    private AccountService accountService;
 
     @RequestMapping("/index")
     public String index(){
@@ -54,7 +60,16 @@ public class CustController extends BaseControl<CustDto> {
     @ResponseBody
     public PageResult list(CustDto custDto){
         initRangeDate(custDto);
-        PageResult<CustDto> pageResult = custService.pager(custDto);
+        PageResult pageResult = custService.pager(custDto);
+        List<JSONObject> infos = new ArrayList<>();
+        List<CustDto> list = pageResult.getData();
+        /*for(CustDto cust : list){
+            BaseResult<JSONObject> baseResult = accountService.queryAccount(cust.getCustId());
+            JSONObject jsonObject = (JSONObject) JSON.toJSON(cust);
+            jsonObject.putAll(baseResult.getData());
+            infos.add(jsonObject);
+        }
+        pageResult.setData(infos);*/
         return pageResult;
     }
 

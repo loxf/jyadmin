@@ -30,9 +30,10 @@ table.render({ //其它参数在此省略
             width: 120
         },
         {
-            field: 'realName',
-            title: '真实姓名',
-            width: 120
+            field: 'accountInfo',
+            title: '账户信息',
+            width: 100,
+            templet : '#accountTpl'
         },
         {
             field: 'isChinese',
@@ -75,6 +76,11 @@ table.render({ //其它参数在此省略
             title: '二级同学',
             width: 100,
             templet : '#secondLvNbrTpl'
+        },
+        {
+            field: 'realName',
+            title: '真实姓名',
+            width: 120
         },
         {
             field: 'metaData',
@@ -286,4 +292,43 @@ function openChildCustList(type, custId) {
 
 function searchList() {
     $("#searchList").click();
+}
+
+function showAccount(custId){
+    $.ajax({
+        type: "POST",
+        url: contextPath + "/admin/account/queryCustBalance.html",
+        data : {
+            custId : custId
+        },
+        dataType:"json",
+        success: function(data) {
+            if(data.code == 1){
+                var balance = data.data.data.balance;
+                var bp = data.data.data.bp;
+                var totalIncome = data.data.data.totalIncome;
+                var hasPassword = data.data.data.hasPassword;
+                layer.open({
+                    type: 1
+                    ,offset: '200px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+                    ,id: "showAccount" //防止重复弹出
+                    ,title : '客户账户信息'
+                    ,content: '<div style="padding: 15px ">'
+                    + '<div><label class="layui-input-inline">是否设置支付密码：</label><label class="layui-input-inline">' + (hasPassword?"是":"否") + '</label></div>'
+                    + '<div><label class="layui-input-inline">余额：</label><label class="layui-input-inline">' + balance + '</label></div>'
+                    + '<div><label class="layui-input-inline">积分：</label><label class="layui-input-inline">' + bp + '</label></div>'
+                    + '<div><label class="layui-input-inline">累积奖学金：</label><label class="layui-input-inline">' + totalIncome + '</label></div>'
+                    + '</div>'
+                    ,btn: '关闭'
+                    ,yes: function(index, layero){
+                        layer.closeAll();
+                    }
+                    ,btnAlign: 'c' //按钮居中
+                    ,shade: 0.3
+                });
+            } else {
+                layer.msg(data.msg);
+            }
+        }
+    });
 }

@@ -3,6 +3,7 @@ package org.loxf.jyadmin.biz.util;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 
+import org.loxf.jyadmin.base.exception.BizException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,10 +46,10 @@ public class SendSmsMsgUtil {
                 return true;
             }
             logger.error("短信发送失败：{}，原因：{}", phoneNumbers, sendSmsResponse.getMessage());
-            return false;
+            throw new BizException("短信发送失败：" + sendSmsResponse.getMessage());
         } catch (Exception e) {//请求失败这里会抛ClientException异常
             logger.error("短信发送异常:", e);
-            return false;
+            throw new BizException("短信发送失败：", e);
         }
     }
 

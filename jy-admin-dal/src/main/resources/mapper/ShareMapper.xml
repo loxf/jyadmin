@@ -15,7 +15,10 @@
   <select id="existsByObjAndType" resultType="int">
     select count(1)
     from tb_share
-    where `type` = #{type} and share_obj = #{shareObj} and cust_id = #{custId}
+    where `type` = #{type} and cust_id = #{custId}
+    <if test="type=='VIDEO'or type=='ACTIVE' or type=='OFFER'">
+      and share_obj = #{shareObj}
+    </if>
   </select>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Share" >
     insert into tb_share (id, cust_id, `type`,

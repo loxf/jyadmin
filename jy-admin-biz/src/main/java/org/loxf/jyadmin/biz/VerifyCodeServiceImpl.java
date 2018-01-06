@@ -68,7 +68,8 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         Map params = new HashMap<>();
         params.put("verifyCode", code);
         params.put("codeType", codeType);
-        if(sender.send(params, obj)){
+        BaseResult sendResult = sender.send(params, obj);
+        if(sendResult.getCode()==BaseConstant.SUCCESS){
             jedisUtil.set(prefix + custId, code, 5*60);
             insertCode(obj, code, codeType, sendType);
             return new BaseResult();

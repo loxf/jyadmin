@@ -74,10 +74,12 @@ public class NoticeJob extends JOB {
                             if (StringUtils.isNotBlank(metaData)) {
                                 metaDataMap = JSON.parseObject(metaData, HashMap.class);
                             }
-                            if (sender.send(metaDataMap, notice.getNoticeObj())) {
+                            BaseResult sendResult = sender.send(metaDataMap, notice.getNoticeObj());
+                            if (sendResult.getCode()==BaseConstant.SUCCESS) {
                                 notice.setStatus(3);
                             } else {
                                 notice.setStatus(-3);
+                                notice.setRemark(sendResult.getMsg());
                             }
                         }
                         noticeMapper.updateByPrimaryKey(notice);

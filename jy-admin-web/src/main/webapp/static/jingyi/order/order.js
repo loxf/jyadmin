@@ -30,6 +30,11 @@ table.render({ //其它参数在此省略
             width: 120
         },
         {
+            field: 'contact',
+            title: '联系方式',
+            width: 150
+        },
+        {
             field: 'orderName',
             title: '订单名称',
             width: 150

@@ -82,6 +82,9 @@ public class AccountServiceImpl implements AccountService {
         JSONObject result = new JSONObject();
         result.put("balance", account.getBalance().toPlainString());
         result.put("bp", account.getBp().toPlainString());
+        // 获取最近累积收入
+        int totalIncome = accountDetailMapper.sumByType(custId, null, 1);
+        result.put("totalIncome", totalIncome);
         // 是否设置支付密码
         result.put("hasPassword", StringUtils.isNotBlank(account.getPassword()));
         return new BaseResult<>(result);

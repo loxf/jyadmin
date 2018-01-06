@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.JedisUtil;
 import org.loxf.jyadmin.base.util.SpringApplicationContextUtil;
@@ -18,11 +19,11 @@ import java.util.Map;
 public class WeixinSender implements ISender {
     private static Logger logger = LoggerFactory.getLogger(WeixinSender.class);
     @Override
-    public boolean send(Map params, String target) {
+    public BaseResult send(Map params, String target) {
         String touser = (String)params.get("touser");
         if(StringUtils.isBlank(touser)||!touser.equals(target)){
             logger.error("发送参数错误：target={}, params={}", target, JSON.toJSONString(params));
-            return false;
+            return new BaseResult(BaseConstant.FAILED, "发送目标不一致");
         }
         String accessToken = jedisUtil().get(BaseConstant.WX_ACCESS_TOKEN);
         if(StringUtils.isNotBlank(accessToken)) {
@@ -31,15 +32,16 @@ public class WeixinSender implements ISender {
                 JSONObject resultJson = JSON.parseObject(result);
                 if(resultJson.getIntValue("errcode")!=0){
                     logger.error("发送微信消息失败：result={}, params=", result, JSON.toJSONString(params));
-                    return false;
+                    return new BaseResult(BaseConstant.FAILED, "发送微信消息失败：result=" + result);
                 }
             } catch (Exception e) {
                 logger.error("发送微信消息异常", e);
-                return false;
+                return new BaseResult(BaseConstant.FAILED, "发送微信消息异常：" + e.getMessage());
             }
-            return true;
+            return new BaseResult();
+        } else {
+            return new BaseResult(BaseConstant.FAILED, "发送微信消息失败：accessToken为空");
         }
-        return false;
     }
 
     /**

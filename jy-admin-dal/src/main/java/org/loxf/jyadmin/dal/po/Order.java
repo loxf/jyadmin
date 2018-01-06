@@ -32,6 +32,8 @@ public class Order extends BaseModel {
 
     private String msg;
 
+    private String contact;
+
     private String outTradeNo;
 
     public String getOrderId() {
@@ -136,6 +138,14 @@ public class Order extends BaseModel {
 
     public void setMsg(String msg) {
         this.msg = msg;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public String getOutTradeNo() {

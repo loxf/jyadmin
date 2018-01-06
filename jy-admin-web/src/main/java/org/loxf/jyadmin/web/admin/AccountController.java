@@ -80,6 +80,17 @@ public class AccountController extends BaseControl {
     }
 
     /**
+     * 用户余额
+     *
+     * @param custId
+     * @return
+     */
+    @RequestMapping("/queryCustBalance")
+    @ResponseBody
+    public BaseResult<JSONObject> queryCustBalance(String custId){
+        return new BaseResult(accountService.queryAccount(custId));
+    }
+    /**
      * 用户余额列表
      *
      * @param custDto

@@ -178,9 +178,10 @@ public class CustCashServiceImpl implements CustCashService {
             return new BaseResult<>(BaseConstant.FAILED, "支付密码为空");
         }
         // 前面 MD5加密字符串：type||obj_id||balance
-        String str = custCashDto.getType() + "||" + custCashDto.getObjId() + "||" + custCashDto.getBalance().toPlainString();
+        String str = custCashDto.getType() + "||" + custCashDto.getObjId() + "||" + custCashDto.getBalance().setScale(2).toPlainString();
         String encodeStr = MD5.MD5(str);
         if (!encodeStr.equalsIgnoreCase(sign)) {
+            logger.error("提现加密字符串：" + str);
             return new BaseResult<>(BaseConstant.FAILED, "签名被篡改");
         }
         try {
