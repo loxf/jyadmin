@@ -207,9 +207,8 @@ public class CustCashServiceImpl implements CustCashService {
         BigDecimal cmmsAmt = custCashDto.getBalance().multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
         if(cmmsAmt.add(custCashDto.getBalance()).compareTo(accountBalance)>0){
             // 手续费加提现金额大于余额，余额不足，实际提现： X+X*RATE=accountBalance X=accountBalance/(1+RATE)
-            BigDecimal tmp = BigDecimal.ONE.add(rate);
-            BigDecimal factBalance = accountBalance.divide(tmp, 2, BigDecimal.ROUND_HALF_UP);
-            cmmsAmt = accountBalance.subtract(factBalance);
+            cmmsAmt = accountBalance.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
+            BigDecimal factBalance = accountBalance.subtract(cmmsAmt);
             custCashDto.setCmmsAmt(cmmsAmt);
             custCashDto.setFactBalance(factBalance);
         } else {
