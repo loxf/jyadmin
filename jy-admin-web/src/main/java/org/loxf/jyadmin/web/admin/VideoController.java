@@ -151,12 +151,15 @@ public class VideoController {
 
     @RequestMapping("/getUrl")
     @ResponseBody
-    public BaseResult getUrl(String videoId){
+    public BaseResult getUrl(HttpServletRequest request, String videoId){
         BaseResult<VideoConfigDto> videoConfigDtoBaseResult = videoConfigService.queryVideo(videoId);
         if(videoConfigDtoBaseResult.getCode()== BaseConstant.SUCCESS) {
             if(videoConfigDtoBaseResult.getData().getStatus()==2) {
                 String url = cloudInit.videoGetPlayinterface(USER_UNIQUE, videoConfigDtoBaseResult.getData().getVideoUnique(),
                         "URL", PLAY_UNIQUE, 1, 640, 360);
+                if(request.getScheme().equalsIgnoreCase("https://")){
+                    url = url.replace("http://", "https://");
+                }
                 return new BaseResult(url);
             } else {
                 return new BaseResult(BaseConstant.FAILED, "视频未上传完成");
