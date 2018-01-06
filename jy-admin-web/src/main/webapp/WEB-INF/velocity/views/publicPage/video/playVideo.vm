@@ -1,0 +1,15 @@
+<link rel="stylesheet" href="${rc.contextPath}/static/jingyi/publicPage/publicPage.css"
+      xmlns="http://www.w3.org/1999/html">
+<div style="padding: 10px; background-color: #432f2e; color: #e4ab7f">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>播放视频</legend>
+    </fieldset>
+    <ul class="layui-timeline">
+        <li class="layui-timeline-item">
+            <iframe allowfullscreen mozallowfullscreen webkitallowfullscreen vspace="0" hspace="0"
+                    frameborder="0" marginwidth="0" marginheight="0" allowtransparency="true" scrolling="no"
+                    src="http://yuntv.letv.com/bcloud.html?pu=ffffffffff&uu=tcznqlkk60&vu=8d67234454&auto_play=0&gpcflag=1&wi
+dth=100%&height=300" width="100%" height="300px"></iframe>
+        </li>
+    </ul>
+</div>

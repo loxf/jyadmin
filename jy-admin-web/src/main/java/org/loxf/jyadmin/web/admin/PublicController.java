@@ -12,4 +12,9 @@ public class PublicController {
         model.addAttribute("sysTitle", "静怡雅学文化");
         return "publicPage/binduser/binduser";
     }
+    @RequestMapping("/player")
+    public String toPlayVideo(Model model){
+        model.addAttribute("sysTitle", "静怡雅学文化");
+        return "publicPage/video/playVideo";
+    }
 }
