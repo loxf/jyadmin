@@ -157,9 +157,7 @@ public class VideoController {
             if(videoConfigDtoBaseResult.getData().getStatus()==2) {
                 String url = cloudInit.videoGetPlayinterface(USER_UNIQUE, videoConfigDtoBaseResult.getData().getVideoUnique(),
                         "URL", PLAY_UNIQUE, 1, 640, 360);
-                if(request.getScheme().equalsIgnoreCase("https://")){
-                    url = url.replace("http://", "https://");
-                }
+                url = url.replace("http:", "");
                 return new BaseResult(url);
             } else {
                 return new BaseResult(BaseConstant.FAILED, "视频未上传完成");
