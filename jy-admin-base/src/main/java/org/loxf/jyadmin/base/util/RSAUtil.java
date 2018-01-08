@@ -28,15 +28,14 @@ public class RSAUtil {
 
     public static void main(String[] args) throws Exception {
         String bankNo = "测试人员";
-        byte[] encoder = encryptByPublicKey(bankNo.getBytes());
-
+        byte[] encoder = encryptByPublicKey(bankNo.getBytes(), "");
         System.out.println(new String(Base64.encode(encoder)));
     }
 
 
-    public static byte[] encryptByPublicKey(byte[] data) throws Exception {
+    public static byte[] encryptByPublicKey(byte[] data, String pkcs8FilePath) throws Exception {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(BaseConstant.WEIXIN_PKCS8_PUBLIC_FILE_PATH));
+            BufferedReader br = new BufferedReader(new FileReader(pkcs8FilePath));
             String readLine = null;
             StringBuilder sb = new StringBuilder();
             readLine = br.readLine();

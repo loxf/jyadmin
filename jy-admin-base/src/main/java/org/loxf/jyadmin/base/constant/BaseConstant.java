@@ -19,10 +19,6 @@ public class BaseConstant {
     public static String WX_JS_TICKET = "WX_JS_TICKET";
     // 微信相关
     public static String WX_ACCESS_TOKEN = "WX_ACCESS_TOKEN";
-    // 微信证书
-    public static String WEIXIN_APICLIENT_CERT = "/home/jingyiweb/weixin_cert/apiclient_cert.p12";
-    // 微信RSA加密公钥
-    public static String WEIXIN_PKCS8_PUBLIC_FILE_PATH = "/home/jingyiweb/weixin_cert/weixin.pkcs8.public.pem";
 
     // 配置相关
     public static String CONFIG_TYPE_RUNTIME = "RUNTIME";

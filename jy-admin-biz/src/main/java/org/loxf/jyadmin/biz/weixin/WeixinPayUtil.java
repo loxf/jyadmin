@@ -207,8 +207,8 @@ public class WeixinPayUtil {
         params.put("bank_code", bankCode);// 收款方开户行 银行卡所在开户行编号
         params.put("amount", amount + "");// 企业付款金额，单位为分
         params.put("desc", "用户提现");// 企业付款操作说明信息。必填。
-        String bankNoStr = new String(Base64.encode(RSAUtil.encryptByPublicKey(bankNo.getBytes())));
-        String realNameStr = new String(Base64.encode(RSAUtil.encryptByPublicKey(username.getBytes())));
+        String bankNoStr = new String(Base64.encode(RSAUtil.encryptByPublicKey(bankNo.getBytes(), config.getWeixinPkcs8PublicFilePath())));
+        String realNameStr = new String(Base64.encode(RSAUtil.encryptByPublicKey(username.getBytes(), config.getWeixinPkcs8PublicFilePath())));
         params.put("enc_bank_no", bankNoStr); // 收款方银行卡号 采用标准RSA算法，公钥由微信侧提供
         params.put("enc_true_name", realNameStr);// 收款方用户名 采用标准RSA算法，公钥由微信侧提供
         String queryXml = WXPayUtil.generateSignedXml(params, config.getKey());
