@@ -19,8 +19,8 @@
     </table>
 </div>
 <div class="layui-row" style="text-align: center">
-    <input type="button" class="layui-btn uploadBtn" id="uploadBtn" value="开始上传" />
     <input type="button" class="layui-btn uploadBtn" id='fileSelecter' value="添加视频" />
+    <input type="button" class="layui-btn uploadBtn" id="uploadBtn" value="开始上传" />
 </div>
 <!--使用例子-->
 <script type="text/javascript" src="${rc.contextPath}/static/jingyi/video/html5Upload.js"></script>
@@ -64,15 +64,17 @@
             }
         });
     });
-    function updateProgress(jyVideoId, status, progress, remark) {
+    function updateProgress(jyVideoId, status, progress, remark, fileId, videoUrl) {
         //记录进度
         $.ajax({
             type: "POST",
-            url:"updateProgress.html",
+            url:"'.html",
             data : {
                 videoId : jyVideoId,
                 status : status,
                 progress : progress,
+                videoOutId : fileId,
+                videoUrl : videoUrl,
                 remark : remark
             },
             dataType:"json",

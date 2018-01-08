@@ -55,6 +55,12 @@
     <if test="progress!=null and progress!=''">
       progress = #{progress},
     </if>
+    <if test="videoUrl!=null and videoUrl!=''">
+      video_url = #{videoUrl},
+    </if>
+    <if test="videoOutId!=null and videoOutId!=''">
+      video_out_id = #{videoOutId},
+    </if>
     updated_at = now()
     where video_id = #{videoId,jdbcType=VARCHAR}
   </update>

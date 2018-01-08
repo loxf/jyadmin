@@ -58,41 +58,15 @@ window.html5Upload = (function () {
             };
         })(jQuery);
     })();
-    //cookie操作
-    var uploadCookie = (function () {
-        function uploadCookie() {
-        }
-        uploadCookie.setCookie = function (key, value, expiresDays) {
-            var date = new Date();
-            date.setTime(date.getTime() + expiresDays * 24 * 3600 * 1000);
-            document.cookie = key + "=" + value + "; expires=" + date.toGMTString();
-        };
-        uploadCookie.getCookie = function (key) {
-            var strCookie = document.cookie;
-            var arrCookie = strCookie.split("; ");
-            for (var i = 0; i < arrCookie.length; i++) {
-                var arr = arrCookie[i].split("=");
-                if (arr[0] == key) {
-                    return arr[1];
-                }
-                if (i == arrCookie.length - 1) {
-                    return false;
-                }
-            }
-        };
-        uploadCookie.removeCookie = function (key) {
-            uploadCookie.setCookie(key, "", -1);
-        };
-        return uploadCookie;
-    })();
     //ajax
     var uploadAjax = (function () {
         function uploadAjax() {
         }
-        uploadAjax.post = function (url, success, error) {
+        uploadAjax.post = function (url, params, success, error) {
             $.ajax({
                 url: url,
                 type: 'post',
+                data: params,
                 dataType: "json",
                 success: function (data) {
                     success(data);
@@ -106,69 +80,24 @@ window.html5Upload = (function () {
         };
         return uploadAjax;
     })();
+
     //上传回调函数
     var xhrEventCallback = (function () {
         function xhrEventCallback() {
         }
-        xhrEventCallback.loadstart = function (e) {
-            var currStack = videoUpload.cellStack;
-            currStack.inittime = (new Date()).getTime(); //标记开始 即时的 时间
-            var transferedsize = videoUpload.cellStack ? videoUpload.cellStack.transferedsize : 0;
-            currStack.transferedsize = transferedsize;
-        };
-        xhrEventCallback.load = function (e) {
-            var res = eval("(" + e.target.responseText + ")");
-            if (!!res.transferedsize) {
-                //记录断点续传token
-                var tokenUrl = videoUpload.uploadUrl.split('token').pop();
-                var videoToken = tokenUrl.substr(1, tokenUrl.length - 1).split('&')[0];
-                uploadCookie.setCookie(html5Upload.exportObject.selectFile.fileKey, videoToken, 2);
-                var transferedsize = parseInt(res.transferedsize);
-                videoUpload.cellStack.transferedsize = transferedsize;
-                transferedsize < html5Upload.exportObject.selectFile.file.size && videoUpload.streamUpload(transferedsize);
-            }
-            else {
-                if (!res.totalsize && res.status != '200') {
-                    uploadOption.uploadError({ code: res.status, msg: res.msg });
-                    uploadOption.status = -3;
-                    uploadCookie.removeCookie(html5Upload.exportObject.selectFile.fileKey);
-                    videoUpload.xhrAbort();
-                }
-            }
-            videoUpload.cellStack.starttime = (new Date()).getTime();
-            if (res.transferedsize && res.transferedsize == res.totalsize) {
-                //文件上传完成
-                uploadOption.uploadFinish({ code: 0, msg: "上传完成" });
-                uploadOption.status = 3;
-                uploadCookie.removeCookie(html5Upload.exportObject.selectFile.fileKey);
-                videoUpload.xhrAbort();
-            }
-        };
-        xhrEventCallback.progress = function (e) {
-            var cellstack = videoUpload.cellStack, filetransfered = parseInt(cellstack.transferedsize);
-            var pc = parseInt((filetransfered + e.loaded) / html5Upload.exportObject.selectFile.file.size * 100), delttime = ((new Date()).getTime() - (cellstack.starttime || cellstack.inittime)) / 1000, rate = e.loaded / delttime;
-            rate = rate / 1024;
-            rate = rate > 1024 ? (((rate / 1024 * 10) >> 0) / 10).toFixed(1) + "M/s" : (((rate * 10) >> 0) / 10).toFixed(1) + "K/s";
-            //在上传过程中如果用户在电脑上删除了视频，会触发视频丢失错误
-            if (isNaN(pc)) {
-                uploadOption.uploadError({ code: 203, msg: "视频丢失" });
-                uploadOption.status = -3;
-                videoUpload.xhrAbort();
-            }
-            else {
-                if (pc == 100) {
-                    pc = 99;
-                }
-                uploadOption.uploadProgress({ progress: pc + "%", speed: rate });
-            }
-        };
-        xhrEventCallback.error = function (e) {
-            uploadOption.uploadError({ code: 404, msg: "网络异常" });
-            uploadOption.status = -3;
+        xhrEventCallback.finish = function (e) {
+            //文件上传完成
+            uploadOption.uploadFinish({ code: 0, msg: e.msg });
+            uploadOption.status = 3;
             videoUpload.xhrAbort();
         };
-        xhrEventCallback.abort = function (e) {
-            uploadOption.uploadAbort({ code: 202, msg: "中断上传" });
+        xhrEventCallback.progress = function (e) {
+            uploadOption.uploadProgress({ progress: e.curr + "%"});
+        };
+        xhrEventCallback.error = function (e) {
+            uploadOption.uploadError({ code: 404, msg: e.msg });
+            uploadOption.status = -3;
+            videoUpload.xhrAbort();
         };
         return xhrEventCallback;
     })();
@@ -176,50 +105,8 @@ window.html5Upload = (function () {
     var videoUpload = (function () {
         function videoUpload() {
         }
-        var cellSize = 10485760;
         var xhr = null;
         var tryNum = 0;
-        var sliceFile = function (file, start) {
-            var blob;
-            start = start || 0;
-            var range = start + cellSize;
-            if (start != -1) {
-                if (file.slice) {
-                    blob = file.slice(start, range);
-                }
-                else if (file.webkitSlice) {
-                    blob = file.webkitSlice(start, range);
-                }
-                else if (file.mozSlice) {
-                    blob = file.mozSlice(start, range);
-                }
-                else {
-                    blob = file;
-                }
-            }
-            else {
-                return null;
-            }
-            return blob;
-        };
-        videoUpload.cellStack = {};
-        videoUpload.uploadUrl = "";
-        videoUpload.streamUpload = function (loadedsize) {
-            videoUpload.cellStack.transferedsize = loadedsize;
-            xhr = new XMLHttpRequest();
-            html5Upload.exportObject.selectFile.xhrAbort = videoUpload.xhrAbort;
-            xhr.upload.addEventListener("progress", function (e) { xhrEventCallback.progress(e); }, false);
-            xhr.addEventListener("loadstart", function (e) { xhrEventCallback.loadstart(e); }, false);
-            xhr.addEventListener("load", function (e) { xhrEventCallback.load(e); }, false);
-            xhr.addEventListener("error", function (e) { xhrEventCallback.error(e); }, false);
-            xhr.addEventListener("abort", function (e) { xhrEventCallback.abort(e); }, false);
-            var cellFile = sliceFile(html5Upload.exportObject.selectFile.file, loadedsize);
-            var content = loadedsize == -1 ? "bytes *" : "bytes " + (loadedsize + 1) + "-" + (loadedsize + cellFile.size) + "/" + html5Upload.exportObject.selectFile.file.size;
-            xhr.open("POST", videoUpload.uploadUrl, true);
-            xhr.setRequestHeader("X_FILENAME", encodeURI(html5Upload.exportObject.selectFile.file.name));
-            xhr.setRequestHeader("Content-Range", content);
-            xhr.send(cellFile);
-        };
         videoUpload.xhrAbort = function () {
             xhr && xhr.abort();
         };
@@ -241,72 +128,56 @@ window.html5Upload = (function () {
                 // 上传
                 uploadOption.status = 1;
             }
+            // 获取上传签名
             var video_name = encodeURIComponent(html5Upload.exportObject.selectFile.file.name);
-            var uploadtype = 1;
-            var file_size = html5Upload.exportObject.selectFile.file.size;
-            var initUrl = uploadOption.uploadInitUrl + "?video_name=" + encodeURIComponent(video_name) + "&uploadtype=" + uploadtype + "&file_size=" + file_size;
-            if (uploadCookie.getCookie(html5Upload.exportObject.selectFile.fileKey)) {
-                initUrl = uploadOption.uploadInitUrl + "?token=" + uploadCookie.getCookie(html5Upload.exportObject.selectFile.fileKey) + "&uploadtype=" + uploadtype;
-            }
-            try {
-                uploadAjax.post(initUrl, function (data) {
-                    if (data.code == 0) {
-                        jyVideoId = data.jy_video_id;
-                        html5Upload.exportObject.selectFile.video_id = data.data.video_id;
-                        html5Upload.exportObject.selectFile.video_unique = data.data.video_unique;
-                        tryNum = 0;
-                        videoUpload.uploadUrl = data.data.upload_url.split('&')[0];
-                        var nextBlob = data.data.upload_size || 0;
-                        videoUpload.streamUpload(nextBlob);
-                    } else {
-                        switch (data.code) {
-                            case 112:
-                                if (tryNum < 2) {
-                                    setTimeout(function () {
-                                        videoUpload.tryUpload();
-                                    }, 20000);
-                                    ++tryNum;
-                                } else {
-                                    if (tryNum < 3) {
-                                        uploadCookie.removeCookie(html5Upload.exportObject.selectFile.fileKey);
-                                        ++tryNum;
-                                        videoUpload.tryUpload();
-                                    } else {
-                                        uploadOption.uploadAbort({ code: data.code, msg: data.message });
-                                        uploadOption.status = -3;
-                                        tryNum = 0;
-                                    }
+            var token = html5Upload.exportObject.selectFile.fileKey;
+            uploadAjax.post(uploadOption.uploadInitUrl, {video_name : video_name, token : token}, function (data) {
+                var uploadSign = data.sign;
+                jyVideoId = data.videoId;
+                if(data.code==1){
+                    try {
+                        var resultMsg = qcVideo.ugcUploader.start({
+                            videoFile: html5Upload.exportObject.selectFile.file,
+                            // coverFile: coverFileList[0],
+                            getSignature: uploadSign,
+                            allowAudio: 1,
+                            success: function(result){
+                                if(result.type == 'video') {
+                                    xhrEventCallback.progress({curr:0});
                                 }
-                                break;
-                            default:
-                                uploadOption.uploadAbort({ code: data.code, msg: data.message });
-                                uploadOption.status = -3;
+                            },
+                            error: function(result){
+                                if(result.type == 'video') {
+                                    xhrEventCallback.error(result);
+                                }
+                            },
+                            progress: function(result){
+                                if(result.type == 'video') {
+                                    xhrEventCallback.progress({curr:Math.floor(result.curr*100), sha: Math.floor(result.shacurr*100)});
+                                }
+                            },
+                            finish: function(result){
+                                var fileId = result.fileId;
+                                var videoUrl = result.videoUrl;
+                                // result.coverUrl;
+                                var msg ;
+                                if(result.message) {
+                                    msg = result.message;
+                                } else {
+                                    msg = "上传成功";
+                                }
+                                xhrEventCallback.finish({msg: msg, fileId: fileId, videoUrl : videoUrl});
+                            }
+                        });
+                        if(resultMsg){
+                            alert(resultMsg);
                         }
-                    }
-                }, function (data) {
-                    if (tryNum < 3) {
-                        setTimeout(function () {
-                            videoUpload.tryUpload();
-                        }, 1000);
-                        ++tryNum;
-                    } else {
-                        uploadOption.uploadAbort({ code: 206, msg: data.statusText });
-                        tryNum = 0;
+                    } catch (e) {
+                        uploadOption.uploadAbort({ code: 207, msg: e.message });
                         uploadOption.status = -3;
                     }
-                });
-            } catch (e) {
-                if (tryNum < 3) {
-                    setTimeout(function () {
-                        videoUpload.tryUpload();
-                    }, 1000);
-                    ++tryNum;
-                } else {
-                    uploadOption.uploadAbort({ code: 207, msg: e.message });
-                    tryNum = 0;
-                    uploadOption.status = -3;
                 }
-            }
+            });
         };
         return videoUpload;
     })();

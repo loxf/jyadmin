@@ -6,6 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.base.util.IdGenerator;
+import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.client.dto.VideoConfigDto;
 import org.loxf.jyadmin.client.service.VideoConfigService;
 import org.loxf.jyadmin.util.IPUtil;
@@ -17,19 +19,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sun.misc.BASE64Encoder;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin/video")
 public class VideoController {
     private static Logger logger = LoggerFactory.getLogger(VideoController.class);
 
-    public static String USER_UNIQUE = "tcznqlkk60";
-    public static String SECRET_KEY = "bb8585d8a83cf41f6138e7764c916364";
-    public static String PLAY_UNIQUE = "ffffffffff";
-    public static LetvCloudV1 cloudInit = new LetvCloudV1(USER_UNIQUE, SECRET_KEY);
+    private static final String HMAC_ALGORITHM = "HmacSHA1";
 
     @Autowired
     private VideoConfigService videoConfigService;
@@ -52,44 +55,54 @@ public class VideoController {
 
     @RequestMapping("/addVideo")
     @ResponseBody
-    public String addVideo(HttpServletRequest request, String video_name, Integer file_size, Integer uploadtype, String token){
-        try {
-            if (token == null) {
-                //视频上传初始化（Web方式）
-                //获取客户端的公网ip
-                String client_ip = IPUtil.getIpAddr(request);
-                video_name = URLDecoder.decode(video_name, "UTF-8");
-                video_name = video_name.substring(0, video_name.lastIndexOf("."));
-                String result = cloudInit.videoUploadInit(video_name, client_ip, file_size, uploadtype);
-                logger.info("上传返回内容：{}", result);
-                JSONObject resultJSON = JSON.parseObject(result);
-                if (resultJSON.containsKey("code") && resultJSON.getIntValue("code") == 0) {
-                    JSONObject json = JSON.parseObject(result);
-                    JSONObject data = json.getJSONObject("data");
-                    VideoConfigDto dto = new VideoConfigDto();
-                    dto.setVideoName(video_name);
-                    dto.setVideoOutId(data.getString("video_id"));
-                    dto.setVideoUnique(data.getString("video_unique"));
-                    // 下面的属性不需要
-                    data.remove("upload_url");
-                    data.remove("upload_https_url");
-                    data.remove("token");
-                    data.remove("progress_url");
-                    dto.setMetaData(data.toJSONString());
-                    BaseResult<String> baseResult = videoConfigService.addVideo(dto);
-                    resultJSON.put("jy_video_id", baseResult.getData());
-                }
-                return resultJSON.toJSONString();
-            } else {
-                //视频上传续传
-                String result = cloudInit.videoUploadResume(token, uploadtype);
-                logger.info("上传返回内容：{}", result);
-                return result;
-            }
-        } catch (Exception e){
-            logger.error("新增视频失败：", e);
-            return "{code:1, msg:'新增视频失败：" + e.getMessage() + "'}";
+    public BaseResult addVideo(HttpServletRequest request, String video_name, String token){
+        VideoConfigDto dto = new VideoConfigDto();
+        dto.setVideoName(video_name);
+        // 获取签名
+        String sign = getUploadSignature();
+        BaseResult baseResult = videoConfigService.addVideo(dto);
+        if(baseResult.getCode()==BaseConstant.SUCCESS) {
+            JSONObject result = new JSONObject();
+            result.put("videoId", baseResult.getData());
+            result.put("sign", sign);
+            return new BaseResult(result);
         }
+        return baseResult;
+    }
+
+    String getUploadSignature() {
+        String strSign = "";
+        long signValidDuration = 2*60*60;
+        long currentTime = System.currentTimeMillis()/1000;
+        long endTime = (currentTime + signValidDuration);
+        String secretId = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "TC_VIDEO_SECRET_ID").getConfigValue();
+        String secretKey = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "TC_VIDEO_SECRET_KEY").getConfigValue();
+
+        try {
+            String contextStr = "";
+            contextStr += "secretId=" + java.net.URLEncoder.encode(secretId, "UTF-8");
+            contextStr += "&currentTimeStamp=" + currentTime;
+            contextStr += "&expireTime=" + endTime;
+            contextStr += "&random=" + IdGenerator.generate("VD");
+            Mac mac = Mac.getInstance(HMAC_ALGORITHM);
+            SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes("UTF-8"), mac.getAlgorithm());
+            mac.init(secretKeySpec);
+
+            byte[] hash = mac.doFinal(contextStr.getBytes("UTF-8"));
+            byte[] sigBuf = byteMerger(hash, contextStr.getBytes("utf8"));
+            strSign = new String(new BASE64Encoder().encode(sigBuf).getBytes());
+            strSign = strSign.replace(" ", "").replace("\n", "").replace("\r", "");
+        } catch (Exception e) {
+            logger.error("获取视频上传签名失败", e);
+        }
+        return strSign;
+    }
+
+    static byte[] byteMerger(byte[] byte1, byte[] byte2) {
+        byte[] byte3 = new byte[byte1.length + byte2.length];
+        System.arraycopy(byte1, 0, byte3, 0, byte1.length);
+        System.arraycopy(byte2, 0, byte3, byte1.length, byte2.length);
+        return byte3;
     }
 
     @RequestMapping("/editVideo")
@@ -124,6 +137,7 @@ public class VideoController {
             return new BaseResult(BaseConstant.FAILED, "视频不存在");
         } else {
             try {
+                // 删除云视频
                 String response = cloudInit.videoDel(Integer.valueOf(dto.getVideoOutId()));
                 logger.info("删除乐视视频返回：{}", response);
                 JSONObject rep = JSON.parseObject(response);
@@ -155,10 +169,10 @@ public class VideoController {
         BaseResult<VideoConfigDto> videoConfigDtoBaseResult = videoConfigService.queryVideo(videoId);
         if(videoConfigDtoBaseResult.getCode()== BaseConstant.SUCCESS) {
             if(videoConfigDtoBaseResult.getData().getStatus()==2) {
-                String url = cloudInit.videoGetPlayinterface(USER_UNIQUE, videoConfigDtoBaseResult.getData().getVideoUnique(),
-                        "URL", PLAY_UNIQUE, 1, 640, 360);
-                url = url.replace("http:", "");
-                return new BaseResult(url);
+                if(StringUtils.isNotBlank(videoConfigDtoBaseResult.getData().getVideoUrl())){
+                    return new BaseResult(videoConfigDtoBaseResult.getData().getVideoUrl());
+                }
+                return new BaseResult(BaseConstant.FAILED, "未获取视频链接");
             } else {
                 return new BaseResult(BaseConstant.FAILED, "视频未上传完成");
             }
@@ -166,6 +180,8 @@ public class VideoController {
         return videoConfigDtoBaseResult;
     }
 
-
-
+    String getCommonParam(String action, String secretId, String region, String timestamp, String nonce, String sign){
+        String url = "Action=%s&SecretId=%s&Region=%s&Timestamp=%s&Nonce=%s&Signature=%s";
+        return String.format(url, action, secretId, region, timestamp, nonce, sign);
+    }
 }
