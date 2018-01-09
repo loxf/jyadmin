@@ -63,14 +63,11 @@ public class WatchRecordAddBpJob extends JOB {
                         if(bp>0) {
                             BaseResult<Boolean> baseResult = accountService.increase(watchRecord.getCustId(), null, new BigDecimal(bp), watchRecord.getWatchId(),
                                     "观看视频得积分", "");
-                            if (baseResult.getCode() == BaseConstant.SUCCESS && baseResult.getData() == true) {
-                                watchRecordMapper.updateStatus(watchRecord.getWatchId());
-                            } else {
+                            if (baseResult.getCode() == BaseConstant.FAILED ) {
                                 logger.error("更新观看记录失败" + baseResult.getMsg());
                             }
-                        } else {
-                            watchRecordMapper.updateStatus(watchRecord.getWatchId());
                         }
+                        watchRecordMapper.updateStatus(watchRecord.getWatchId());
                     }
                 }
             }

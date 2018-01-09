@@ -221,7 +221,7 @@ public class AccountServiceImpl implements AccountService {
                 }
             }
         } catch (Exception e){
-            logger.error("支付异常", e);
+            logger.error("支付异常[custId" + custId, e);
             throw new RuntimeException(e);
         } finally {
             accountMapper.unlockAccount(custId);
