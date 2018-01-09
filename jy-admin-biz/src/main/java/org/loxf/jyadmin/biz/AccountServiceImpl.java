@@ -178,7 +178,7 @@ public class AccountServiceImpl implements AccountService {
             // 记录账户明细
             accountMapper.updateBalanceOrBp(newAccountInfo);
         } catch (Exception e){
-            logger.error("支付异常", e);
+            logger.error("支付异常[custId:" + custId + ",detailName=" + detailName + "]", e);
             throw new RuntimeException(e);
         } finally {
             accountMapper.unlockAccount(custId);
@@ -221,7 +221,7 @@ public class AccountServiceImpl implements AccountService {
                 }
             }
         } catch (Exception e){
-            logger.error("支付异常[custId" + custId, e);
+            logger.error("支付异常[custId:" + custId + ",detailName=" + detailName + "]", e);
             throw new RuntimeException(e);
         } finally {
             accountMapper.unlockAccount(custId);
@@ -263,7 +263,7 @@ public class AccountServiceImpl implements AccountService {
                 custBpDetailMapper.insert(createBpDetail(custId, newAccountInfo.getBp(), bp, detailName, orderId, 3));
             }
         } catch (Exception e){
-            logger.error("支付异常", e);
+            logger.error("支付异常[custId:" + custId + ",detailName=" + detailName + "]", e);
             throw new RuntimeException(e);
         } finally {
             accountMapper.unlockAccount(custId);
