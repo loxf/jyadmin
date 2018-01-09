@@ -2,6 +2,7 @@ package org.loxf.jyadmin.web.admin;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.qcloud.vod.VodApi;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
@@ -12,6 +13,7 @@ import org.loxf.jyadmin.client.dto.VideoConfigDto;
 import org.loxf.jyadmin.client.service.VideoConfigService;
 import org.loxf.jyadmin.util.IPUtil;
 import org.loxf.jyadmin.util.LetvCloudV1;
+import org.loxf.jyadmin.util.TencentVideoV2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +27,14 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Controller
 @RequestMapping("/admin/video")
 public class VideoController {
     private static Logger logger = LoggerFactory.getLogger(VideoController.class);
-
-    private static final String HMAC_ALGORITHM = "HmacSHA1";
 
     @Autowired
     private VideoConfigService videoConfigService;
@@ -59,50 +61,37 @@ public class VideoController {
         VideoConfigDto dto = new VideoConfigDto();
         dto.setVideoName(video_name);
         // 获取签名
-        String sign = getUploadSignature();
-        BaseResult baseResult = videoConfigService.addVideo(dto);
-        if(baseResult.getCode()==BaseConstant.SUCCESS) {
-            JSONObject result = new JSONObject();
-            result.put("videoId", baseResult.getData());
-            result.put("sign", sign);
-            return new BaseResult(result);
+        BaseResult signBaseResult = getUploadSignature();
+        if(signBaseResult.getCode()==BaseConstant.SUCCESS) {
+            BaseResult baseResult = videoConfigService.addVideo(dto);
+            if (baseResult.getCode() == BaseConstant.SUCCESS) {
+                JSONObject result = new JSONObject();
+                result.put("videoId", baseResult.getData());
+                result.put("sign", signBaseResult.getData());
+                return new BaseResult(result);
+            }
+            return baseResult;
+        } else {
+            return signBaseResult;
         }
-        return baseResult;
     }
 
-    String getUploadSignature() {
-        String strSign = "";
+    private BaseResult getUploadSignature(){
         long signValidDuration = 2*60*60;
         long currentTime = System.currentTimeMillis()/1000;
         long endTime = (currentTime + signValidDuration);
-        String secretId = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "TC_VIDEO_SECRET_ID").getConfigValue();
-        String secretKey = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "TC_VIDEO_SECRET_KEY").getConfigValue();
-
         try {
             String contextStr = "";
-            contextStr += "secretId=" + java.net.URLEncoder.encode(secretId, "UTF-8");
-            contextStr += "&currentTimeStamp=" + currentTime;
-            contextStr += "&expireTime=" + endTime;
-            contextStr += "&random=" + IdGenerator.generate("VD");
-            Mac mac = Mac.getInstance(HMAC_ALGORITHM);
-            SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes("UTF-8"), mac.getAlgorithm());
-            mac.init(secretKeySpec);
-
-            byte[] hash = mac.doFinal(contextStr.getBytes("UTF-8"));
-            byte[] sigBuf = byteMerger(hash, contextStr.getBytes("utf8"));
-            strSign = new String(new BASE64Encoder().encode(sigBuf).getBytes());
-            strSign = strSign.replace(" ", "").replace("\n", "").replace("\r", "");
+            HashMap params = new HashMap<>();
+            params.put("secretId", TencentVideoV2.getSecretId());
+            params.put("currentTimeStamp", currentTime);
+            params.put("expireTime", endTime);
+            params.put("random", IdGenerator.generate("VD"));
+            return new BaseResult(TencentVideoV2.generateSign(params));
         } catch (Exception e) {
             logger.error("获取视频上传签名失败", e);
+            return new BaseResult(BaseConstant.FAILED, "获取视频上传签名失败：" + e.getMessage());
         }
-        return strSign;
-    }
-
-    static byte[] byteMerger(byte[] byte1, byte[] byte2) {
-        byte[] byte3 = new byte[byte1.length + byte2.length];
-        System.arraycopy(byte1, 0, byte3, 0, byte1.length);
-        System.arraycopy(byte2, 0, byte3, byte1.length, byte2.length);
-        return byte3;
     }
 
     @RequestMapping("/editVideo")
@@ -180,8 +169,4 @@ public class VideoController {
         return videoConfigDtoBaseResult;
     }
 
-    String getCommonParam(String action, String secretId, String region, String timestamp, String nonce, String sign){
-        String url = "Action=%s&SecretId=%s&Region=%s&Timestamp=%s&Nonce=%s&Signature=%s";
-        return String.format(url, action, secretId, region, timestamp, nonce, sign);
-    }
 }

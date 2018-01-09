@@ -339,6 +339,11 @@
                 <artifactId>poi-ooxml</artifactId>
                 <version>${apache.poi.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.qcloud</groupId>
+                <artifactId>vod_api</artifactId>
+                <version>1.0.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
