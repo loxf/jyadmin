@@ -87,21 +87,37 @@ window.html5Upload = (function () {
         }
         xhrEventCallback.finish = function (e) {
             //文件上传完成
-            uploadOption.uploadFinish({ code: 0, msg: e.msg });
+            uploadOption.uploadFinish(e);
             uploadOption.status = 3;
             videoUpload.xhrAbort();
         };
         xhrEventCallback.progress = function (e) {
-            uploadOption.uploadProgress({ progress: e.curr + "%"});
+            uploadOption.uploadProgress({ progress: e.curr + "%", sha: e.sha + "%",});
         };
         xhrEventCallback.error = function (e) {
             uploadOption.uploadError({ code: 404, msg: e.msg });
             uploadOption.status = -3;
             videoUpload.xhrAbort();
         };
+        xhrEventCallback.abort = function (e) {
+            uploadOption.uploadAbort({ code: 500, msg: e.msg });
+            uploadOption.status = -3;
+            videoUpload.xhrAbort();
+        };
         return xhrEventCallback;
     })();
     //上传
+    var getSignature = function(callback){
+        $.ajax({
+            url: 'getUploadSign',  //服务器获取客户端上传签名的URL
+            type: 'POST',
+            dataType: 'json',
+            success: function(data){
+                // 签名
+                callback(data.data);
+            }
+        });
+    };
     var videoUpload = (function () {
         function videoUpload() {
         }
@@ -132,24 +148,22 @@ window.html5Upload = (function () {
             var video_name = encodeURIComponent(html5Upload.exportObject.selectFile.file.name);
             var token = html5Upload.exportObject.selectFile.fileKey;
             uploadAjax.post(uploadOption.uploadInitUrl, {video_name : video_name, token : token}, function (data) {
-                var uploadSign = data.sign;
-                jyVideoId = data.videoId;
                 if(data.code==1){
                     try {
+                        //var uploadSign = data.data.sign;
+                        jyVideoId = data.data.videoId;
                         var resultMsg = qcVideo.ugcUploader.start({
                             videoFile: html5Upload.exportObject.selectFile.file,
                             // coverFile: coverFileList[0],
-                            getSignature: uploadSign,
+                            getSignature: getSignature,
                             allowAudio: 1,
                             success: function(result){
                                 if(result.type == 'video') {
-                                    xhrEventCallback.progress({curr:0});
+                                    xhrEventCallback.progress({curr:100, sha :100});
                                 }
                             },
                             error: function(result){
-                                if(result.type == 'video') {
-                                    xhrEventCallback.error(result);
-                                }
+                                xhrEventCallback.error(result);
                             },
                             progress: function(result){
                                 if(result.type == 'video') {
@@ -166,16 +180,17 @@ window.html5Upload = (function () {
                                 } else {
                                     msg = "上传成功";
                                 }
-                                xhrEventCallback.finish({msg: msg, fileId: fileId, videoUrl : videoUrl});
+                                xhrEventCallback.finish({code:0, msg: msg, fileId: fileId, videoUrl : videoUrl});
                             }
                         });
                         if(resultMsg){
                             alert(resultMsg);
                         }
                     } catch (e) {
-                        uploadOption.uploadAbort({ code: 207, msg: e.message });
-                        uploadOption.status = -3;
+                        xhrEventCallback.abort({ msg: e.message });
                     }
+                } else {
+                    xhrEventCallback.error({ msg: data.msg });
                 }
             });
         };

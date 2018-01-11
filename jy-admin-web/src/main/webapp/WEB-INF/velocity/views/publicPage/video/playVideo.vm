@@ -6,10 +6,21 @@
     </fieldset>
     <ul class="layui-timeline">
         <li class="layui-timeline-item">
-            <iframe allowfullscreen mozallowfullscreen webkitallowfullscreen vspace="0" hspace="0"
-                    frameborder="0" marginwidth="0" marginheight="0" allowtransparency="true" scrolling="no"
-                    src="//yuntv.letv.com/bcloud.html?pu=ffffffffff&uu=tcznqlkk60&vu=8d67234454&auto_play=0&gpcflag=1&wi
-dth=100%&height=300" width="100%" height="300px"></iframe>
+            <div id="id_video_container_4564972818944963063" style="width:650px;height:100%;"></div>
         </li>
     </ul>
 </div>
+
+<script src="//imgcache.qq.com/open/qcloud/video/h5/h5connect.js" charset="utf-8"></script>
+<script type="text/javascript"> (function () {
+    var option = {
+        "auto_play": "0",
+        "file_id": "4564972818944963063",
+        "app_id": "1251487038",
+        "width": 650,
+        "height": "100%",
+        "https": 1
+    };
+    /*调用播放器进行播放*/
+    new qcVideo.Player(/*代码中的id_video_container将会作为播放器放置的容器使用,可自行替换*/ "id_video_container_4564972818944963063", option);
+})() </script>

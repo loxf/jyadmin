@@ -27,7 +27,7 @@ public class VideoConfigServiceImpl implements VideoConfigService {
     @Override
     @Transactional
     public BaseResult<String> addVideo(VideoConfigDto dto) {
-        if(StringUtils.isBlank(dto.getVideoName())||StringUtils.isBlank(dto.getVideoOutId())){
+        if(StringUtils.isBlank(dto.getVideoName())){
             return new BaseResult<>(BaseConstant.FAILED, "参数不全");
         }
         VideoConfig config = new VideoConfig();

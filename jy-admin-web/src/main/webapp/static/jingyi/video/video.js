@@ -38,11 +38,6 @@ table.render({ //其它参数在此省略
             width: 210 ,
             templet : '#statusTpl'
         },
-        /*{
-            field: 'metaData',
-            title: '参数',
-            width: 300
-        },*/
         {
             field: 'videoId',
             title: '操作',

@@ -1,18 +1,13 @@
 package org.loxf.jyadmin.web.admin;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.qcloud.vod.VodApi;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
-import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.client.dto.VideoConfigDto;
 import org.loxf.jyadmin.client.service.VideoConfigService;
-import org.loxf.jyadmin.util.IPUtil;
-import org.loxf.jyadmin.util.LetvCloudV1;
 import org.loxf.jyadmin.util.TencentVideoV2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +16,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import sun.misc.BASE64Encoder;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/admin/video")
@@ -59,35 +50,34 @@ public class VideoController {
     @ResponseBody
     public BaseResult addVideo(HttpServletRequest request, String video_name, String token){
         VideoConfigDto dto = new VideoConfigDto();
-        dto.setVideoName(video_name);
-        // 获取签名
-        BaseResult signBaseResult = getUploadSignature();
-        if(signBaseResult.getCode()==BaseConstant.SUCCESS) {
-            BaseResult baseResult = videoConfigService.addVideo(dto);
-            if (baseResult.getCode() == BaseConstant.SUCCESS) {
-                JSONObject result = new JSONObject();
-                result.put("videoId", baseResult.getData());
-                result.put("sign", signBaseResult.getData());
-                return new BaseResult(result);
-            }
-            return baseResult;
-        } else {
-            return signBaseResult;
+        try {
+            dto.setVideoName(URLDecoder.decode(video_name, "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            return new BaseResult(BaseConstant.FAILED, "视频名称编码失败");
         }
+        BaseResult baseResult = videoConfigService.addVideo(dto);
+        if (baseResult.getCode() == BaseConstant.SUCCESS) {
+            JSONObject result = new JSONObject();
+            result.put("videoId", baseResult.getData());
+            return new BaseResult(result);
+        }
+        return baseResult;
     }
 
-    private BaseResult getUploadSignature(){
+    @RequestMapping("/getUploadSign")
+    @ResponseBody
+    public BaseResult<String> getUploadSign(){
         long signValidDuration = 2*60*60;
         long currentTime = System.currentTimeMillis()/1000;
         long endTime = (currentTime + signValidDuration);
         try {
-            String contextStr = "";
-            HashMap params = new HashMap<>();
-            params.put("secretId", TencentVideoV2.getSecretId());
-            params.put("currentTimeStamp", currentTime);
-            params.put("expireTime", endTime);
-            params.put("random", IdGenerator.generate("VD"));
-            return new BaseResult(TencentVideoV2.generateSign(params));
+            String contextStr = "secretId=" + java.net.URLEncoder.encode(TencentVideoV2.getSecretId(), "utf8");
+            contextStr += "&currentTimeStamp=" + currentTime;
+            contextStr += "&expireTime=" + endTime;
+            contextStr += "&random=" + new Random().nextInt(java.lang.Integer.MAX_VALUE);
+            contextStr += "&procedure=QCVB_SimpleProcessFile(1,0,10,10)";// 预置转码
+            String sign = TencentVideoV2.getUploadSign(contextStr);
+            return new BaseResult(sign);
         } catch (Exception e) {
             logger.error("获取视频上传签名失败", e);
             return new BaseResult(BaseConstant.FAILED, "获取视频上传签名失败：" + e.getMessage());
@@ -101,17 +91,17 @@ public class VideoController {
             return new BaseResult(BaseConstant.FAILED, "必要参数缺失");
         }
         try {
-            String response = cloudInit.videoUpdate(Integer.valueOf(videoOutId), videoName);
-            logger.info("更新乐视视频返回：{}", response);
-            JSONObject rep = JSON.parseObject(response);
-            if(rep.getIntValue("code")==0) {
-                VideoConfigDto video = new VideoConfigDto();
-                video.setVideoName(videoName);
-                video.setVideoId(videoId);
-                return videoConfigService.editVideo(video);
-            } else {
-                return new BaseResult(BaseConstant.FAILED, rep.getString("msg"));
+            if(StringUtils.isNotBlank(videoOutId)) {
+                JSONObject rep = TencentVideoV2.modifyVideoInfo(videoOutId, videoName);
+                logger.info("更新云视频返回：{}", rep.toJSONString());
+                if (rep.getIntValue("code") != 0) {
+                    return new BaseResult(BaseConstant.FAILED, rep.getString("msg"));
+                }
             }
+            VideoConfigDto video = new VideoConfigDto();
+            video.setVideoName(videoName);
+            video.setVideoId(videoId);
+            return videoConfigService.editVideo(video);
         } catch (Exception e){
             logger.error("更新视频信息失败", e);
             return new BaseResult(BaseConstant.FAILED,"更新视频失败");
@@ -126,19 +116,18 @@ public class VideoController {
             return new BaseResult(BaseConstant.FAILED, "视频不存在");
         } else {
             try {
+                String msg = BaseConstant.SUCCESS_MSG;
                 // 删除云视频
-                String response = cloudInit.videoDel(Integer.valueOf(dto.getVideoOutId()));
-                logger.info("删除乐视视频返回：{}", response);
-                JSONObject rep = JSON.parseObject(response);
-                if(rep.getIntValue("code")==0) {
-                    return videoConfigService.delVideo(videoId);
-                } else {
-                    BaseResult baseResult = videoConfigService.delVideo(videoId);
-                    if(baseResult.getCode()==BaseConstant.SUCCESS){
-                        baseResult.setMsg("本地删除成功，乐视端删除失败：" + rep.getString("message"));
+                if(StringUtils.isNotBlank(dto.getVideoOutId())) {
+                    JSONObject rep = TencentVideoV2.delVideo(dto.getVideoOutId());
+                    logger.info("删除云视频返回：{}", rep.toJSONString());
+                    if (rep.getIntValue("code") != 0) {
+                        msg = "本地删除成功，云端删除失败：" + rep.getString("message");
                     }
-                    return baseResult;
                 }
+                BaseResult baseResult = videoConfigService.delVideo(videoId);
+                baseResult.setMsg(msg);
+                return baseResult;
             } catch (Exception e){
                 logger.error("删除视频失败", e);
                 return new BaseResult(BaseConstant.FAILED,"删除视频失败");
@@ -154,7 +143,7 @@ public class VideoController {
 
     @RequestMapping("/getUrl")
     @ResponseBody
-    public BaseResult getUrl(HttpServletRequest request, String videoId){
+    public BaseResult getUrl(String videoId){
         BaseResult<VideoConfigDto> videoConfigDtoBaseResult = videoConfigService.queryVideo(videoId);
         if(videoConfigDtoBaseResult.getCode()== BaseConstant.SUCCESS) {
             if(videoConfigDtoBaseResult.getData().getStatus()==2) {
@@ -167,6 +156,20 @@ public class VideoController {
             }
         }
         return videoConfigDtoBaseResult;
+    }
+
+    @RequestMapping("/playVideo")
+    public String getUrl(Model model, String videoId){
+        BaseResult<VideoConfigDto> videoConfigDtoBaseResult = videoConfigService.queryVideo(videoId);
+        if(videoConfigDtoBaseResult.getCode()==BaseConstant.SUCCESS &&
+                StringUtils.isNotBlank(videoConfigDtoBaseResult.getData().getVideoOutId())) {
+            String appId = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "TC_VIDEO_APPID").getConfigValue();
+            model.addAttribute("outVideoId", videoConfigDtoBaseResult.getData().getVideoOutId());
+            model.addAttribute("appId", appId);
+            return "main/video/playVideo";
+        } else {
+            return "main/error";
+        }
     }
 
 }

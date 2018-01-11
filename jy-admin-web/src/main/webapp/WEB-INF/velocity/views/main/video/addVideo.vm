@@ -3,16 +3,16 @@
         <thead>
         <tr>
             <th>视频名称</th>
+            <th>SHA进度</th>
             <th>上传进度</th>
-            <th>上传速度</th>
             <th>上传状态</th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td><label id="videoId"></label></td>
+            <td><label id="shaProgress"></label></td>
             <td><label id="videoProgress"></label></td>
-            <td><label id="videoSpeed"></label></td>
             <td><label id="videoStatus"></label></td>
         </tr>
         </tbody>
@@ -23,6 +23,7 @@
     <input type="button" class="layui-btn uploadBtn" id="uploadBtn" value="开始上传" />
 </div>
 <!--使用例子-->
+<script src="//imgcache.qq.com/open/qcloud/js/vod/sdk/ugcUploader.js"></script>
 <script type="text/javascript" src="${rc.contextPath}/static/jingyi/video/html5Upload.js"></script>
 <script type="text/javascript">
     var jyVideoId ;
@@ -32,7 +33,7 @@
             addFile: function (data) { //添加文件时的回调
                 $("#videoId").html(data.data.fileName);
                 $("#videoProgress").html("0");
-                $("#videoSpeed").html("0");
+                $("#shaProgress").html("0");
                 $("#videoStatus").html("等待上传");
             },
             addFileError: function (data) { //添加文件时发生错误的回调
@@ -46,13 +47,13 @@
             uploadProgress: function (data) { //进度回调
                 updateProgress(jyVideoId, 1, data.progress, null);
                 $("#videoProgress").html(data.progress);
-                $("#videoSpeed").html(data.speed);
+                $("#shaProgress").html(data.sha);
                 $("#videoStatus").html("上传中");
             },
             uploadFinish: function (data) { //上传完成回调
-                updateProgress(jyVideoId, 2, "100%", "已上传");
+                updateProgress(jyVideoId, 2, "100%", "已上传", data.fileId,  data.videoUrl);
                 $("#videoProgress").html("100%");
-                $("#videoSpeed").html("0");
+                $("#shaProgress").html("100%");
                 $("#videoStatus").html("已上传");
             },
             uploadError: function (data) { //上传错误回调
@@ -60,26 +61,38 @@
                 $("#videoStatus").html("上传错误！错误码：" + data.code + ";错误消息：" + data.msg);
             },
             uploadAbort:function(data){ //中断
-                updateProgress(jyVideoId, -2, null, "上传中断");
+                $("#videoStatus").html("上传错误！错误码：" + data.code + ";错误消息：" + data.msg);
+                updateProgress(jyVideoId, -2, null, "上传中断：" + data.msg);
             }
         });
     });
     function updateProgress(jyVideoId, status, progress, remark, fileId, videoUrl) {
-        //记录进度
-        $.ajax({
-            type: "POST",
-            url:"'.html",
-            data : {
-                videoId : jyVideoId,
-                status : status,
-                progress : progress,
-                videoOutId : fileId,
-                videoUrl : videoUrl,
-                remark : remark
-            },
-            dataType:"json",
-            success: function(data) {
+        var recordFlag = false;// 默认不记录
+        if(!progress){
+            recordFlag = true;//异常情况 记录
+        } else {
+            var nbr = progress.replace("%", "");
+            if((nbr%5)==0){
+                recordFlag = true;//正常情况 每5%记录一次数据库
             }
-        });
+        }
+        if(recordFlag){
+            //记录进度
+            $.ajax({
+                type: "POST",
+                url:"updateProgress.html",
+                data : {
+                    videoId : jyVideoId,
+                    status : status,
+                    progress : progress,
+                    videoOutId : fileId,
+                    videoUrl : videoUrl,
+                    remark : remark
+                },
+                dataType:"json",
+                success: function(data) {
+                }
+            });
+        }
     }
 </script>
