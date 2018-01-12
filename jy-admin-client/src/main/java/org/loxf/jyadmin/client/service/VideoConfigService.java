@@ -11,4 +11,11 @@ public interface VideoConfigService {
     public BaseResult<VideoConfigDto> queryVideo(String videoId);
     public PageResult<VideoConfigDto> pager(VideoConfigDto catalogDto);
     public BaseResult updateProgress(VideoConfigDto dto);
+
+    /**
+     * @param fileId
+     * @param type m3u8 m3u8_hd m3u8_sd
+     * @return
+     */
+    public BaseResult<String> queryUrl(String fileId, String type);
 }

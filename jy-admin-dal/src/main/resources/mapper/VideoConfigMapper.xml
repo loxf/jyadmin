@@ -19,10 +19,16 @@
     id, video_id, video_name, video_url, status, progress, video_unique, video_out_id, meta_data, remark, created_at, updated_at
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_video_config
     where video_id = #{videoId}
+  </select>
+  <select id="selectByVideoOutId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_video_config
+    where video_out_id = #{videoOutId}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tb_video_config
@@ -38,7 +44,13 @@
   </insert>
   <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.VideoConfig" >
     update tb_video_config
-    set video_name = #{videoName,jdbcType=VARCHAR},
+    set
+    <if test="videoName!=null and videoName!=''">
+      video_name = #{videoName,jdbcType=VARCHAR},
+    </if>
+    <if test="metaData!=null and metaData!=''">
+      meta_data = #{metaData,jdbcType=VARCHAR},
+    </if>
       updated_at = now()
     where video_id = #{videoId,jdbcType=VARCHAR}
   </update>

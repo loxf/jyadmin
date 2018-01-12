@@ -28,8 +28,8 @@ table.render({ //其它参数在此省略
             width: 210
         },
         {
-            field: 'videoUnique',
-            title: '视频唯一码',
+            field: 'videoUrl',
+            title: '高清地址',
             width: 210
         },
         {

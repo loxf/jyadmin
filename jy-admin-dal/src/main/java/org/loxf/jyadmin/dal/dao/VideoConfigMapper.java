@@ -11,6 +11,8 @@ public interface VideoConfigMapper {
 
     VideoConfig selectByPrimaryKey(String id);
 
+    VideoConfig selectByVideoOutId(String videoOutId);
+
     int updateByPrimaryKey(VideoConfig record);
 
     int count(VideoConfig record);

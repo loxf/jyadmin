@@ -1,6 +1,8 @@
 package org.loxf.jyadmin.web.admin;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
@@ -8,7 +10,7 @@ import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.client.dto.VideoConfigDto;
 import org.loxf.jyadmin.client.service.VideoConfigService;
-import org.loxf.jyadmin.util.TencentVideoV2;
+import org.loxf.jyadmin.biz.util.TencentVideoV2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +45,26 @@ public class VideoController {
     @RequestMapping("/list")
     @ResponseBody
     public PageResult<VideoConfigDto> list(VideoConfigDto videoConfigDto){
-        return videoConfigService.pager(videoConfigDto);
+        PageResult<VideoConfigDto> pageResult = videoConfigService.pager(videoConfigDto);
+        if(CollectionUtils.isNotEmpty(pageResult.getData())){
+            for(VideoConfigDto video : pageResult.getData()) {
+                String url = null;
+                if (StringUtils.isNotBlank(video.getMetaData())) {
+                    JSONObject jsonObject = JSON.parseObject(video.getMetaData());
+                    url = jsonObject.getString("m3u8_hd");
+                }
+                if (StringUtils.isBlank(url)) {
+                    BaseResult<String> hdUrlBaseResult = getUrl(video.getVideoId());// 获取高清地址，触发更新metaData
+                    if(hdUrlBaseResult.getCode()==BaseConstant.SUCCESS) {
+                        url = hdUrlBaseResult.getData();
+                    } else {
+                        url = hdUrlBaseResult.getMsg();
+                    }
+                }
+                video.setVideoUrl(url);
+            }
+        }
+        return pageResult;
     }
 
     @RequestMapping("/addVideo")
@@ -144,18 +165,7 @@ public class VideoController {
     @RequestMapping("/getUrl")
     @ResponseBody
     public BaseResult getUrl(String videoId){
-        BaseResult<VideoConfigDto> videoConfigDtoBaseResult = videoConfigService.queryVideo(videoId);
-        if(videoConfigDtoBaseResult.getCode()== BaseConstant.SUCCESS) {
-            if(videoConfigDtoBaseResult.getData().getStatus()==2) {
-                if(StringUtils.isNotBlank(videoConfigDtoBaseResult.getData().getVideoUrl())){
-                    return new BaseResult(videoConfigDtoBaseResult.getData().getVideoUrl());
-                }
-                return new BaseResult(BaseConstant.FAILED, "未获取视频链接");
-            } else {
-                return new BaseResult(BaseConstant.FAILED, "视频未上传完成");
-            }
-        }
-        return videoConfigDtoBaseResult;
+        return videoConfigService.queryUrl(videoId, "m3u8_hd");
     }
 
     @RequestMapping("/playVideo")
