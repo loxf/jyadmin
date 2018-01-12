@@ -10,8 +10,10 @@ import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
 import org.loxf.jyadmin.biz.util.BizUtil;
+import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.biz.util.SendWeixinMsgUtil;
 import org.loxf.jyadmin.client.dto.CustDto;
+import org.loxf.jyadmin.client.service.AccountService;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.client.tmp.CustInfoUpload;
 import org.loxf.jyadmin.dal.dao.*;
@@ -36,6 +38,8 @@ public class CustServiceImpl implements CustService {
     private AccountMapper accountMapper;
     @Autowired
     private VipInfoMapper vipInfoMapper;
+    @Autowired
+    private AccountService accountService;
     @Autowired
     private AgentInfoMapper agentInfoMapper;
     @Value("#{configProperties['JYZX.INDEX.URL']}")
@@ -246,9 +250,14 @@ public class CustServiceImpl implements CustService {
     @Override
     @Transactional
     public BaseResult bindCust(CustDto custDto) {
-        int count = custMapper.existsByPhoneOrEmail(custDto.getIsChinese(), (custDto.getIsChinese()==1?custDto.getPhone():custDto.getEmail()));
-        if(count>0){
+        Cust cust = custMapper.selectByPhoneOrEmail(custDto.getIsChinese(), (custDto.getIsChinese()==1?custDto.getPhone():custDto.getEmail()));
+        if(cust!=null){
             return new BaseResult(BaseConstant.FAILED, "当前" + (custDto.getIsChinese()==1?"手机":"邮箱") + "已被绑定，请更换。");
+        }
+        // 判断推荐人
+        if(StringUtils.isNotBlank(cust.getRecommend())){
+            String bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "SUB_BIND_PHONE_BP", "10").getConfigValue();
+            accountService.increase(cust.getRecommend(), null, new BigDecimal(bp), null, "推荐同学绑定得积分", cust.getCustId());
         }
         return updateCust(custDto);
     }

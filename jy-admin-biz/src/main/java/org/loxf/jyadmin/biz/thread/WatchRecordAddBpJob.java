@@ -60,15 +60,17 @@ public class WatchRecordAddBpJob extends JOB {
                         if(bp>50.0){// 每个视频 每次观看最多50积分
                             bp = 50d;
                         }
-                        if(bp>0) {
-                            BaseResult<Boolean> baseResult = accountService.increase(watchRecord.getCustId(), null, new BigDecimal(bp), watchRecord.getWatchId(),
-                                    "观看视频得积分", "");
-                            if (baseResult.getCode() == BaseConstant.SUCCESS && baseResult.getData() == true) {
-                                watchRecordMapper.updateStatus(watchRecord.getWatchId());
-                            } else {
-                                logger.error("更新观看记录失败" + baseResult.getMsg());
+                        try {
+                            if(bp>0) {
+                                BaseResult<Boolean> baseResult = accountService.increase(watchRecord.getCustId(), null, new BigDecimal(bp), watchRecord.getWatchId(),
+                                        "观看视频得积分", "");
+                                if (baseResult.getCode() == BaseConstant.FAILED ) {
+                                    logger.error("更新观看记录失败" + baseResult.getMsg());
+                                }
                             }
-                        } else {
+                        } catch (Exception e) {
+                            logger.error("处理观看积分失败：", e);
+                        } finally {
                             watchRecordMapper.updateStatus(watchRecord.getWatchId());
                         }
                     }
