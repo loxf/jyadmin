@@ -39,6 +39,11 @@ table.render({ //其它参数在此省略
             templet : '#statusTpl'
         },
         {
+            field: 'createdAt',
+            title: '上传时间',
+            width: 180
+        },
+        {
             field: 'videoId',
             title: '操作',
             width: 310,
