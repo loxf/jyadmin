@@ -46,7 +46,7 @@ table.render({ //其它参数在此省略
         {
             field: 'videoId',
             title: '操作',
-            width: 310,
+            width: 240,
             fixed: 'right',
             align: 'center',
             toolbar: '#barTable'
