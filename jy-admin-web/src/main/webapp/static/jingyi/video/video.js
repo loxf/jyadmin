@@ -35,7 +35,7 @@ table.render({ //其它参数在此省略
         {
             field: 'status',
             title: '状态',
-            width: 210 ,
+            width: 120 ,
             templet : '#statusTpl'
         },
         {
