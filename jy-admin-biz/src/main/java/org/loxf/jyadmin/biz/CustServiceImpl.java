@@ -255,9 +255,9 @@ public class CustServiceImpl implements CustService {
             return new BaseResult(BaseConstant.FAILED, "当前" + (custDto.getIsChinese()==1?"手机":"邮箱") + "已被绑定，请更换。");
         }
         // 判断推荐人
-        if(StringUtils.isNotBlank(cust.getRecommend())){
+        if(StringUtils.isNotBlank(custDto.getRecommend())){
             String bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "SUB_BIND_PHONE_BP", "10").getConfigValue();
-            accountService.increase(cust.getRecommend(), null, new BigDecimal(bp), null, "推荐同学绑定得积分", cust.getCustId());
+            accountService.increase(custDto.getRecommend(), null, new BigDecimal(bp), null, "推荐同学绑定得积分", custDto.getCustId());
         }
         return updateCust(custDto);
     }
