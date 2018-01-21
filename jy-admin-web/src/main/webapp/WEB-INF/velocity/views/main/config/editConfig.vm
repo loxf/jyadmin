@@ -60,13 +60,13 @@
                     #end />
             </div>
             <input type="hidden" name="configValue" class="value_type_value value_type_value_pic" id="configPic"
-                #if($!{configDto.type}=='PIC') src="$!{configDto.configValue}"
+                #if($!{configDto.type}=='PIC') value="$!{configDto.configValue}"
                 #end />
         </div>
         <div class="layui-input-inline value_type value_type_mp4" style="display: none">
             <input type="text" name="configValue" placeholder="请选择视频"
                    class="layui-input value_type_value value_type_value_mp4"
-                #if($!{configDto.type}=='PIC') value="$!{configDto.configValue}"
+                #if($!{configDto.type}=='MP4') value="$!{configDto.configValue}"
                 #end />
         </div>
         <div class="layui-input-inline value_type value_type_url" style="display: none">
@@ -116,9 +116,9 @@
     form.verify({
         configName: function(value){
             if(value.length < 4){
-                return '名称至少4个字';
+                return '名称至少2个字';
             } else if(value.length >20){
-                return '名称超过20个字';
+                return '名称超过50个字';
             }
         },
         configCode: function(value){

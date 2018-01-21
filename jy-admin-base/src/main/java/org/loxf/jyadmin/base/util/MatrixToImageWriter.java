@@ -41,7 +41,7 @@ public class MatrixToImageWriter {
             BufferedImage qrImage = toBufferedImage(matrix); //读取图片
             BufferedImage logoImage = ImageIO.read(logo); //读取图片
             logoImage = ImageUtil.zoomImage(logoImage, 50, 50);
-            ImageUtil.overlapImage(qrImage, logoImage, null,null, filePath);
+            ImageUtil.overlapImage(qrImage, logoImage, new int[]{125,125},null, filePath);
         } catch (Exception e){
             logger.error("生成二维码失败", e);
             throw new RuntimeException("生成二维码失败", e);
