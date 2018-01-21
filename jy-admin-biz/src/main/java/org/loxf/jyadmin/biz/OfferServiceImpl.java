@@ -76,6 +76,9 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public BaseResult<OfferDto> queryOffer(String offerId){
         Offer offer = offerMapper.selectByOfferId(offerId);
+        if(offer==null){
+            return new BaseResult<>(BaseConstant.FAILED, "商品不存在");
+        }
         OfferDto dto = new OfferDto();
         BeanUtils.copyProperties(offer, dto);
         return new BaseResult<>(dto);
@@ -97,8 +100,7 @@ public class OfferServiceImpl implements OfferService {
     @Override
     @Transactional
     public BaseResult updateOffer(OfferDto offerDto, List<OfferRelDto> offerRelDtos){
-        Offer again = offerMapper.selectByOfferId(offerDto.getOfferId());
-        if("OFFER".equals(again.getOfferType())){
+        if("OFFER".equals(offerDto.getOfferType())){
             // 套餐要删除offerrel 再新增
             offerRelMapper.deleteByOfferIdAndRelType(offerDto.getOfferId(), "OFFER");
             addOfferRel(offerDto.getOfferId(), offerRelDtos);

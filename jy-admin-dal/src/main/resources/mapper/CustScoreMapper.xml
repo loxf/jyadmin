@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.CustScoreMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CustScore" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="offer_id" property="offerId" jdbcType="VARCHAR" />
+    <result column="exam_name" property="examName" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="is_pass" property="isPass" jdbcType="INTEGER" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cust_id, offer_id, exam_name, score, is_pass, version, created_at, updated_at
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_cust_score
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_cust_score
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
+    insert into tb_cust_score (id, cust_id, offer_id, 
+      exam_name, score, is_pass, 
+      version, created_at, updated_at
+      )
+    values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{offerId,jdbcType=VARCHAR}, 
+      #{examName,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, #{isPass,jdbcType=INTEGER}, 
+      #{version,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
+    insert into tb_cust_score
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="custId != null" >
+        cust_id,
+      </if>
+      <if test="offerId != null" >
+        offer_id,
+      </if>
+      <if test="examName != null" >
+        exam_name,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="isPass != null" >
+        is_pass,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="custId != null" >
+        #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="offerId != null" >
+        #{offerId,jdbcType=VARCHAR},
+      </if>
+      <if test="examName != null" >
+        #{examName,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="isPass != null" >
+        #{isPass,jdbcType=INTEGER},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
+    update tb_cust_score
+    <set >
+      <if test="custId != null" >
+        cust_id = #{custId,jdbcType=VARCHAR},
+      </if>
+      <if test="offerId != null" >
+        offer_id = #{offerId,jdbcType=VARCHAR},
+      </if>
+      <if test="examName != null" >
+        exam_name = #{examName,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="isPass != null" >
+        is_pass = #{isPass,jdbcType=INTEGER},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
+    update tb_cust_score
+    set cust_id = #{custId,jdbcType=VARCHAR},
+      offer_id = #{offerId,jdbcType=VARCHAR},
+      exam_name = #{examName,jdbcType=VARCHAR},
+      score = #{score,jdbcType=INTEGER},
+      is_pass = #{isPass,jdbcType=INTEGER},
+      version = #{version,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

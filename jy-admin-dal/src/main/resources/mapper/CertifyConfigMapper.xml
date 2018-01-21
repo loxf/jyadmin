@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.CertifyConfigMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="certify_id" property="certifyId" jdbcType="VARCHAR" />
+    <result column="certify_name" property="certifyName" jdbcType="VARCHAR" />
+    <result column="privi_arr" property="priviArr" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, certify_id, certify_name, privi_arr, created_at, updated_at
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_certify_config
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_certify_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    insert into tb_certify_config (id, certify_id, certify_name, 
+      privi_arr, created_at, updated_at
+      )
+    values (#{id,jdbcType=BIGINT}, #{certifyId,jdbcType=VARCHAR}, #{certifyName,jdbcType=VARCHAR}, 
+      #{priviArr,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    insert into tb_certify_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="certifyId != null" >
+        certify_id,
+      </if>
+      <if test="certifyName != null" >
+        certify_name,
+      </if>
+      <if test="priviArr != null" >
+        privi_arr,
+      </if>
+      <if test="createdAt != null" >
+        created_at,
+      </if>
+      <if test="updatedAt != null" >
+        updated_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="certifyId != null" >
+        #{certifyId,jdbcType=VARCHAR},
+      </if>
+      <if test="certifyName != null" >
+        #{certifyName,jdbcType=VARCHAR},
+      </if>
+      <if test="priviArr != null" >
+        #{priviArr,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    update tb_certify_config
+    <set >
+      <if test="certifyId != null" >
+        certify_id = #{certifyId,jdbcType=VARCHAR},
+      </if>
+      <if test="certifyName != null" >
+        certify_name = #{certifyName,jdbcType=VARCHAR},
+      </if>
+      <if test="priviArr != null" >
+        privi_arr = #{priviArr,jdbcType=VARCHAR},
+      </if>
+      <if test="createdAt != null" >
+        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedAt != null" >
+        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    update tb_certify_config
+    set certify_id = #{certifyId,jdbcType=VARCHAR},
+      certify_name = #{certifyName,jdbcType=VARCHAR},
+      privi_arr = #{priviArr,jdbcType=VARCHAR},
+      created_at = #{createdAt,jdbcType=TIMESTAMP},
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

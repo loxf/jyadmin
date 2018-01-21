@@ -1,0 +1,295 @@
+<form class="layui-form" action="">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>基础信息</legend>
+    </fieldset>
+    <div class="layui-form-item">
+        <label class="layui-form-label">考试名称</label>
+        <div class="layui-input-block">
+            <input type="text" name="examName" id="examName" value="$!{examName}" lay-verify="examName" autocomplete="off" placeholder="请输入考题名称（建议20字以内）"
+                   class="layui-input">
+            <input type="hidden" name="offerId" lay-verify="offerId" id="offerId" value="$!{offerId}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">及格分数</label>
+        <div class="layui-input-block">
+            <input type="number" name="passScore" #if($!{passScore}) value="$!{passScore}" #else value="60" #end
+                   autocomplete="off" placeholder="默认60分及格" class="layui-input" required >
+        </div>
+    </div>
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>考题设置</legend>
+    </fieldset>
+    <div class="layui-form-item" id="J_questionDiv">
+    </div>
+    <hr>
+    <div>
+        <label class="layui-form-label">增加题目</label>
+        <div class="layui-input-block">
+            <a class="layui-icon" style="font-size: 22px; color: #009688;" onclick="addQustion()">&#xe608;添加</a>
+        </div>
+    </div>
+    <hr>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="offerData">提交设置</button>
+        </div>
+    </div>
+</form>
+
+<!-- 考题模板 -->
+<script type="text/html" id="M_question">
+    <div class="QUESTION_DIV" data-questionnbr="{{d.questionNbr}}">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend>
+                <a class="layui-icon" onclick="delQuestion(this)" style="font-size: 22px; color: #009688;">&#xe640;</a>
+                题目{{d.questionNbr}} </legend>
+        </fieldset>
+        <div class="layui-form-item">
+            <label class="layui-form-label">分值</label>
+            <div class="layui-input-block">
+                <input type="number" value="{{d.score}}" name="score" placeholder="请输入分值" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">题干</label>
+            <div class="layui-input-block">
+                        <textarea type="text" name="title" placeholder="请输入题干，描述考题"
+                                  autocomplete="off" class="layui-textarea">{{d.title}}</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">题目图片</label>
+            <div class="layui-input-block layui-upload">
+                <button type="button" class="layui-btn layui-btn-normal" id="chooseList">选择题目图片（可多选）</button>
+                <input class="layui-upload-file" type="file" name="file" multiple="">
+                <div class="layui-upload-list">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th width="30%">文件</th>
+                            <th width="20%">大小</th>
+                            <th width="20%">状态</th>
+                            <th width="30%">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="viewList"></tbody>
+                    </table>
+                </div>
+                <input type="hidden" value="" name="pics">
+                <button type="button" class="layui-btn" id="uploadAction">开始上传</button>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <a class="layui-icon" style="font-size: 22px; color: #009688;" onclick="addOption(this)">&#xe608;</a>
+                选项</label>
+            <div class="layui-input-block">
+            </div>
+        </div>
+        <br>
+    </div>
+</script>
+
+<!-- 选项模板 -->
+<script type="text/html" id="M_option">
+    <div class="layui-input-inline" style="margin-bottom: 5px">
+        <div class="layui-input-inline">
+            <input type="text" value="" name="question{{d.questionNbr}}option" placeholder="请输入选项内容" class="layui-input">
+        </div>
+        <div class="layui-input-inline">
+            <input type="checkbox" name="switch" lay-skin="switch" lay-text="正确|错误">
+            <a class="layui-icon" style="font-size: 22px; color: #009688; float: right;" onclick="delOption(this)">&#xe640;</a>
+        </div>
+        <div class="layui-input-inline">
+        </div>
+    </div>
+</script>
+
+<script>
+    var form = layui.form
+            ,layer = layui.layer
+            ,upload = layui.upload
+            ,laytpl = layui.laytpl;
+        var questionNbr = 0;
+
+    //自定义验证规则
+    form.verify({
+        examName: function(value){
+            if(value.length < 4){
+                return '标题至少4个字';
+            } else if(value.length >20){
+                return '标题超过20个字';
+            }
+        }
+        ,offerId: function(value){
+            if(!value){
+                return "OFFERID缺失";
+            }
+        }
+    });
+
+    //监听提交
+    form.on('submit(offerData)', function(data){
+        var loadIndex = layer.load(1);
+        var questions = [];
+        // TODO type:1 单选 ； 2：多选  由答案个数决定
+        for(var i=1; i<=questionNbr; i++){
+            var title = eval("data.field.TITLE" + i);
+            if(title){
+                var teacherTitle = eval("data.field.TITLE" + i);
+                var teacherPic = eval("data.field.TEACHERPIC" + i);
+                teacher.push({title: title, title: teacherTitle, pic: teacherPic});
+            }
+        }
+        $.ajax({
+            type: "POST",
+            url:"settingQuestion.html",
+            data : {
+                offerId:data.field.offerId,
+                examName:data.field.examName,
+                passScore:data.field.passScore,
+                questions:questions
+            },
+            dataType:"json",
+            success: function(data) {
+                if(data.code == 1){
+                    parent.layer.closeAll();
+                    parent.searchList();
+                } else {
+                    layer.close(loadIndex);
+                    layer.msg(data.msg);
+                }
+            }
+        });
+        return false;
+    });
+
+    function addQustion(data) {
+        if(!data){
+            data = { //数据
+                title : ""
+                ,type : 1
+                ,score : 10
+                ,questionNbr : ++questionNbr
+            }
+        } else {
+            questionNbr = data.questionNbr;
+        }
+        var getTpl = $("#M_question").html();
+        laytpl(getTpl).render(data, function(html){
+            $("#J_questionDiv").append(html);
+            // setUpload("#questionPic" + questionNbr + "Btn");
+        });
+        form.render();
+    }
+
+    function delQuestion(obj) {
+        $(obj).parent().parent().parent().remove();
+    }
+
+    function addOption(obj) {
+        var questionNbr = $(obj).parent().parent().parent().parent().data("questionnbr");
+        var data = { //数据
+            questionNbr : questionNbr
+        }
+        var getTpl = $("#M_option").html()
+        laytpl(getTpl).render(data, function(html){
+            $(obj).parent().parent().children("div").append(html);
+        });
+        form.render();
+    }
+
+    function delOption(obj) {
+        $(obj).parent().parent().remove();
+    }
+
+    //多文件列表示例
+    function setUpload(viewDom, chooseDom, uploadBtnDom) {
+        var demoListView = $(viewDom)
+                , uploadListIns = upload.render({
+            elem: chooseDom
+            , url: '/upload/img.html?type=EXAM'
+            , accept: 'file'
+            , multiple: true
+            , auto: false
+            , bindAction: uploadBtnDom
+            , choose: function (obj) {
+                var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                //读取本地文件
+                obj.preview(function (index, file, result) {
+                    var tr = $(['<tr id="upload-' + index + '">'
+                        , '<td>' + '<img src="' + result + '" alt="' + file.name + '" style="width:150px" class="layui-upload-img">' + '</td>'
+                        , '<td>' + (file.size / 1014).toFixed(1) + 'kb</td>'
+                        , '<td>等待上传</td>'
+                        , '<td>'
+                        , '<button class="layui-btn layui-btn-mini demo-reload layui-hide">重传</button>'
+                        , '<button class="layui-btn layui-btn-mini layui-btn-danger demo-delete">删除</button>'
+                        , '</td>'
+                        , '</tr>'].join(''));
+
+                    //单个重传
+                    tr.find('.demo-reload').on('click', function () {
+                        obj.upload(index, file);
+                    });
+
+                    //删除
+                    tr.find('.demo-delete').on('click', function () {
+                        delete files[index]; //删除对应的文件
+                        tr.remove();
+                        uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                    });
+
+                    demoListView.append(tr);
+                });
+            }
+            , done: function (res, index, upload) {
+                if (res.code == 0) { //上传成功
+                    var tr = demoListView.find('tr#upload-' + index)
+                            , tds = tr.children();
+                    tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+                    tds.eq(3).html(''); //清空操作
+                    return delete this.files[index]; //删除文件队列已经上传成功的文件
+                }
+                this.error(index, upload);
+            }
+            , error: function (index, upload) {
+                var tr = demoListView.find('tr#upload-' + index)
+                        , tds = tr.children();
+                tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+                tds.eq(3).find('.demo-reload').removeClass('layui-hide'); //显示重传
+            }
+        });
+    }
+
+    $.ajax({
+        type: "POST",
+        url:"queryQuestionList.html",
+        data : {
+            offerId:$("#offerId").val(),
+        },
+        dataType:"json",
+        success: function(data) {
+            if(data.code == 1){
+                var examName ;
+                for(var i=0; i<data.data.length; i++){
+                    var question = data.data[i];
+                    examName = question.examName;
+                    var tempData = {
+                        title : question.title
+                        ,pics : question.pics
+                        ,type : question.type
+                        ,score : question.score
+                        ,options : question.options
+                        ,answer : question.answer
+                        ,questionNbr : question.seq
+                    }
+                    addQustion(tempData);
+                }
+                $("#examName").val(examName);
+            }
+        }
+    });
+    form.render();
+
+</script>

@@ -106,6 +106,12 @@ table.render({ //其它参数在此省略
             width: 180
         },
         {
+            field: 'examSetting',
+            title: '考题设置',
+            width: 180,
+            templet : '#examTpl'
+        },
+        {
             field: 'htmlId',
             title: '详情',
             width: 80,
@@ -342,6 +348,36 @@ function offOffer(data, layEvent, obj){
     });
 }
 
+function onOrOffExam(offerId, type){
+    $.ajax({
+        type: "POST",
+        url:"onOrOffExam.html",
+        data : {
+            offerId : offerId,
+            type : type
+        },
+        dataType:"json",
+        success: function(data) {
+            layer.msg(data.msg, {
+                time: 1500 //1.5秒关闭（如果不配置，默认是3秒）
+            }, function(){
+                if(data.code == 1){
+                    searchList();
+                }
+            });
+        }
+    });
+}
+function settingExam(offerId) {
+    var addLayer = layer.open({
+        type: 2
+        ,offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+        ,id: 'showOffer' //防止重复弹出
+        ,area: ['1000px', '600px']
+        ,content: 'toSettingExam.html?offerId=' + offerId
+        ,shade: 0.3
+    });
+}
 function showOffer(offerId) {
     var addLayer = layer.open({
         type: 2
