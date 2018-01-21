@@ -1,12 +1,12 @@
 package org.loxf.jyadmin.web.admin;
 
-import com.alibaba.dubbo.container.page.Page;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
+import org.loxf.jyadmin.base.bean.BeanList;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.bean.Pager;
 import org.loxf.jyadmin.base.constant.BaseConstant;
@@ -14,8 +14,6 @@ import org.loxf.jyadmin.base.util.JedisUtil;
 import org.loxf.jyadmin.biz.util.SendWeixinMsgUtil;
 import org.loxf.jyadmin.client.dto.*;
 import org.loxf.jyadmin.client.service.*;
-import org.loxf.jyadmin.dal.po.ClassQuestion;
-import org.loxf.jyadmin.dal.po.Offer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -23,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -274,21 +271,22 @@ public class OfferController extends BaseControl<OfferDto> {
     }
     @RequestMapping("/settingQuestion")
     @ResponseBody
-    public BaseResult settingQuestion(String offerId, String examName, Integer passScore, JSONArray questions){
-        if(questions==null){
+    public BaseResult settingQuestion(String offerId, String examName, Integer passScore, String questionStr){
+        if(StringUtils.isBlank(questionStr)||questionStr.equals("[]")){
             return new BaseResult(BaseConstant.FAILED, "考题不能为空");
         }
         BaseResult<OfferDto> offerDtoBaseResult = offerService.queryOffer(offerId);
         if(offerDtoBaseResult.getCode()==BaseConstant.FAILED){
             return offerDtoBaseResult;
         }
-        List<ClassQuestionDto> classQuestionDtos = new ArrayList<>();
-        for(Object object : questions){
-            ClassQuestionDto dto = new ClassQuestionDto();
-            BeanUtils.copyProperties((JSONObject)object, dto);
-            dto.setOfferId(offerId);
-            dto.setExamName(examName);
-            classQuestionDtos.add(dto);
+        List<ClassQuestionDto> classQuestionDtos = JSON.parseArray(questionStr, ClassQuestionDto.class);
+        for(ClassQuestionDto object : classQuestionDtos){
+            object.setOfferId(offerId);
+            object.setExamName(examName);
+            String options = object.getOptions();
+            if(StringUtils.isBlank(options)||options.equals("[]")){
+                return new BaseResult(BaseConstant.FAILED, "选项不能为空");
+            }
         }
         BaseResult baseResult = classQuestionService.settingQuestion(classQuestionDtos);
         if(baseResult.getCode()==BaseConstant.SUCCESS){
