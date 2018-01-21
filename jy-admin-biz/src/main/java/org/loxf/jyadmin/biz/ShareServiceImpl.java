@@ -55,16 +55,16 @@ public class ShareServiceImpl implements ShareService {
         List<Map> infoList = new ArrayList<>();
         Map map1 = new HashMap();
         map1.put("value", "我是" + nickName);
-        map1.put("posX", 190);
-        map1.put("posY", 940);
+        map1.put("posX", 180);
+        map1.put("posY", 730);
         Map map2 = new HashMap();
         map2.put("value", "我为静怡雅学文化代言.");
-        map2.put("posX", 190);
-        map2.put("posY", 980);
+        map2.put("posX", 180);
+        map2.put("posY", 775);
         infoList.add(map1);
         infoList.add(map2);
         String bgFilePath = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_COM, "SHARE_BG_PIC").getConfigValue();
-        ImageUtil.overlapImage(new File(IMG_SERVER_PATH + bgFilePath), new File(IMG_SERVER_PATH + qrFilePath), new int[]{0, -170},
+        ImageUtil.overlapImage(new File(IMG_SERVER_PATH + bgFilePath), new File(IMG_SERVER_PATH + qrFilePath), new int[]{170, 400},
                 infoList, IMG_SERVER_PATH + shareFilePath);
         return new BaseResult<>(shareFilePath);
     }
