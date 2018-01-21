@@ -105,8 +105,8 @@
         configName: function(value){
             if(value.length < 4){
                 return '名称至少4个字';
-            } else if(value.length >20){
-                return '名称超过20个字';
+            } else if(value.length >50){
+                return '名称超过50个字';
             }
         },
         configCode: function(value){

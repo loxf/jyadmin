@@ -21,20 +21,20 @@ public class ImageUtil {
         String text = "http://www.jingyizaixian.com?recommend=CUSTIJHSFG89235UW4IDGI2H5JF298S5"; // 二维码内容
         String format = "jpg";// 二维码的图片格式
         String filePath = "C:\\Users\\lenovo\\Desktop\\ss\\qr.jpg";
-        String logoPath = "C:\\Users\\lenovo\\Desktop\\ss\\logo.png";
+        String logoPath = "C:\\Users\\lenovo\\Desktop\\ss\\logo.jpg";
         MatrixToImageWriter.createQR(text, format, filePath, logoPath);
         List<Map> infoList = new ArrayList<>();
         Map map1 = new HashMap();
         map1.put("value", "我是Face.");
         map1.put("posX", 180);
-        map1.put("posY", 530);
+        map1.put("posY", 730);
         Map map2 = new HashMap();
         map2.put("value", "我为静怡雅学文化代言.");
         map2.put("posX", 180);
-        map2.put("posY", 575);
+        map2.put("posY", 775);
         infoList.add(map1);
         infoList.add(map2);
-        overlapImage(new File("C:\\Users\\lenovo\\Desktop\\ss\\temp1.jpg"), new File(filePath), new int[]{170, 200},
+        overlapImage(new File("C:\\Users\\lenovo\\Desktop\\ss\\temp1.jpg"), new File(filePath), new int[]{170, 400},
                 infoList, "C:\\Users\\lenovo\\Desktop\\ss\\qrF1.jpg");
     }
 
