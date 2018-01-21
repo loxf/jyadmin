@@ -26,6 +26,11 @@ public class WeixinMenuController {
     @Autowired
     private JedisUtil jedisUtil;
 
+    @RequestMapping("/config")
+    public String config(){
+        return "weixin/menuConfig";
+    }
+
     @RequestMapping("/create")
     @ResponseBody
     public BaseResult create(String weixinButton, HttpServletRequest request){
@@ -35,7 +40,13 @@ public class WeixinMenuController {
             try {
                 String result = HttpsUtil.handlePost(url, weixinButton, null);
                 logger.info(result);
-                return new BaseResult(result);
+                // {"errcode":40025,"errmsg":"invalid sub button name size hint: [focMea0956vr21]"}
+                JSONObject jsonObject = JSON.parseObject(result);
+                if(jsonObject.getIntValue("errcode")==0){
+                    return new BaseResult(result);
+                } else {
+                    return new BaseResult(BaseConstant.FAILED, jsonObject.getString("errmsg"));
+                }
             } catch (Exception e) {
                 logger.error("新增微信菜单失败", e);
                 return new BaseResult(BaseConstant.FAILED, "新增微信菜单失败");
