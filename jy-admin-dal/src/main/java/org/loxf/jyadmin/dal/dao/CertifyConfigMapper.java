@@ -2,16 +2,19 @@ package org.loxf.jyadmin.dal.dao;
 
 import org.loxf.jyadmin.dal.po.CertifyConfig;
 
+import java.util.List;
+
 public interface CertifyConfigMapper {
-    int deleteByPrimaryKey(Long id);
+    int selectCount(CertifyConfig certifyConfig);
+
+    List<CertifyConfig> selectList(CertifyConfig certifyConfig);
+
+    int deleteByPrimaryKey(String id);
 
     int insert(CertifyConfig record);
 
-    int insertSelective(CertifyConfig record);
+    CertifyConfig selectByPrimaryKey(String id);
 
-    CertifyConfig selectByPrimaryKey(Long id);
+    int update(CertifyConfig record);
 
-    int updateByPrimaryKeySelective(CertifyConfig record);
-
-    int updateByPrimaryKey(CertifyConfig record);
 }

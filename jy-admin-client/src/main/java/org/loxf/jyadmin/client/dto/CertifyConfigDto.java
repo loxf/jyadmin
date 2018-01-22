@@ -1,10 +1,8 @@
-package org.loxf.jyadmin.dal.po;
+package org.loxf.jyadmin.client.dto;
 
 import org.loxf.jyadmin.base.bean.BaseModel;
 
-import java.util.Date;
-
-public class CertifyConfig extends BaseModel {
+public class CertifyConfigDto extends BaseModel {
     private String certifyId;
 
     private String certifyName;

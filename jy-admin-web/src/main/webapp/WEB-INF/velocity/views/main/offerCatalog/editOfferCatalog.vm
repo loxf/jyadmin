@@ -1,6 +1,6 @@
 
 <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
-    <legend>新增分类</legend>
+    <legend>修改分类</legend>
 </fieldset>
 
 <form class="layui-form" action="">

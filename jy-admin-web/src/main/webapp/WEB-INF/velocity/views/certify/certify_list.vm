@@ -1,0 +1,45 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">证书名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="certifyName" placeholder="证书名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <div class="layui-input-inline">
+                <input type="text" name="rangDate" placeholder="创建时间" id="createdAt" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
+            <input type="button" class="layui-btn" onclick="addCertify()" value="新增证书"/>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+<script type="text/html" id="barTable">
+    <a class="layui-btn layui-btn-mini" lay-event="editCertify">编辑</a>
+    <a class="layui-btn layui-btn-mini" lay-event="deleteCertify">删除</a>
+</script>
+<script type="text/html" id="picTpl">
+    {{#  if(d.pic){ }}
+    <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.pic }}', 'PIC')"><i class="layui-icon">&#xe64a;</i>查看</a>
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+<script type="text/html" id="priviArrTpl">
+    {{#  if(d.priviArr){ }}
+    <a class="layui-btn layui-btn-mini" onclick="">查看</a>
+    {{#  } else { }}
+    无
+    {{#  } }}
+</script>
+<script src="${rc.contextPath}/static/jingyi/common.js"></script>
+<script src="${rc.contextPath}/static/jingyi/certify/certify.js"></script>

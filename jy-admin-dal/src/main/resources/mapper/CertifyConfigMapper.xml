@@ -5,102 +5,77 @@
     <id column="id" property="id" jdbcType="BIGINT" />
     <result column="certify_id" property="certifyId" jdbcType="VARCHAR" />
     <result column="certify_name" property="certifyName" jdbcType="VARCHAR" />
+    <result column="pic" property="pic" jdbcType="VARCHAR" />
     <result column="privi_arr" property="priviArr" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, certify_id, certify_name, privi_arr, created_at, updated_at
+    id, certify_id, certify_name, pic, privi_arr, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+  <select id="selectCount" resultType="int" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    select count(1)
+    from tb_certify_config
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_certify_config
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by id desc
+    limit #{pager.start}, #{pager.size}
+  </select>
+
+  <sql id="WHERE_SQL">
+    <if test="certifyId!=null and certifyId!=''">
+      and certify_id = #{certifyId}
+    </if>
+    <if test="certifyName!=null and certifyName!=''">
+      and certify_name = #{certifyName}
+    </if>
+    <if test="startDate!=null and startDate!=''">
+      and created_at >= #{startDate}
+    </if>
+    <if test="endDate!=null and endDate!='' ">
+      and created_at &lt; date_add(#{endDate}, INTERVAL 1 DAY)
+    </if>
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from tb_certify_config
-    where id = #{id,jdbcType=BIGINT}
+    where certify_id = #{certifyId}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
     delete from tb_certify_config
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
-    insert into tb_certify_config (id, certify_id, certify_name, 
+    insert into tb_certify_config (id, certify_id, certify_name, pic,
       privi_arr, created_at, updated_at
       )
     values (#{id,jdbcType=BIGINT}, #{certifyId,jdbcType=VARCHAR}, #{certifyName,jdbcType=VARCHAR}, 
-      #{priviArr,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
+      #{pic,jdbcType=VARCHAR}, #{priviArr,jdbcType=VARCHAR}, now(), now()
       )
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
-    insert into tb_certify_config
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="certifyId != null" >
-        certify_id,
-      </if>
-      <if test="certifyName != null" >
-        certify_name,
-      </if>
-      <if test="priviArr != null" >
-        privi_arr,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="certifyId != null" >
-        #{certifyId,jdbcType=VARCHAR},
-      </if>
-      <if test="certifyName != null" >
-        #{certifyName,jdbcType=VARCHAR},
-      </if>
-      <if test="priviArr != null" >
-        #{priviArr,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+  <update id="update" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
     update tb_certify_config
     <set >
-      <if test="certifyId != null" >
-        certify_id = #{certifyId,jdbcType=VARCHAR},
-      </if>
-      <if test="certifyName != null" >
+      <if test="certifyName != null and certifyName != ''" >
         certify_name = #{certifyName,jdbcType=VARCHAR},
       </if>
-      <if test="priviArr != null" >
+      <if test="priviArr != null and priviArr != ''" >
         privi_arr = #{priviArr,jdbcType=VARCHAR},
       </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
+      <if test="pic != null and pic != ''" >
+        pic = #{pic,jdbcType=VARCHAR},
       </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
+      updated_at = now()
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
-    update tb_certify_config
-    set certify_id = #{certifyId,jdbcType=VARCHAR},
-      certify_name = #{certifyName,jdbcType=VARCHAR},
-      privi_arr = #{priviArr,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+    where certify_id = #{certifyId,jdbcType=VARCHAR}
   </update>
 </mapper>
