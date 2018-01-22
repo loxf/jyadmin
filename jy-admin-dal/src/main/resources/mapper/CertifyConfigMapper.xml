@@ -34,7 +34,7 @@
       and certify_id = #{certifyId}
     </if>
     <if test="certifyName!=null and certifyName!=''">
-      and certify_name = #{certifyName}
+      and certify_name like CONCAT('%', #{certifyName},'%')
     </if>
     <if test="startDate!=null and startDate!=''">
       and created_at >= #{startDate}
@@ -50,9 +50,9 @@
     from tb_certify_config
     where certify_id = #{certifyId}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
     delete from tb_certify_config
-    where id = #{id,jdbcType=BIGINT}
+    where certify_id = #{certifyId}
   </delete>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
     insert into tb_certify_config (id, certify_id, certify_name, pic,
