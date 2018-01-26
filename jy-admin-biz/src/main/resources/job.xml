@@ -14,8 +14,10 @@
                 <ref bean="noticeJob"></ref>
                 <ref bean="deadlineNoticeJob"></ref>
                 <ref bean="custTokenRefreshJob"></ref>
+                <ref bean="eventJob"></ref>
             </list>
         </constructor-arg>
+        <constructor-arg name="enableJobList" value="${job.enable.list}" /><!-- 获取锁的等待时间 -->
     </bean>
     <!-- JOB -->
     <bean id="cancelOrderJob" class="org.loxf.jyadmin.biz.thread.CancelOrderJob">
