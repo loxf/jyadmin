@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.EventMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.Event" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="event_code" property="eventCode" jdbcType="VARCHAR" />
+    <result column="event_key" property="eventKey" jdbcType="VARCHAR" />
+    <result column="meta_data" property="metaData" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, event_code, event_key, meta_data, status, remark, created_at, updated_at
+  </sql>
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.Event">
+    select count(1)
+    from tb_event
+    where 1=1
+  </select>
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Event" >
+    select <include refid="Base_Column_List"/>
+    from tb_event
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by id DESC
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+  <sql id="WHERE_SQL">
+    <if test="eventCode!=null and eventCode!=''">
+      and event_code = #{eventCode}
+    </if>
+    <if test="eventKey!=null and eventKey!=''">
+      and event_key = #{eventKey}
+    </if>
+    <if test="status!=null and status!=0">
+      and status = #{status}
+    </if>
+  </sql>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Event" >
+    insert into tb_event (id, event_code, event_key, 
+      meta_data, status, remark, 
+      created_at, updated_at)
+    values (#{id,jdbcType=BIGINT}, #{eventCode,jdbcType=VARCHAR}, #{eventKey,jdbcType=VARCHAR}, 
+      #{metaData,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, now(), now())
+  </insert>
+  <update id="update" parameterType="org.loxf.jyadmin.dal.po.Event" >
+    update tb_event
+    <set >
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
+    </set>
+    where event_code = #{eventCode,jdbcType=VARCHAR}
+    and event_key = #{eventKey,jdbcType=VARCHAR}
+  </update>
+</mapper>

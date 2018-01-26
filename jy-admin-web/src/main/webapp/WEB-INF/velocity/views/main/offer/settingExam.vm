@@ -115,6 +115,7 @@
             ,upload = layui.upload
             ,laytpl = layui.laytpl;
         var questionNbr = 0;
+        var basePic = '$!{basePic}';
 
     //自定义验证规则
     form.verify({
@@ -231,7 +232,7 @@
             if(data.pics && data.pics.length){
                 for(var cnt in data.pics){
                     var tr = $(['<tr id="upload-' + cnt + '">'
-                        , '<td>' + '<img src="' + data.pics[cnt] + '" style="width:150px" class="layui-upload-img"></td>'
+                        , '<td>' + '<img src="' + basePic + data.pics[cnt] + '" style="width:150px" class="layui-upload-img"></td>'
                         , '<td>老图片</td>'
                         , '<td></td>'
                         , '<td>'
