@@ -76,6 +76,10 @@ var menu = {
     ],
     CONFIG: [
         {
+            menuName: '微信菜单',
+            menuHref: contextPath + '/admin/wxmenu/config.html'
+        },
+        {
             menuName: '友商连接',
             menuHref: contextPath + '/admin/friendLink/index.html'
         },

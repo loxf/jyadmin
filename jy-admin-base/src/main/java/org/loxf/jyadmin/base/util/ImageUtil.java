@@ -27,20 +27,21 @@ public class ImageUtil {
         Map map1 = new HashMap();
         map1.put("value", "我是Face.");
         map1.put("posX", 180);
-        map1.put("posY", 930);
+        map1.put("posY", 730);
         Map map2 = new HashMap();
         map2.put("value", "我为静怡雅学文化代言.");
         map2.put("posX", 180);
-        map2.put("posY", 975);
+        map2.put("posY", 775);
         infoList.add(map1);
         infoList.add(map2);
-        overlapImage(new File("C:\\Users\\lenovo\\Desktop\\ss\\temp.jpg"), new File(filePath), new int[]{0, -190},
-                infoList, "C:\\Users\\lenovo\\Desktop\\ss\\qrF.jpg");
+        overlapImage(new File("C:\\Users\\lenovo\\Desktop\\ss\\temp1.jpg"), new File(filePath), new int[]{170, 400},
+                infoList, "C:\\Users\\lenovo\\Desktop\\ss\\qrF1.jpg");
     }
 
     /**
      * @param bigFile
      * @param smallFile
+     * @param offset posX,posY，小图片放置的绝对位置
      * @param infoList  写入的文字 value,posX,posY
      * @param outFile   输出路径
      * @Description: 小图片贴到大图片形成一张图(合成)
@@ -84,12 +85,11 @@ public class ImageUtil {
     public static final void overlapImage(BufferedImage big, BufferedImage small, int[] offset, List<Map> infoList, String outFile) {
         try {
             Graphics2D g = big.createGraphics();
-
-            int x = (big.getWidth() - small.getWidth()) / 2;
-            int y = (big.getHeight() - small.getHeight()) / 2;
+            /*int x = (big.getWidth() - small.getWidth()) / 2;
+            int y = (big.getHeight() - small.getHeight()) / 2;*/
             int xOffset = offset!=null&&offset.length>0?offset[0]:0;
             int yOffset = offset!=null&&offset.length>1?offset[1]:0;
-            g.drawImage(small, x + xOffset, y + yOffset, small.getWidth(), small.getHeight(), null);
+            g.drawImage(small, xOffset, yOffset, small.getWidth(), small.getHeight(), null);
             g.setColor(Color.black);
             g.setFont(new Font("微软雅黑", Font.PLAIN, 30));
             if (CollectionUtils.isNotEmpty(infoList)) {
