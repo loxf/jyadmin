@@ -13,129 +13,67 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, offer_id, exam_name, score, is_pass, version, created_at, updated_at
+    id, score_id, cust_id, offer_id, exam_name, score, is_pass, version, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
-    <include refid="Base_Column_List" />
-    from tb_cust_score
-    where id = #{id,jdbcType=BIGINT}
+
+  <select id="getMinMaxScore" parameterType="java.lang.String" resultType="java.lang.String">
+    select CONCAT(ifnull(min(score),0), ',', ifnull(max(score),0)) as ret from tb_cust_score where offer_id = #{offerId}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from tb_cust_score
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+
+  <select id="selectByScoreId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List"/>
+    from tb_cust_score
+    where score_id = #{scoreId}
+  </select>
+
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
+    select count(1)
+    from tb_cust_score
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
+    select <include refid="Base_Column_List"/>
+    from tb_cust_score
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by id DESC
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+  <sql id="WHERE_SQL">
+    <if test="custId!=null and custId!=''">
+      and cust_id = #{custId}
+    </if>
+    <if test="offerId!=null and offerId!=''">
+      and offer_id = #{offerId}
+    </if>
+    <if test="examName!=null and examName!=''">
+      and exam_name = #{examName}
+    </if>
+    <if test="isPass!=null">
+      and is_pass = #{isPass}
+    </if>
+  </sql>
+  <select id="selectPassCountByOfferList" resultType="int" parameterType="java.lang.String" >
+    select count(DISTINCT offer_id)
+    from tb_cust_score
+    where offer_id in (
+    <foreach collection="offerList" item="offer" separator="," >
+      #{offer}
+    </foreach>
+    and is_pass = 1
+    )
+  </select>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
-    insert into tb_cust_score (id, cust_id, offer_id, 
+    insert into tb_cust_score (id, score_id, cust_id, offer_id,
       exam_name, score, is_pass, 
       version, created_at, updated_at
       )
-    values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{offerId,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{scoreId,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, #{offerId,jdbcType=VARCHAR},
       #{examName,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, #{isPass,jdbcType=INTEGER}, 
-      #{version,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, #{updatedAt,jdbcType=TIMESTAMP}
-      )
+      #{version,jdbcType=VARCHAR}, now(), now())
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
-    insert into tb_cust_score
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="custId != null" >
-        cust_id,
-      </if>
-      <if test="offerId != null" >
-        offer_id,
-      </if>
-      <if test="examName != null" >
-        exam_name,
-      </if>
-      <if test="score != null" >
-        score,
-      </if>
-      <if test="isPass != null" >
-        is_pass,
-      </if>
-      <if test="version != null" >
-        version,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="custId != null" >
-        #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="offerId != null" >
-        #{offerId,jdbcType=VARCHAR},
-      </if>
-      <if test="examName != null" >
-        #{examName,jdbcType=VARCHAR},
-      </if>
-      <if test="score != null" >
-        #{score,jdbcType=INTEGER},
-      </if>
-      <if test="isPass != null" >
-        #{isPass,jdbcType=INTEGER},
-      </if>
-      <if test="version != null" >
-        #{version,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
-    update tb_cust_score
-    <set >
-      <if test="custId != null" >
-        cust_id = #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="offerId != null" >
-        offer_id = #{offerId,jdbcType=VARCHAR},
-      </if>
-      <if test="examName != null" >
-        exam_name = #{examName,jdbcType=VARCHAR},
-      </if>
-      <if test="score != null" >
-        score = #{score,jdbcType=INTEGER},
-      </if>
-      <if test="isPass != null" >
-        is_pass = #{isPass,jdbcType=INTEGER},
-      </if>
-      <if test="version != null" >
-        version = #{version,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
-    update tb_cust_score
-    set cust_id = #{custId,jdbcType=VARCHAR},
-      offer_id = #{offerId,jdbcType=VARCHAR},
-      exam_name = #{examName,jdbcType=VARCHAR},
-      score = #{score,jdbcType=INTEGER},
-      is_pass = #{isPass,jdbcType=INTEGER},
-      version = #{version,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
 </mapper>

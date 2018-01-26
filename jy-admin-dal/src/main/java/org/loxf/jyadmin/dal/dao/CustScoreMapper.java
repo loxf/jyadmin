@@ -2,16 +2,19 @@ package org.loxf.jyadmin.dal.dao;
 
 import org.loxf.jyadmin.dal.po.CustScore;
 
-public interface CustScoreMapper {
-    int deleteByPrimaryKey(Long id);
+import java.util.List;
 
+public interface CustScoreMapper {
     int insert(CustScore record);
 
-    int insertSelective(CustScore record);
+    int selectPassCountByOfferList(List<String> offerList);
 
-    CustScore selectByPrimaryKey(Long id);
+    int count(CustScore record);
 
-    int updateByPrimaryKeySelective(CustScore record);
+    String getMinMaxScore(String offerId);
 
-    int updateByPrimaryKey(CustScore record);
+    List<CustScore> list(CustScore record);
+
+    CustScore selectByScoreId(String scoreId);
+
 }

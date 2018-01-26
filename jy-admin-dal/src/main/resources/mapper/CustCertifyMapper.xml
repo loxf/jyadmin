@@ -13,105 +13,34 @@
   <sql id="Base_Column_List" >
     id, cust_id, certify_id, certify_name, pic, created_at, updated_at
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
-    select 
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.CustCertify" >
+    select count(1)
+    from tb_cust_certify
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CustCertify" >
+    select
     <include refid="Base_Column_List" />
     from tb_cust_certify
-    where id = #{id,jdbcType=BIGINT}
+    where 1=1
+    <include refid="WHERE_SQL"/>
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
-    delete from tb_cust_certify
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+  <sql id="WHERE_SQL">
+    <if test="custId!=null and custId!=''">
+      and cust_id = #{custId}
+    </if>
+    <if test="certifyId!=null and certifyId!=''">
+      and certify_id = #{certifyId}
+    </if>
+    <if test="certifyName!=null and certifyName!=''">
+      and certify_name = #{certifyName}
+    </if>
+  </sql>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustCertify" >
     insert into tb_cust_certify (id, cust_id, certify_id, 
-      certify_name, pic, created_at, 
-      updated_at)
+      certify_name, pic, created_at, updated_at)
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{certifyId,jdbcType=VARCHAR}, 
-      #{certifyName,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{createdAt,jdbcType=TIMESTAMP}, 
-      #{updatedAt,jdbcType=TIMESTAMP})
+      #{certifyName,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, now(), now())
   </insert>
-  <insert id="insertSelective" parameterType="org.loxf.jyadmin.dal.po.CustCertify" >
-    insert into tb_cust_certify
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
-      </if>
-      <if test="custId != null" >
-        cust_id,
-      </if>
-      <if test="certifyId != null" >
-        certify_id,
-      </if>
-      <if test="certifyName != null" >
-        certify_name,
-      </if>
-      <if test="pic != null" >
-        pic,
-      </if>
-      <if test="createdAt != null" >
-        created_at,
-      </if>
-      <if test="updatedAt != null" >
-        updated_at,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="custId != null" >
-        #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="certifyId != null" >
-        #{certifyId,jdbcType=VARCHAR},
-      </if>
-      <if test="certifyName != null" >
-        #{certifyName,jdbcType=VARCHAR},
-      </if>
-      <if test="pic != null" >
-        #{pic,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.loxf.jyadmin.dal.po.CustCertify" >
-    update tb_cust_certify
-    <set >
-      <if test="custId != null" >
-        cust_id = #{custId,jdbcType=VARCHAR},
-      </if>
-      <if test="certifyId != null" >
-        certify_id = #{certifyId,jdbcType=VARCHAR},
-      </if>
-      <if test="certifyName != null" >
-        certify_name = #{certifyName,jdbcType=VARCHAR},
-      </if>
-      <if test="pic != null" >
-        pic = #{pic,jdbcType=VARCHAR},
-      </if>
-      <if test="createdAt != null" >
-        created_at = #{createdAt,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatedAt != null" >
-        updated_at = #{updatedAt,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.CustCertify" >
-    update tb_cust_certify
-    set cust_id = #{custId,jdbcType=VARCHAR},
-      certify_id = #{certifyId,jdbcType=VARCHAR},
-      certify_name = #{certifyName,jdbcType=VARCHAR},
-      pic = #{pic,jdbcType=VARCHAR},
-      created_at = #{createdAt,jdbcType=TIMESTAMP},
-      updated_at = #{updatedAt,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
 </mapper>

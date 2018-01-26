@@ -13,6 +13,11 @@
   <sql id="Base_Column_List" >
     id, certify_id, certify_name, pic, privi_arr, created_at, updated_at
   </sql>
+  <select id="selectCertifyByOfferId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List"/>
+    from tb_certify_config
+    where privi_arr like concat('%', #{offerId} ,'%')
+  </select>
   <select id="selectCount" resultType="int" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
     select count(1)
     from tb_certify_config

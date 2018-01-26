@@ -17,4 +17,5 @@ public interface CertifyConfigMapper {
 
     int update(CertifyConfig record);
 
+    List<CertifyConfig> selectCertifyByOfferId(String offerId);
 }

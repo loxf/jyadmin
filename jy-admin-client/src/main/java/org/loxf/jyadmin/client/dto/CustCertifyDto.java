@@ -1,8 +1,8 @@
-package org.loxf.jyadmin.dal.po;
+package org.loxf.jyadmin.client.dto;
 
 import org.loxf.jyadmin.base.bean.BaseModel;
 
-public class CustCertify extends BaseModel {
+public class CustCertifyDto extends BaseModel {
     private String custId;
 
     private String certifyId;

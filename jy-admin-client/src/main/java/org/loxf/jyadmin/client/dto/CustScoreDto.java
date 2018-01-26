@@ -1,10 +1,10 @@
-package org.loxf.jyadmin.dal.po;
+package org.loxf.jyadmin.client.dto;
 
 import org.loxf.jyadmin.base.bean.BaseModel;
 
-public class CustScore  extends BaseModel {
-    private String scoreId;
+import java.util.Date;
 
+public class CustScoreDto extends BaseModel {
     private String custId;
 
     private String offerId;
@@ -16,14 +16,6 @@ public class CustScore  extends BaseModel {
     private Integer isPass;
 
     private String version;
-
-    public String getScoreId() {
-        return scoreId;
-    }
-
-    public void setScoreId(String scoreId) {
-        this.scoreId = scoreId;
-    }
 
     public String getCustId() {
         return custId;

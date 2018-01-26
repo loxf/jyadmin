@@ -58,4 +58,9 @@
         <constructor-arg name="lockTimeout" value="5" /><!-- 获取锁的等待时间 -->
         <constructor-arg name="period" value="30000" /><!-- 30秒 业务执行间隔时间 milliseconds -->
     </bean>
+    <bean id="eventJob" class="org.loxf.jyadmin.biz.thread.EventJob">
+        <constructor-arg name="expireLockMSecd" value="30" /><!-- 锁失效时间 -->
+        <constructor-arg name="lockTimeout" value="1" /><!-- 获取锁的等待时间 -->
+        <constructor-arg name="period" value="2000" /><!-- 2秒 业务执行间隔时间 milliseconds -->
+    </bean>
 </beans>

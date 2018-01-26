@@ -40,7 +40,7 @@ public class ShareServiceImpl implements ShareService {
 
     @Override
     public BaseResult<String> createQR(String nickName, String custId){
-         String path = IMG_SERVER_PATH ;
+        String path = IMG_SERVER_PATH ;
         if (!new File(path + File.separator + "QR").exists()) {
             new File(path + File.separator + "QR").mkdir();
         }
