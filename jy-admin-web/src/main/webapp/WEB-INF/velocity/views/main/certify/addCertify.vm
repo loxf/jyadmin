@@ -12,10 +12,17 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">内容描述</label>
+        <div class="layui-input-block">
+            <input type="text" name="desc" autocomplete="off" placeholder="证书内容描述将出现在微信通知里面，大概20字左右"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">证书图片</label>
         <div class="layui-input-inline">
             <a class="layui-btn uploadImg" id="picBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=CERTIFY'}">
-                <i class="layui-icon">&#xe62f;</i>上传证书图片（宽1000*高558）</a>
+                <i class="layui-icon">&#xe62f;</i>上传证书图片（宽1000*高578）,证书用户名字宽高起始80*160</a>
             <div class="layui-upload-list">
                 <img class="layui-upload-img" style="max-width: 350px;" id="picImg">
             </div>
@@ -97,6 +104,7 @@
             url:"newCertify.html",
             data : {
                 certifyName:data.field.certifyName,
+                desc:data.field.desc,
                 pic:data.field.pic,
                 priviArr: priviArr.join(",")
             },

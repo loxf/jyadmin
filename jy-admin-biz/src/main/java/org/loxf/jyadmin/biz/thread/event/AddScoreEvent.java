@@ -4,6 +4,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.ImageUtil;
 import org.loxf.jyadmin.base.util.MatrixToImageWriter;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
@@ -33,7 +34,7 @@ import java.util.*;
 /**
  * 新增成绩事件
  */
-@Component
+@Component("AddScoreEvent")
 public class AddScoreEvent implements IEvent{
     @Autowired
     private CustCertifyService custCertifyService;
@@ -71,8 +72,8 @@ public class AddScoreEvent implements IEvent{
                         String custId = custScoreDto.getCustId();
                         // 获取客户名称
                         BaseResult<CustDto> custDtoBaseResult = custService.queryCustByCustId(custId);
-                        String name = StringUtils.isNotBlank(custDtoBaseResult.getData().getRealName())?
-                                custDtoBaseResult.getData().getRealName():custDtoBaseResult.getData().getNickName();
+                        CustDto custDto = custDtoBaseResult.getData();
+                        String name = StringUtils.isNotBlank(custDto.getRealName())? custDto.getRealName():custDto.getNickName();
                         // 证书图片生成
                         BaseResult<String> picBaseResult = create(name, custId, custId+certify.getCertifyId(), certify.getPic());
                         // 生成证书数据
@@ -82,8 +83,9 @@ public class AddScoreEvent implements IEvent{
                         custCertify.setCustId(custId);
                         custCertify.setPic(picBaseResult.getData());
                         custCertifyService.addCertify(custCertify);
-                        // TODO 发微信
-                        // SendWeixinMsgUtil.sendActiveInNotice();
+                        // 发微信
+                        SendWeixinMsgUtil.sendGetCertifyNotice(custDto.getOpenid(), custDto.getNickName(),
+                                certify.getCertifyName(), DateUtils.formatHms(new Date()), custCertify.getDesc(), JYZX_INDEX_URL);
                     }
                 }
             }
@@ -107,10 +109,10 @@ public class AddScoreEvent implements IEvent{
         List<Map> infoList = new ArrayList<>();
         Map map1 = new HashMap();
         map1.put("value", name);
-        map1.put("posX", 20);
-        map1.put("posY", 100);
+        map1.put("posX", 80);
+        map1.put("posY", 160);
         infoList.add(map1);
-        ImageUtil.overlapImage(new File(IMG_SERVER_PATH + bgPic), new File(IMG_SERVER_PATH + qrFilePath), new int[]{20, 400},
+        ImageUtil.overlapImage(new File(IMG_SERVER_PATH + bgPic), new File(IMG_SERVER_PATH + qrFilePath), new int[]{20, 300},
                 infoList, IMG_SERVER_PATH + shareFilePath);
         return new BaseResult<>(shareFilePath);
     }

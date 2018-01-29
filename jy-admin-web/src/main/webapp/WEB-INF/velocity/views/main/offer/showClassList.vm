@@ -1,0 +1,26 @@
+<div>
+    <table class="layui-table">
+        <colgroup>
+            <col width="350">
+            <col width="150">
+        </colgroup>
+        <thead>
+        <tr>
+            <th>课程名称</th>
+            <th>状态</th>
+        </tr>
+        </thead>
+        <tbody>
+            #foreach($item in $offers)
+            <tr>
+                <td>$!{item.offerName}</td>
+                <td>#if($!{item.status}==1) 上架 #else <font color="red">下架</font> #end</td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>
+
+<script type="text/javascript">
+    var table = layui.table;
+</script>

@@ -247,6 +247,20 @@ public class OfferController extends BaseControl<OfferDto> {
             return new BaseResult(BaseConstant.FAILED, "五分钟内，不能重复发送。");
         }
     }
+    @RequestMapping("/toViewExam")
+    public String toViewExam(Model model, String offerId){
+        BaseResult<OfferDto> offerDtoBaseResult = offerService.queryOffer(offerId);
+        if(offerDtoBaseResult.getCode()==BaseConstant.FAILED||offerDtoBaseResult.getData()==null){
+            model.addAttribute("errorMsg", "商品不存在或已下架");
+            return "main/error";
+        }
+        String metaData = offerDtoBaseResult.getData().getMetaData();
+        JSONObject jsonObject = JSONObject.parseObject(metaData);
+        model.addAttribute("passScore", jsonObject.get("EXAMPASS"));
+        model.addAttribute("examName", offerDtoBaseResult.getData().getOfferName());
+        model.addAttribute("offerId", offerId);
+        return "main/offer/viewExam";
+    }
 
     @RequestMapping("/toSettingExam")
     public String toSettingExam(Model model, String offerId){

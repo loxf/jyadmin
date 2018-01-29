@@ -368,8 +368,18 @@ function onOrOffExam(offerId, type){
         }
     });
 }
+function viewExam(offerId){
+    var viewExamLayer = layer.open({
+        type: 2
+        ,offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+        ,id: 'showOffer' //防止重复弹出
+        ,area: ['1000px', '600px']
+        ,content: 'toViewExam.html?offerId=' + offerId
+        ,shade: 0.3
+    });
+}
 function settingExam(offerId) {
-    var addLayer = layer.open({
+    var settingExamLayer = layer.open({
         type: 2
         ,offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
         ,id: 'showOffer' //防止重复弹出

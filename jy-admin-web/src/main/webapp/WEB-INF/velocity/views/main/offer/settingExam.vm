@@ -354,7 +354,24 @@
         var tr = demoListView.find('tr#upload-' + index)
                 , tds = tr.children();
         tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
-        tds.eq(3).html(''); //清空操作
+        tds.eq(3).html('<button class="layui-btn layui-btn-mini layui-btn-danger" onclick="deleteAlreadyUploadPic(this,\'' + src + '\')">删除</button>'); //清空操作
+    }
+
+    function deleteAlreadyUploadPic(obj, src) {
+        var trDom = $(obj).parent().parent();
+        var picDom = trDom.parent().parent().parent().parent().children("input[name=pics]");
+        var pics = picDom.val();
+        if(pics){
+            var newPicArr = [];
+            var picArr = pics.split(",");
+            for(var i=0,j=0;i<picArr.length;i++){
+                if(picArr[i]!=src){
+                    newPicArr[j++]=picArr[i];
+                }
+            }
+            picDom.val(newPicArr.join(","));
+        }
+        trDom.remove();
     }
 
     $.ajax({

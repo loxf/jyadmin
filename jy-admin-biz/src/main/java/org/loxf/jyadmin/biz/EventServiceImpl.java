@@ -11,6 +11,8 @@ import org.loxf.jyadmin.client.dto.EventDto;
 import org.loxf.jyadmin.client.service.EventService;
 import org.loxf.jyadmin.dal.dao.EventMapper;
 import org.loxf.jyadmin.dal.po.Event;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class EventServiceImpl implements EventService {
     public static int SUCC = 3;
     public static int ERR = -3;
 
+    private static Logger logger = LoggerFactory.getLogger(EventServiceImpl.class);
     @Autowired
     private EventMapper eventMapper;
     @Override
@@ -98,6 +101,7 @@ public class EventServiceImpl implements EventService {
                 update(event, ERR, baseResult.getMsg());
             }
         } catch (Exception e){
+            logger.error("事件执行失败：", e);
             update(event, ERR, e.getMessage());
         }
     }

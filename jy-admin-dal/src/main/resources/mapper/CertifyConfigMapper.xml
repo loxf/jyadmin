@@ -11,7 +11,7 @@
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, certify_id, certify_name, pic, privi_arr, created_at, updated_at
+    id, certify_id, certify_name, `desc`, pic, privi_arr, created_at, updated_at
   </sql>
   <select id="selectCertifyByOfferId" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select <include refid="Base_Column_List"/>
@@ -60,11 +60,11 @@
     where certify_id = #{certifyId}
   </delete>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
-    insert into tb_certify_config (id, certify_id, certify_name, pic,
+    insert into tb_certify_config (id, certify_id, certify_name, `desc`, pic,
       privi_arr, created_at, updated_at
       )
     values (#{id,jdbcType=BIGINT}, #{certifyId,jdbcType=VARCHAR}, #{certifyName,jdbcType=VARCHAR}, 
-      #{pic,jdbcType=VARCHAR}, #{priviArr,jdbcType=VARCHAR}, now(), now()
+      #{desc,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{priviArr,jdbcType=VARCHAR}, now(), now()
       )
   </insert>
   <update id="update" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
@@ -72,6 +72,9 @@
     <set >
       <if test="certifyName != null and certifyName != ''" >
         certify_name = #{certifyName,jdbcType=VARCHAR},
+      </if>
+      <if test="desc != null and desc != ''" >
+        `desc` = #{desc,jdbcType=VARCHAR},
       </if>
       <if test="priviArr != null and priviArr != ''" >
         privi_arr = #{priviArr,jdbcType=VARCHAR},

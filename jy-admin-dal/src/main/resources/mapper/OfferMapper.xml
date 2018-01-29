@@ -29,6 +29,15 @@
     from tb_offer t
     where offer_id = #{offerId}
   </select>
+  <select id="selectByOfferIds" resultMap="BaseResultMap" parameterType="String" >
+    select (select CATALOG_NAME from tb_offer_catalog b where b.CATALOG_id = t.CATALOG_id) as `CATALOG_NAME`, t.*
+    from tb_offer t
+    where offer_id in (
+    <foreach collection="list" item="item" separator=",">
+      #{item}
+    </foreach>
+    )
+  </select>
   <select id="selectOfferByName" resultMap="BaseResultMap" parameterType="String" >
     select *
     from tb_offer

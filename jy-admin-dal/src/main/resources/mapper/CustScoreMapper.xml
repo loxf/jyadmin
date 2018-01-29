@@ -61,11 +61,11 @@
     select count(DISTINCT offer_id)
     from tb_cust_score
     where offer_id in (
-    <foreach collection="offerList" item="offer" separator="," >
+    <foreach collection="list" item="offer" separator="," >
       #{offer}
     </foreach>
-    and is_pass = 1
     )
+    and is_pass = 1
   </select>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
     insert into tb_cust_score (id, score_id, cust_id, offer_id,

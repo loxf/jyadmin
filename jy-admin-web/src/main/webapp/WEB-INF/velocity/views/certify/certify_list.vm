@@ -36,7 +36,7 @@
 </script>
 <script type="text/html" id="priviArrTpl">
     {{#  if(d.priviArr){ }}
-    <a class="layui-btn layui-btn-mini" onclick="">查看</a>
+    <a class="layui-btn layui-btn-mini" onclick="showClassList('{{d.priviArr}}')">查看</a>
     {{#  } else { }}
     无
     {{#  } }}

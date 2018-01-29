@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service("offerService")
@@ -82,6 +83,21 @@ public class OfferServiceImpl implements OfferService {
         OfferDto dto = new OfferDto();
         BeanUtils.copyProperties(offer, dto);
         return new BaseResult<>(dto);
+    }
+
+    @Override
+    public BaseResult<List<OfferDto>> queryOffers(String[] offerIds){
+        List<Offer> offerList = offerMapper.selectByOfferIds(Arrays.asList(offerIds));
+        if(CollectionUtils.isEmpty(offerList)){
+            return new BaseResult<>(BaseConstant.FAILED, "商品不存在");
+        }
+        List<OfferDto> offerDtos = new ArrayList<>();
+        for(Offer offer : offerList) {
+            OfferDto dto = new OfferDto();
+            BeanUtils.copyProperties(offer, dto);
+            offerDtos.add(dto);
+        }
+        return new BaseResult<>(offerDtos);
     }
 
     @Override

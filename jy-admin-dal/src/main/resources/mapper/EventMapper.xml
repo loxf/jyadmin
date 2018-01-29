@@ -18,6 +18,7 @@
     select count(1)
     from tb_event
     where 1=1
+    <include refid="WHERE_SQL"/>
   </select>
   <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Event" >
     select <include refid="Base_Column_List"/>

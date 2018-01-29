@@ -128,6 +128,18 @@ function deleteCertify(data, layEvent, obj) {
     });
 }
 
+function showClassList(priviArr) {
+    var showClassList = layer.open({
+        type: 2
+        //,offset: '80px' //具体配置参考：http://www.layui.com/doc/modules/layer.html#offset
+        ,id: "showClassList" //防止重复弹出
+        ,area: ['1000px', '600px']
+        ,content: 'toShowClassList.html?priviArr=' + priviArr
+        ,maxmin:true
+        ,shade: 0.3
+    });
+}
+
 function searchList(){
     $("#searchList").click();
 }

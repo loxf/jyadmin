@@ -7,7 +7,7 @@ import java.util.List;
 public interface CustScoreMapper {
     int insert(CustScore record);
 
-    int selectPassCountByOfferList(List<String> offerList);
+    int selectPassCountByOfferList(List<String> list);
 
     int count(CustScore record);
 

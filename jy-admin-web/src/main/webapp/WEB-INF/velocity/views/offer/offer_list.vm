@@ -231,7 +231,8 @@
     {{#  if(d.metaData){ }}
         {{#  var json = eval("("+d.metaData+")");}}
         {{# if(json.EXAMENABLE){ }}
-        <a class="layui-btn layui-btn-mini" onclick="onOrOffExam('{{ d.offerId }}', 0)">取消</a>
+    <a class="layui-btn layui-btn-mini" onclick="viewExam('{{ d.offerId }}', 0)">查看</a>
+    <a class="layui-btn layui-btn-mini" onclick="onOrOffExam('{{ d.offerId }}', 0)">取消</a>
         {{#  } else if(json.EXAMID){ }}
         <a class="layui-btn layui-btn-mini" onclick="settingExam('{{ d.offerId }}')">设置</a>
         <a class="layui-btn layui-btn-mini" onclick="onOrOffExam('{{ d.offerId }}', 1)">发布</a>

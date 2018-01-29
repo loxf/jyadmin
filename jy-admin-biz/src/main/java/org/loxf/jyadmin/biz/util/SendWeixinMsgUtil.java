@@ -188,6 +188,25 @@ public class SendWeixinMsgUtil {
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(ACTIVE_IN,
                 openid, data, url));
     }
+    /**
+     * 证书领取
+     * @param openid
+     * @param nickname
+     * @param certifyName
+     * @param url
+     */
+    public static void sendGetCertifyNotice( String openid, String nickname, String certifyName, String certifyTime,
+                                           String content, String url){
+        String ACTIVE_IN = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_MSG_ACTIVE_IN").getConfigValue();
+        Map data = new HashMap();
+        data.put("first", WeixinSender.createWXKeyWord("亲爱的" + nickname +"，您通过考试，成功获取证书一张", null));
+        data.put("keyword1", WeixinSender.createWXKeyWord(certifyName, "#FF3030"));
+        data.put("keyword2", WeixinSender.createWXKeyWord(certifyTime, null));
+        data.put("keyword2", WeixinSender.createWXKeyWord(content, null));
+        data.put("remark", WeixinSender.createWXKeyWord("点击我的成绩，可查看证书。", null));
+        noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(ACTIVE_IN,
+                openid, data, url));
+    }
 
     private static NoticeService noticeService(){
         return SpringApplicationContextUtil.getBean(NoticeService.class);

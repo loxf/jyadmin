@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.web.admin;
 
+import com.alibaba.fastjson.JSONObject;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.bean.Pager;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/certify")
@@ -46,6 +49,16 @@ public class CertifyController extends BaseControl<CertifyConfigDto> {
             model.addAttribute("certify", configDtoBaseResult.getData());
         }
         return "main/certify/editCertify";
+    }
+
+    @RequestMapping("/toShowClassList")
+    public String toShowClassList(Model model, String priviArr){
+        // 获取证书
+        BaseResult<List<OfferDto>> baseResult = offerService.queryOffers(priviArr.split(","));
+        if(baseResult.getCode()==BaseConstant.SUCCESS){
+            model.addAttribute("offers", baseResult.getData());
+        }
+        return "main/offer/showClassList";
     }
 
     private void settingClassList(Model model){
