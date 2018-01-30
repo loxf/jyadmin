@@ -197,7 +197,7 @@ public class SendWeixinMsgUtil {
      */
     public static void sendGetCertifyNotice( String openid, String nickname, String certifyName, String certifyTime,
                                            String content, String url){
-        String ACTIVE_IN = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_MSG_ACTIVE_IN").getConfigValue();
+        String ACTIVE_IN = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_MSG_GET_CERTIFY").getConfigValue();
         Map data = new HashMap();
         data.put("first", WeixinSender.createWXKeyWord("亲爱的" + nickname +"，您通过考试，成功获取证书一张", null));
         data.put("keyword1", WeixinSender.createWXKeyWord(certifyName, "#FF3030"));
