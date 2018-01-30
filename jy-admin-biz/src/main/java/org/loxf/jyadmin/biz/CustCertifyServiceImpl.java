@@ -9,6 +9,7 @@ import org.loxf.jyadmin.client.dto.CustCertifyDto;
 import org.loxf.jyadmin.client.dto.CustCertifyDto;
 import org.loxf.jyadmin.client.service.CustCertifyService;
 import org.loxf.jyadmin.dal.dao.CustCertifyMapper;
+import org.loxf.jyadmin.dal.po.CertifyConfig;
 import org.loxf.jyadmin.dal.po.CustCertify;
 import org.loxf.jyadmin.dal.po.CustCertify;
 import org.springframework.beans.BeanUtils;
@@ -59,5 +60,13 @@ public class CustCertifyServiceImpl implements CustCertifyService {
             return new BaseResult();
         else
             return new BaseResult(BaseConstant.FAILED, "新增证书失败");
+    }
+
+    @Override
+    public BaseResult<Boolean> existCertify(String custId, String certifyId) {
+        CustCertify custCertify = new CustCertify();
+        custCertify.setCustId(custId);
+        custCertify.setCertifyId(certifyId);
+        return new BaseResult(custCertifyMapper.count(custCertify)>0);
     }
 }

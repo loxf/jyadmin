@@ -67,25 +67,29 @@ public class AddScoreEvent implements IEvent{
                     String[] offers = certify.getPriviArr().split(",");
                     // 检查一下是否有获取证书的资格
                     BaseResult<Boolean> baseResult = custScoreService.allPass(Arrays.asList(offers));
-                    if(baseResult.getCode()== BaseConstant.SUCCESS && baseResult.getData()){
-                        // 如果有，就生成并发证书，并且通知微信
+                    if(baseResult.getCode()== BaseConstant.SUCCESS && baseResult.getData()) {
+                        // 如果有，检查是否已经获得过此证书
                         String custId = custScoreDto.getCustId();
-                        // 获取客户名称
-                        BaseResult<CustDto> custDtoBaseResult = custService.queryCustByCustId(custId);
-                        CustDto custDto = custDtoBaseResult.getData();
-                        String name = StringUtils.isNotBlank(custDto.getRealName())? custDto.getRealName():custDto.getNickName();
-                        // 证书图片生成
-                        BaseResult<String> picBaseResult = create(name, custId, custId+certify.getCertifyId(), certify.getPic());
-                        // 生成证书数据
-                        CustCertifyDto custCertify = new CustCertifyDto();
-                        custCertify.setCertifyId(certify.getCertifyId());
-                        custCertify.setCertifyName(certify.getCertifyName());
-                        custCertify.setCustId(custId);
-                        custCertify.setPic(picBaseResult.getData());
-                        custCertifyService.addCertify(custCertify);
-                        // 发微信
-                        SendWeixinMsgUtil.sendGetCertifyNotice(custDto.getOpenid(), custDto.getNickName(),
-                                certify.getCertifyName(), DateUtils.formatHms(new Date()), custCertify.getDesc(), JYZX_INDEX_URL);
+                        BaseResult<Boolean> existsCertify = custCertifyService.existCertify(custId, certify.getCertifyId());
+                        if (existsCertify.getCode() == BaseConstant.SUCCESS && !existsCertify.getData()) {
+                            // 没有，就生成并发证书，并且通知微信
+                            // 获取客户名称
+                            BaseResult<CustDto> custDtoBaseResult = custService.queryCustByCustId(custId);
+                            CustDto custDto = custDtoBaseResult.getData();
+                            String name = StringUtils.isNotBlank(custDto.getRealName()) ? custDto.getRealName() : custDto.getNickName();
+                            // 证书图片生成
+                            BaseResult<String> picBaseResult = create(name, custId, custId + certify.getCertifyId(), certify.getPic());
+                            // 生成证书数据
+                            CustCertifyDto custCertify = new CustCertifyDto();
+                            custCertify.setCertifyId(certify.getCertifyId());
+                            custCertify.setCertifyName(certify.getCertifyName());
+                            custCertify.setCustId(custId);
+                            custCertify.setPic(picBaseResult.getData());
+                            custCertifyService.addCertify(custCertify);
+                            // 发微信
+                            SendWeixinMsgUtil.sendGetCertifyNotice(custDto.getOpenid(), custDto.getNickName(),
+                                    certify.getCertifyName(), DateUtils.formatHms(new Date()), custCertify.getDesc(), JYZX_INDEX_URL);
+                        }
                     }
                 }
             }

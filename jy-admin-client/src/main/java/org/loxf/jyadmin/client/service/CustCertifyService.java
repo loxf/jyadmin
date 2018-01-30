@@ -7,4 +7,5 @@ import org.loxf.jyadmin.client.dto.CustCertifyDto;
 public interface CustCertifyService {
     PageResult<CustCertifyDto> pager(CustCertifyDto custScoreDto);
     BaseResult addCertify(CustCertifyDto custScoreDto);
+    BaseResult<Boolean> existCertify(String custId, String certifyId);
 }
