@@ -112,6 +112,9 @@ public class EventServiceImpl implements EventService {
     }
 
     private int update(Event event, int status, String remark){
+        if(remark!=null && remark.length()>500){
+            remark = remark.substring(0, 499);
+        }
         event.setRemark(remark);
         event.setStatus(status);
         return eventMapper.update(event);
