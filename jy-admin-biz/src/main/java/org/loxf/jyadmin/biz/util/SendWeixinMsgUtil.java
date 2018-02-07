@@ -202,7 +202,7 @@ public class SendWeixinMsgUtil {
         data.put("first", WeixinSender.createWXKeyWord("亲爱的" + nickname +"，您通过考试，成功获取证书一张", null));
         data.put("keyword1", WeixinSender.createWXKeyWord(certifyName, "#FF3030"));
         data.put("keyword2", WeixinSender.createWXKeyWord(certifyTime, null));
-        data.put("keyword2", WeixinSender.createWXKeyWord(content, null));
+        data.put("keyword3", WeixinSender.createWXKeyWord(content, null));
         data.put("remark", WeixinSender.createWXKeyWord("点击我的成绩，可查看证书。", null));
         noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(ACTIVE_IN,
                 openid, data, url));
