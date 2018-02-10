@@ -18,11 +18,17 @@
                    class="layui-input">
         </div>
     </div>
+    <fieldset class="layui-elem-field">
+        <legend>证书设计标准</legend>
+        <div class="layui-field-box">
+            证书宽1000px，高578px。证书用户名字自动生成，位置起始：宽150px，高180px，二维码起始位置：宽750px, 高70px, 二维码大小：100px*100px。时间起始位置：宽700px，高510px。
+        </div>
+    </fieldset>
     <div class="layui-form-item">
         <label class="layui-form-label">证书图片</label>
         <div class="layui-input-inline">
             <a class="layui-btn uploadImg" id="picBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=CERTIFY'}">
-                <i class="layui-icon">&#xe62f;</i>上传证书图片（宽1000*高578）,证书用户名字宽高起始80*160</a>
+                <i class="layui-icon">&#xe62f;</i>上传证书图片（宽1000*高578）,证书用户名字宽高起始150*180</a>
             <div class="layui-upload-list">
                 <img class="layui-upload-img" style="max-width: 350px;" id="picImg">
             </div>

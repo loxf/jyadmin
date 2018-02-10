@@ -107,16 +107,21 @@ public class AddScoreEvent implements IEvent{
             String text = String.format(JYZX_INDEX_URL + BaseConstant.JYZX_INDEX_RECOMMEND_URL, custId); // 二维码内容
             String logoPath = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_COM, "COMPANY_LOGO",
                     "/CONFIG/0a94a6ec6695491c805ca0cd22741077.jpeg").getConfigValue();
-            MatrixToImageWriter.createQR(text, "jpg", IMG_SERVER_PATH + qrFilePath, IMG_SERVER_PATH + logoPath);
+            MatrixToImageWriter.createQR(text, null, IMG_SERVER_PATH + qrFilePath, IMG_SERVER_PATH + logoPath);
         }
         String shareFilePath = File.separator + "QR" + File.separator + certifyId + ".jpg";
         List<Map> infoList = new ArrayList<>();
         Map map1 = new HashMap();
         map1.put("value", name);
-        map1.put("posX", 80);
-        map1.put("posY", 160);
+        map1.put("posX", 150);
+        map1.put("posY", 180);
         infoList.add(map1);
-        ImageUtil.overlapImage(new File(IMG_SERVER_PATH + bgPic), new File(IMG_SERVER_PATH + qrFilePath), new int[]{20, 300},
+        Map map2 = new HashMap();
+        map2.put("value", DateUtils.format(new Date()));
+        map2.put("posX", 700);
+        map2.put("posY", 510);
+        infoList.add(map2);
+        ImageUtil.overlapImage(new File(IMG_SERVER_PATH + bgPic), new File(IMG_SERVER_PATH + qrFilePath), new int[]{750, 70, 100, 100},
                 infoList, IMG_SERVER_PATH + shareFilePath);
         return new BaseResult<>(shareFilePath);
     }
