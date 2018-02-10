@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>jy-admin-base</artifactId>
-    <version>${jyadmin.version}</version>
+    <version>${client.version}</version>
 
     <dependencies>
         <dependency>

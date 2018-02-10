@@ -11,6 +11,8 @@ public class CertifyConfig extends BaseModel {
 
     private String pic;
 
+    private String desc;
+
     private String priviArr;
 
     public String getCertifyId() {
@@ -43,5 +45,13 @@ public class CertifyConfig extends BaseModel {
 
     public void setPriviArr(String priviArr) {
         this.priviArr = priviArr == null ? null : priviArr.trim();
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 }

@@ -42,6 +42,11 @@ table.render({ //其它参数在此省略
             templet : '#priviArrTpl'
         },
         {
+            field: 'desc',
+            title: '描述',
+            width: 280
+        },
+        {
             field: 'createdAt',
             title: '创建时间',
             width: 180

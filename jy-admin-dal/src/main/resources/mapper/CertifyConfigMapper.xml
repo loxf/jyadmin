@@ -6,6 +6,7 @@
     <result column="certify_id" property="certifyId" jdbcType="VARCHAR" />
     <result column="certify_name" property="certifyName" jdbcType="VARCHAR" />
     <result column="pic" property="pic" jdbcType="VARCHAR" />
+    <result column="desc" property="desc" jdbcType="VARCHAR" />
     <result column="privi_arr" property="priviArr" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />

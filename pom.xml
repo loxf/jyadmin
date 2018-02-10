@@ -46,7 +46,7 @@
             <dependency>
                 <groupId>org.loxf</groupId>
                 <artifactId>jy-admin-base</artifactId>
-                <version>${jyadmin.version}</version>
+                <version>${client.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.loxf</groupId>
