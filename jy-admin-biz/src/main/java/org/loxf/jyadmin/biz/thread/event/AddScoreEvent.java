@@ -115,11 +115,13 @@ public class AddScoreEvent implements IEvent{
         map1.put("value", name);
         map1.put("posX", 150);
         map1.put("posY", 180);
+        map1.put("size", 25);
         infoList.add(map1);
         Map map2 = new HashMap();
         map2.put("value", DateUtils.format(new Date()));
         map2.put("posX", 700);
         map2.put("posY", 510);
+        map2.put("size", 25);
         infoList.add(map2);
         ImageUtil.overlapImage(new File(IMG_SERVER_PATH + bgPic), new File(IMG_SERVER_PATH + qrFilePath), new int[]{750, 70, 100, 100},
                 infoList, IMG_SERVER_PATH + shareFilePath);
