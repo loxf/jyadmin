@@ -42,11 +42,13 @@ public class ImageUtil {
         map1.put("posX", 150);
         map1.put("posY", 180);
         map1.put("size", 25);
+        map1.put("color", new Color(139, 25, 91));
         Map map2 = new HashMap();
         map2.put("value", "2018-2-11");
         map2.put("posX", 700);
         map2.put("posY", 510);
-        map2.put("size", 25);
+        map2.put("size", 20);
+        map2.put("color", new Color(139, 25, 91));
         infoList.add(map1);
         infoList.add(map2);
         ImageUtil.overlapImage(new File("C:\\Users\\lenovo\\Desktop\\ss\\certify.jpg"), new File("C:\\Users\\lenovo\\Desktop\\ss\\qr.jpg"), new int[]{750, 70, 100, 100},
@@ -107,9 +109,10 @@ public class ImageUtil {
             int width = offset!=null&&offset.length>2?offset[2]:small.getWidth();
             int height = offset!=null&&offset.length>3?offset[3]:small.getHeight();
             g.drawImage(small, xOffset, yOffset, width, height, null);
-            g.setColor(Color.black);
             if (CollectionUtils.isNotEmpty(infoList)) {
                 for (Map infoMap : infoList) {
+                    Color color = infoMap.containsKey("color")?(Color)infoMap.get("color"):Color.black;
+                    g.setColor(color);
                     String size = infoMap.get("size")==null?"30":infoMap.get("size").toString();
                     g.setFont(new Font("微软雅黑", Font.PLAIN, Integer.valueOf(size)));
                     g.drawString((String) infoMap.get("value"), (int) infoMap.get("posX"), (int) infoMap.get("posY"));//绘制文字

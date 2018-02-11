@@ -9,27 +9,23 @@ import org.loxf.jyadmin.base.util.ImageUtil;
 import org.loxf.jyadmin.base.util.MatrixToImageWriter;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.biz.util.SendWeixinMsgUtil;
-import org.loxf.jyadmin.client.dto.CertifyConfigDto;
 import org.loxf.jyadmin.client.dto.CustCertifyDto;
 import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.dto.CustScoreDto;
-import org.loxf.jyadmin.client.service.CertifyConfigService;
 import org.loxf.jyadmin.client.service.CustCertifyService;
 import org.loxf.jyadmin.client.service.CustScoreService;
 import org.loxf.jyadmin.client.service.CustService;
 import org.loxf.jyadmin.dal.dao.CertifyConfigMapper;
-import org.loxf.jyadmin.dal.dao.CustScoreMapper;
 import org.loxf.jyadmin.dal.po.CertifyConfig;
-import org.loxf.jyadmin.dal.po.CustCertify;
-import org.loxf.jyadmin.dal.po.CustScore;
 import org.loxf.jyadmin.dal.po.Event;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.io.File;
 import java.util.*;
+import java.util.List;
 
 /**
  * 新增成绩事件
@@ -88,7 +84,7 @@ public class AddScoreEvent implements IEvent{
                             custCertifyService.addCertify(custCertify);
                             // 发微信
                             SendWeixinMsgUtil.sendGetCertifyNotice(custDto.getOpenid(), custDto.getNickName(),
-                                    certify.getCertifyName(), DateUtils.formatHms(new Date()), custCertify.getDesc(), JYZX_INDEX_URL);
+                                    certify.getCertifyName(), DateUtils.formatHms(new Date()), certify.getDesc(), JYZX_INDEX_URL);
                         }
                     }
                 }
@@ -116,12 +112,14 @@ public class AddScoreEvent implements IEvent{
         map1.put("posX", 150);
         map1.put("posY", 180);
         map1.put("size", 25);
+        map1.put("color", new Color(139, 25, 91));
         infoList.add(map1);
         Map map2 = new HashMap();
         map2.put("value", DateUtils.format(new Date()));
         map2.put("posX", 700);
         map2.put("posY", 510);
-        map2.put("size", 25);
+        map2.put("size", 20);
+        map2.put("color", new Color(139, 25, 91));
         infoList.add(map2);
         ImageUtil.overlapImage(new File(IMG_SERVER_PATH + bgPic), new File(IMG_SERVER_PATH + qrFilePath), new int[]{750, 70, 100, 100},
                 infoList, IMG_SERVER_PATH + shareFilePath);

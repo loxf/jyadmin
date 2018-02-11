@@ -9,8 +9,6 @@ public class CustCertify extends BaseModel {
 
     private String certifyName;
 
-    private String desc;
-
     private String pic;
 
     public String getCustId() {
@@ -35,14 +33,6 @@ public class CustCertify extends BaseModel {
 
     public void setCertifyName(String certifyName) {
         this.certifyName = certifyName == null ? null : certifyName.trim();
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public String getPic() {
