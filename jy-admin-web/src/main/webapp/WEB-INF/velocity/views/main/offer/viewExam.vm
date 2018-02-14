@@ -1,0 +1,149 @@
+<form class="layui-form" action="">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+        <legend>基础信息</legend>
+    </fieldset>
+    <div class="layui-form-item">
+        <label class="layui-form-label">考试名称</label>
+        <div class="layui-input-block">
+            <label class="label-info" id="examName">$!{examName}</label>
+            <input type="hidden" name="offerId" lay-verify="offerId" id="offerId" value="$!{offerId}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">及格分数</label>
+        <div class="layui-input-block">
+            <label class="label-info">#if($!{passScore}) $!{passScore} #else 60 #end</label>
+        </div>
+    </div>
+    <div class="layui-form-item" id="J_questionDiv">
+    </div>
+</form>
+
+<!-- 考题模板 -->
+<script type="text/html" id="M_question">
+    <div class="QUESTION_DIV" data-questionnbr="{{d.questionNbr}}">
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+            <legend> 题目{{d.questionNbr}} （{{d.score}}分 -
+                {{# if(d.type==1){ }}
+                单选
+                {{# } else{  }}
+                多选
+                {{# } }}）</legend>
+        </fieldset>
+        <div class="layui-form-item">
+            <label class="layui-form-label">问题：</label>
+            <div class="layui-input-block">
+                <label>{{d.title}}</label>
+            </div>
+        </div>
+        {{# var pics = d.pics; }}
+        {{# if(pics && pics.length>0){ }}
+        <div>
+            <div class="layui-input-block">
+                {{# for(var i in pics){ }}
+                <img src="{{d.basePic}}{{d.pics[i]}}" width="300px"/>
+                {{# } }}
+            </div>
+        </div>
+        {{# } }}
+        <div class="layui-form-item">
+            <label class="layui-form-label">选项：</label>
+            <div class="optionDiv">
+            </div>
+        </div>
+        <br>
+    </div>
+</script>
+
+<!-- 选项模板 -->
+<script type="text/html" id="M_option">
+    <div class="layui-input-block">
+        <label>
+            {{# if(d.checked) { }}
+            <i class="layui-icon">&#xe605;</i>
+            {{# } else { }}
+            <i class="layui-icon">&#x1006;</i>
+            {{# } }}
+            {{d.seq}} ： {{d.value}}
+        </label>
+    </div>
+</script>
+
+<script>
+    var form = layui.form
+            ,layer = layui.layer
+            ,upload = layui.upload
+            ,laytpl = layui.laytpl;
+
+    function addQustion(data) {
+        var getTpl = $("#M_question").html();
+        laytpl(getTpl).render(data, function(html){
+            $("#J_questionDiv").append(html);
+            if(data.options){
+                var optionArr = JSON.parse(data.options);
+                var answerArr = [];
+                if(data.answer||data.answer===0){
+                    answerArr = data.answer.split(",");
+                }
+                for(var n=0;n<optionArr.length; n++){
+                    var checked = false;
+                    for(var m=0;m<answerArr.length;m++){
+                        if(n==answerArr[m]){
+                            checked = true;
+                            break;
+                        }
+                    }
+                    var optionData = { //数据
+                        value : optionArr[n]
+                        ,checked : checked
+                        ,seq : n+1
+                    }
+                    addOption($("#J_questionDiv").children(".QUESTION_DIV:last-child").find(".optionDiv"), optionData)
+                }
+            }
+        });
+        form.render();
+    }
+    function addOption(obj, data) {
+        var getTpl = $("#M_option").html()
+        laytpl(getTpl).render(data, function(html){
+            $(obj).append(html);
+        });
+    }
+
+    $.ajax({
+        type: "POST",
+        url:"queryQuestionList.html",
+        data : {
+            offerId:$("#offerId").val(),
+        },
+        dataType:"json",
+        success: function(data) {
+            if(data.code == 1){
+                var examName ;
+                for(var i=0; i<data.data.length; i++){
+                    var question = data.data[i];
+                    examName = question.examName;
+                    var picArr = [];
+                    if(question.pics){
+                        picArr = question.pics.split(",")
+                    }
+                    var tempData = {
+                        title : question.title
+                        ,pics : picArr
+                        ,type : question.type
+                        ,score : question.score
+                        ,options : question.options
+                        ,answer : question.answer
+                        ,questionNbr : question.seq
+                        ,questionId : question.questionId
+                        ,basePic:basePic
+                    }
+                    addQustion(tempData);
+                }
+                $("#examName").text(examName);
+            }
+        }
+    });
+
+</script>

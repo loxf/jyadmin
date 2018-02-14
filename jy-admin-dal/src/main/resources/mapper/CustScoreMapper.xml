@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.CustScoreMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CustScore" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="offer_id" property="offerId" jdbcType="VARCHAR" />
+    <result column="exam_name" property="examName" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="is_pass" property="isPass" jdbcType="INTEGER" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, score_id, cust_id, offer_id, exam_name, score, is_pass, version, created_at, updated_at
+  </sql>
+
+  <select id="getMinMaxScore" parameterType="java.lang.String" resultType="java.lang.String">
+    select CONCAT(ifnull(min(score),0), ',', ifnull(max(score),0)) as ret from tb_cust_score where offer_id = #{offerId}
+  </select>
+
+  <select id="selectByScoreId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List"/>
+    from tb_cust_score
+    where score_id = #{scoreId}
+  </select>
+
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
+    select count(1)
+    from tb_cust_score
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
+    select <include refid="Base_Column_List"/>
+    from tb_cust_score
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by id DESC
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+  <sql id="WHERE_SQL">
+    <if test="custId!=null and custId!=''">
+      and cust_id = #{custId}
+    </if>
+    <if test="offerId!=null and offerId!=''">
+      and offer_id = #{offerId}
+    </if>
+    <if test="examName!=null and examName!=''">
+      and exam_name = #{examName}
+    </if>
+    <if test="isPass!=null">
+      and is_pass = #{isPass}
+    </if>
+  </sql>
+  <select id="selectPassCountByOfferList" resultType="int" parameterType="java.lang.String" >
+    select count(DISTINCT offer_id)
+    from tb_cust_score
+    where offer_id in (
+    <foreach collection="list" item="offer" separator="," >
+      #{offer}
+    </foreach>
+    )
+    and is_pass = 1
+  </select>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustScore" >
+    insert into tb_cust_score (id, score_id, cust_id, offer_id,
+      exam_name, score, is_pass, 
+      version, created_at, updated_at
+      )
+    values (#{id,jdbcType=BIGINT}, #{scoreId,jdbcType=VARCHAR}, #{custId,jdbcType=VARCHAR}, #{offerId,jdbcType=VARCHAR},
+      #{examName,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, #{isPass,jdbcType=INTEGER}, 
+      #{version,jdbcType=VARCHAR}, now(), now())
+  </insert>
+</mapper>

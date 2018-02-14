@@ -40,7 +40,7 @@ public class ShareServiceImpl implements ShareService {
 
     @Override
     public BaseResult<String> createQR(String nickName, String custId){
-         String path = IMG_SERVER_PATH ;
+        String path = IMG_SERVER_PATH ;
         if (!new File(path + File.separator + "QR").exists()) {
             new File(path + File.separator + "QR").mkdir();
         }
@@ -49,7 +49,7 @@ public class ShareServiceImpl implements ShareService {
             String text = String.format(JYZX_INDEX_URL + BaseConstant.JYZX_INDEX_RECOMMEND_URL, custId); // 二维码内容
             String logoPath = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_COM, "COMPANY_LOGO",
                     "/CONFIG/0a94a6ec6695491c805ca0cd22741077.jpeg").getConfigValue();
-            MatrixToImageWriter.createQR(text, "jpg", IMG_SERVER_PATH + qrFilePath, IMG_SERVER_PATH + logoPath);
+            MatrixToImageWriter.createQR(text, null, IMG_SERVER_PATH + qrFilePath, IMG_SERVER_PATH + logoPath);
         }
         String shareFilePath = File.separator + "QR" + File.separator + "SHARE" + custId + ".jpg";
         List<Map> infoList = new ArrayList<>();

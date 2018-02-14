@@ -1,12 +1,12 @@
 package org.loxf.jyadmin.web.admin;
 
-import com.alibaba.dubbo.container.page.Page;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
+import org.loxf.jyadmin.base.bean.BeanList;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.bean.Pager;
 import org.loxf.jyadmin.base.constant.BaseConstant;
@@ -16,11 +16,11 @@ import org.loxf.jyadmin.client.dto.*;
 import org.loxf.jyadmin.client.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -42,6 +42,8 @@ public class OfferController extends BaseControl<OfferDto> {
     private VideoConfigService videoConfigService;
     @Autowired
     private CustService custService;
+    @Autowired
+    private ClassQuestionService classQuestionService;
     @Autowired
     private JedisUtil jedisUtil;
     @Value("#{configProperties['JYZX.INDEX.URL']}")
@@ -150,6 +152,9 @@ public class OfferController extends BaseControl<OfferDto> {
     @RequestMapping("/editOffer")
     @ResponseBody
     public BaseResult editOffer(OfferDto offerDto, String relOfferStr){
+        if(StringUtils.isBlank(offerDto.getOfferType())){
+            return new BaseResult(BaseConstant.FAILED, "商品类型为空");
+        }
         List<OfferRelDto> list = dealRelOfferStr(relOfferStr);
         return offerService.updateOffer(offerDto, list);
     }
@@ -241,6 +246,113 @@ public class OfferController extends BaseControl<OfferDto> {
         } else {
             return new BaseResult(BaseConstant.FAILED, "五分钟内，不能重复发送。");
         }
+    }
+    @RequestMapping("/toViewExam")
+    public String toViewExam(Model model, String offerId){
+        BaseResult<OfferDto> offerDtoBaseResult = offerService.queryOffer(offerId);
+        if(offerDtoBaseResult.getCode()==BaseConstant.FAILED||offerDtoBaseResult.getData()==null){
+            model.addAttribute("errorMsg", "商品不存在或已下架");
+            return "main/error";
+        }
+        String metaData = offerDtoBaseResult.getData().getMetaData();
+        JSONObject jsonObject = JSONObject.parseObject(metaData);
+        model.addAttribute("passScore", jsonObject.get("EXAMPASS"));
+        model.addAttribute("examName", offerDtoBaseResult.getData().getOfferName());
+        model.addAttribute("offerId", offerId);
+        return "main/offer/viewExam";
+    }
+
+    @RequestMapping("/toSettingExam")
+    public String toSettingExam(Model model, String offerId){
+        BaseResult<OfferDto> offerDtoBaseResult = offerService.queryOffer(offerId);
+        if(offerDtoBaseResult.getCode()==BaseConstant.FAILED||offerDtoBaseResult.getData()==null){
+            model.addAttribute("errorMsg", "商品不存在或已下架");
+            return "main/error";
+        }
+        String metaData = offerDtoBaseResult.getData().getMetaData();
+        JSONObject jsonObject = JSONObject.parseObject(metaData);
+        model.addAttribute("passScore", jsonObject.get("EXAMPASS"));
+        model.addAttribute("examName", offerDtoBaseResult.getData().getOfferName());
+        model.addAttribute("offerId", offerId);
+        return "main/offer/settingExam";
+    }
+
+    @RequestMapping("/queryQuestionList")
+    @ResponseBody
+    public BaseResult queryQuestionList(String offerId){
+        // 获取当前考试的题目
+        return classQuestionService.queryQuestions(offerId);
+    }
+    @RequestMapping("/settingQuestion")
+    @ResponseBody
+    public BaseResult settingQuestion(String offerId, String examName, Integer passScore, String questionStr){
+        if(StringUtils.isBlank(questionStr)||questionStr.equals("[]")){
+            return new BaseResult(BaseConstant.FAILED, "考题不能为空");
+        }
+        BaseResult<OfferDto> offerDtoBaseResult = offerService.queryOffer(offerId);
+        if(offerDtoBaseResult.getCode()==BaseConstant.FAILED){
+            return offerDtoBaseResult;
+        }
+        List<ClassQuestionDto> classQuestionDtos = JSON.parseArray(questionStr, ClassQuestionDto.class);
+        for(ClassQuestionDto object : classQuestionDtos){
+            object.setOfferId(offerId);
+            object.setExamName(examName);
+            String options = object.getOptions();
+            if(StringUtils.isBlank(options)||options.equals("[]")){
+                return new BaseResult(BaseConstant.FAILED, "选项不能为空");
+            }
+        }
+        BaseResult baseResult = classQuestionService.settingQuestion(classQuestionDtos);
+        if(baseResult.getCode()==BaseConstant.SUCCESS){
+            // 修改商品的元数据
+            OfferDto offerDto = offerDtoBaseResult.getData();
+            String metaData = offerDto.getMetaData();
+            JSONObject metaJSON;
+            if(StringUtils.isNotBlank(metaData)){
+                metaJSON = JSON.parseObject(metaData);
+            } else {
+                metaJSON = new JSONObject();
+            }
+            metaJSON.put("EXAMID", offerId);
+            metaJSON.put("EXAMENABLE", false);
+            metaJSON.put("EXAMPASS", passScore);
+            offerDto.setMetaData(metaJSON.toJSONString());
+            offerService.updateOffer(offerDto, null);
+        }
+        return baseResult;
+    }
+
+    /**
+     * @param offerId
+     * @param type 1:发布
+     * @return
+     */
+    @RequestMapping("/onOrOffExam")
+    @ResponseBody
+    public BaseResult onOrOffExam(String offerId, int type){
+        BaseResult<OfferDto> offerDtoBaseResult = offerService.queryOffer(offerId);
+        if(offerDtoBaseResult.getCode()==BaseConstant.FAILED){
+            return offerDtoBaseResult;
+        }
+        // 修改商品的元数据
+        OfferDto offerDto = offerDtoBaseResult.getData();
+        String metaData = offerDto.getMetaData();
+        JSONObject metaJSON = null;
+        boolean hasExam = true;
+        if(StringUtils.isBlank(metaData)){
+            hasExam = false;
+        } else {
+            metaJSON = JSON.parseObject(metaData);
+            if(!metaJSON.containsKey("EXAMID")){
+                hasExam = false;
+            }
+        }
+        if(!hasExam){
+            return new BaseResult(BaseConstant.FAILED, "未设置考题，不能发布/取消");
+        }
+        metaJSON.put("EXAMENABLE", type==1);
+        offerDto.setMetaData(metaJSON.toJSONString());
+        return offerService.updateOffer(offerDto, null);
     }
     private String getUrl(String offerId, String type){
         if(type.equals("ACTIVE")) {

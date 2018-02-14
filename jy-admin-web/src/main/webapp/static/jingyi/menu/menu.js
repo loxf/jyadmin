@@ -68,6 +68,10 @@ var menu = {
         {
             menuName: '视频管理',
             menuHref: contextPath + '/admin/video/index.html'
+        },
+        {
+            menuName: '证书管理',
+            menuHref: contextPath + '/admin/certify/index.html'
         }
     ],
     CONFIG: [

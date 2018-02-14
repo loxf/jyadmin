@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-    <context:component-scan base-package="org.loxf.jyadmin.biz"/>
+    <context:component-scan base-package="org.loxf.jyadmin.biz,org.loxf.jyadmin.biz.thread.event"/>
     <import resource="jy-admin-dal.xml"/>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>

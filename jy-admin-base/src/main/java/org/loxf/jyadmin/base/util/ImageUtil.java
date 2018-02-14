@@ -18,11 +18,11 @@ import java.awt.*;
 public class ImageUtil {
     private static Logger logger = LoggerFactory.getLogger(ImageUtil.class);
     public static void main(String[] args) {
-        String text = "http://www.jingyizaixian.com?recommend=CUSTIJHSFG89235UW4IDGI2H5JF298S5"; // 二维码内容
+        /*String text = "http://www.jingyizaixian.com?recommend=CUSTIJHSFG89235UW4IDGI2H5JF298S5"; // 二维码内容
         String format = "jpg";// 二维码的图片格式
         String filePath = "C:\\Users\\lenovo\\Desktop\\ss\\qr.jpg";
         String logoPath = "C:\\Users\\lenovo\\Desktop\\ss\\logo.jpg";
-        MatrixToImageWriter.createQR(text, format, filePath, logoPath);
+        MatrixToImageWriter.createQR(text, null, filePath, logoPath);
         List<Map> infoList = new ArrayList<>();
         Map map1 = new HashMap();
         map1.put("value", "我是Face.");
@@ -35,7 +35,24 @@ public class ImageUtil {
         infoList.add(map1);
         infoList.add(map2);
         overlapImage(new File("C:\\Users\\lenovo\\Desktop\\ss\\temp1.jpg"), new File(filePath), new int[]{170, 400},
-                infoList, "C:\\Users\\lenovo\\Desktop\\ss\\qrF1.jpg");
+                infoList, "C:\\Users\\lenovo\\Desktop\\ss\\qrF1.jpg");*/
+        List<Map> infoList = new ArrayList<>();
+        Map map1 = new HashMap();
+        map1.put("value", "Face.");
+        map1.put("posX", 150);
+        map1.put("posY", 180);
+        map1.put("size", 25);
+        map1.put("color", new Color(139, 25, 91));
+        Map map2 = new HashMap();
+        map2.put("value", "2018-2-11");
+        map2.put("posX", 700);
+        map2.put("posY", 510);
+        map2.put("size", 20);
+        map2.put("color", new Color(139, 25, 91));
+        infoList.add(map1);
+        infoList.add(map2);
+        ImageUtil.overlapImage(new File("C:\\Users\\lenovo\\Desktop\\ss\\certify.jpg"), new File("C:\\Users\\lenovo\\Desktop\\ss\\qr.jpg"), new int[]{750, 70, 100, 100},
+                infoList, "C:\\Users\\lenovo\\Desktop\\ss\\lhj-certify.jpg");
     }
 
     /**
@@ -89,11 +106,15 @@ public class ImageUtil {
             int y = (big.getHeight() - small.getHeight()) / 2;*/
             int xOffset = offset!=null&&offset.length>0?offset[0]:0;
             int yOffset = offset!=null&&offset.length>1?offset[1]:0;
-            g.drawImage(small, xOffset, yOffset, small.getWidth(), small.getHeight(), null);
-            g.setColor(Color.black);
-            g.setFont(new Font("微软雅黑", Font.PLAIN, 30));
+            int width = offset!=null&&offset.length>2?offset[2]:small.getWidth();
+            int height = offset!=null&&offset.length>3?offset[3]:small.getHeight();
+            g.drawImage(small, xOffset, yOffset, width, height, null);
             if (CollectionUtils.isNotEmpty(infoList)) {
                 for (Map infoMap : infoList) {
+                    Color color = infoMap.containsKey("color")?(Color)infoMap.get("color"):Color.black;
+                    g.setColor(color);
+                    String size = infoMap.get("size")==null?"30":infoMap.get("size").toString();
+                    g.setFont(new Font("微软雅黑", Font.PLAIN, Integer.valueOf(size)));
                     g.drawString((String) infoMap.get("value"), (int) infoMap.get("posX"), (int) infoMap.get("posY"));//绘制文字
                 }
             }

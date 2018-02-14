@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.CertifyConfigMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="certify_id" property="certifyId" jdbcType="VARCHAR" />
+    <result column="certify_name" property="certifyName" jdbcType="VARCHAR" />
+    <result column="pic" property="pic" jdbcType="VARCHAR" />
+    <result column="desc" property="desc" jdbcType="VARCHAR" />
+    <result column="privi_arr" property="priviArr" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, certify_id, certify_name, `desc`, pic, privi_arr, created_at, updated_at
+  </sql>
+  <select id="selectCertifyByOfferId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select <include refid="Base_Column_List"/>
+    from tb_certify_config
+    where privi_arr like concat('%', #{offerId} ,'%')
+  </select>
+  <select id="selectCount" resultType="int" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    select count(1)
+    from tb_certify_config
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+  <select id="selectList" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_certify_config
+    where 1=1
+    <include refid="WHERE_SQL"/>
+    order by id desc
+    limit #{pager.start}, #{pager.size}
+  </select>
+
+  <sql id="WHERE_SQL">
+    <if test="certifyId!=null and certifyId!=''">
+      and certify_id = #{certifyId}
+    </if>
+    <if test="certifyName!=null and certifyName!=''">
+      and certify_name like CONCAT('%', #{certifyName},'%')
+    </if>
+    <if test="startDate!=null and startDate!=''">
+      and created_at >= #{startDate}
+    </if>
+    <if test="endDate!=null and endDate!='' ">
+      and created_at &lt; date_add(#{endDate}, INTERVAL 1 DAY)
+    </if>
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_certify_config
+    where certify_id = #{certifyId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tb_certify_config
+    where certify_id = #{certifyId}
+  </delete>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    insert into tb_certify_config (id, certify_id, certify_name, `desc`, pic,
+      privi_arr, created_at, updated_at
+      )
+    values (#{id,jdbcType=BIGINT}, #{certifyId,jdbcType=VARCHAR}, #{certifyName,jdbcType=VARCHAR}, 
+      #{desc,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, #{priviArr,jdbcType=VARCHAR}, now(), now()
+      )
+  </insert>
+  <update id="update" parameterType="org.loxf.jyadmin.dal.po.CertifyConfig" >
+    update tb_certify_config
+    <set >
+      <if test="certifyName != null and certifyName != ''" >
+        certify_name = #{certifyName,jdbcType=VARCHAR},
+      </if>
+      <if test="desc != null and desc != ''" >
+        `desc` = #{desc,jdbcType=VARCHAR},
+      </if>
+      <if test="priviArr != null and priviArr != ''" >
+        privi_arr = #{priviArr,jdbcType=VARCHAR},
+      </if>
+      <if test="pic != null and pic != ''" >
+        pic = #{pic,jdbcType=VARCHAR},
+      </if>
+      updated_at = now()
+    </set>
+    where certify_id = #{certifyId,jdbcType=VARCHAR}
+  </update>
+</mapper>

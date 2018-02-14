@@ -22,7 +22,7 @@
         <spring.version>4.3.0.RELEASE</spring.version>
         <jyadmin.version>1.0.0-SNAPSHOT</jyadmin.version>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-        <client.version>1.0.0-SNAPSHOT</client.version>
+        <client.version>1.0.1-SNAPSHOT</client.version>
         <apache.poi.version>3.15</apache.poi.version>
     </properties>
 
@@ -41,12 +41,12 @@
             <dependency>
                 <groupId>org.loxf</groupId>
                 <artifactId>jy-admin-client</artifactId>
-                <version>${jyadmin.version}</version>
+                <version>${client.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.loxf</groupId>
                 <artifactId>jy-admin-base</artifactId>
-                <version>${jyadmin.version}</version>
+                <version>${client.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.loxf</groupId>

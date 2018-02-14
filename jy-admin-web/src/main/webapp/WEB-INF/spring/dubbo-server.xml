@@ -90,4 +90,19 @@
     <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
                    interface="org.loxf.jyadmin.client.service.NoticeService" ref="noticeService"/>
 
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.ClassQuestionService" ref="classQuestionService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.CertifyConfigService" ref="certifyConfigService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.CustScoreService" ref="custScoreService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.CustCertifyService" ref="custCertifyService"/>
+
+    <dubbo:service timeout="${dubbo.service.timeout}" version="${dubbo.service.version}"
+                   interface="org.loxf.jyadmin.client.service.EventService" ref="eventService"/>
+
 </beans>

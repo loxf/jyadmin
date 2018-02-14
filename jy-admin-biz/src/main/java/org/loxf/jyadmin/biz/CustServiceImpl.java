@@ -206,14 +206,17 @@ public class CustServiceImpl implements CustService {
         } else {
             wxUserTokenMapper.insert(wxUserToken);
         }
-        // 推荐人
-        if (StringUtils.isNotBlank(custDto.getRecommend())) {
-            updateRecommendChildNbr(custDto.getRecommend(), 1);
-        }
         // 用户账户
         Account account = new Account();
         account.setCustId(custId);
         accountMapper.insert(account);
+
+        // 推荐人
+        if (StringUtils.isNotBlank(custDto.getRecommend())) {
+            updateRecommendChildNbr(custDto.getRecommend(), 1);
+            String bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_BP, "SUB_BIND_PHONE_BP", "10").getConfigValue();
+            accountService.increase(custDto.getRecommend(), null, new BigDecimal(bp), null, "推荐同学绑定得积分", custDto.getCustId());
+        }
         // 注册通知
         SendWeixinMsgUtil.sendRegisterNotice(custDto.getOpenid(), custDto.getNickName(), JYZX_INDEX_URL);
         return new BaseResult<>(custId);
@@ -253,11 +256,6 @@ public class CustServiceImpl implements CustService {
         Cust cust = custMapper.selectByPhoneOrEmail(custDto.getIsChinese(), (custDto.getIsChinese()==1?custDto.getPhone():custDto.getEmail()));
         if(cust!=null){
             return new BaseResult(BaseConstant.FAILED, "当前" + (custDto.getIsChinese()==1?"手机":"邮箱") + "已被绑定，请更换。");
-        }
-        // 判断推荐人
-        if(StringUtils.isNotBlank(custDto.getRecommend())){
-            String bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "SUB_BIND_PHONE_BP", "10").getConfigValue();
-            accountService.increase(custDto.getRecommend(), null, new BigDecimal(bp), null, "推荐同学绑定得积分", custDto.getCustId());
         }
         return updateCust(custDto);
     }

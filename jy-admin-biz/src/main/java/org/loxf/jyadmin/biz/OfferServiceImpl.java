@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service("offerService")
@@ -76,9 +77,27 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public BaseResult<OfferDto> queryOffer(String offerId){
         Offer offer = offerMapper.selectByOfferId(offerId);
+        if(offer==null){
+            return new BaseResult<>(BaseConstant.FAILED, "商品不存在");
+        }
         OfferDto dto = new OfferDto();
         BeanUtils.copyProperties(offer, dto);
         return new BaseResult<>(dto);
+    }
+
+    @Override
+    public BaseResult<List<OfferDto>> queryOffers(String[] offerIds){
+        List<Offer> offerList = offerMapper.selectByOfferIds(Arrays.asList(offerIds));
+        if(CollectionUtils.isEmpty(offerList)){
+            return new BaseResult<>(BaseConstant.FAILED, "商品不存在");
+        }
+        List<OfferDto> offerDtos = new ArrayList<>();
+        for(Offer offer : offerList) {
+            OfferDto dto = new OfferDto();
+            BeanUtils.copyProperties(offer, dto);
+            offerDtos.add(dto);
+        }
+        return new BaseResult<>(offerDtos);
     }
 
     @Override
@@ -97,8 +116,7 @@ public class OfferServiceImpl implements OfferService {
     @Override
     @Transactional
     public BaseResult updateOffer(OfferDto offerDto, List<OfferRelDto> offerRelDtos){
-        Offer again = offerMapper.selectByOfferId(offerDto.getOfferId());
-        if("OFFER".equals(again.getOfferType())){
+        if("OFFER".equals(offerDto.getOfferType())){
             // 套餐要删除offerrel 再新增
             offerRelMapper.deleteByOfferIdAndRelType(offerDto.getOfferId(), "OFFER");
             addOfferRel(offerDto.getOfferId(), offerRelDtos);

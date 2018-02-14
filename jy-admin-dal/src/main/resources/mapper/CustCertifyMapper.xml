@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.CustCertifyMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.CustCertify" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="cust_id" property="custId" jdbcType="VARCHAR" />
+    <result column="certify_id" property="certifyId" jdbcType="VARCHAR" />
+    <result column="certify_name" property="certifyName" jdbcType="VARCHAR" />
+    <result column="pic" property="pic" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, cust_id, certify_id, certify_name, pic, created_at, updated_at
+  </sql>
+  <select id="count" resultType="int" parameterType="org.loxf.jyadmin.dal.po.CustCertify" >
+    select count(1)
+    from tb_cust_certify
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.CustCertify" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_cust_certify
+    where 1=1
+    <include refid="WHERE_SQL"/>
+  </select>
+  <sql id="WHERE_SQL">
+    <if test="custId!=null and custId!=''">
+      and cust_id = #{custId}
+    </if>
+    <if test="certifyId!=null and certifyId!=''">
+      and certify_id = #{certifyId}
+    </if>
+    <if test="certifyName!=null and certifyName!=''">
+      and certify_name = #{certifyName}
+    </if>
+  </sql>
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.CustCertify" >
+    insert into tb_cust_certify (id, cust_id, certify_id, 
+      certify_name, pic, created_at, updated_at)
+    values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{certifyId,jdbcType=VARCHAR}, 
+      #{certifyName,jdbcType=VARCHAR}, #{pic,jdbcType=VARCHAR}, now(), now())
+  </insert>
+</mapper>

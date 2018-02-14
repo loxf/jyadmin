@@ -14,6 +14,8 @@ public interface OfferMapper {
 
     Offer selectByOfferId(String id);
 
+    List<Offer> selectByOfferIds(List<String> list);
+
     Offer selectOfferByName(String offerName);
 
     int insert(Offer record);

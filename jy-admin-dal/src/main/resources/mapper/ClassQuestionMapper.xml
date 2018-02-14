@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.ClassQuestionMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.ClassQuestion" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="question_id" property="questionId" jdbcType="VARCHAR" />
+    <result column="offer_id" property="offerId" jdbcType="VARCHAR" />
+    <result column="exam_name" property="examName" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="pics" property="pics" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="options" property="options" jdbcType="VARCHAR" />
+    <result column="answer" property="answer" jdbcType="VARCHAR" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, question_id, offer_id, exam_name, seq, title, type, pics, score, options, answer, 
+    created_at, updated_at
+  </sql>
+  <select id="selectListByOfferId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_class_question
+    where offer_id = #{offerId}
+    order by seq
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from tb_class_question
+    where question_id = #{questionId}
+  </delete>
+
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.ClassQuestion" >
+    insert into tb_class_question (id, question_id, offer_id, 
+      exam_name, seq, title, 
+      type, pics, score, 
+      options, answer, created_at, 
+      updated_at)
+    values (#{id,jdbcType=BIGINT}, #{questionId,jdbcType=VARCHAR}, #{offerId,jdbcType=VARCHAR}, 
+      #{examName,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER}, #{pics,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, 
+      #{options,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, now(), now())
+  </insert>
+
+  <update id="update" parameterType="org.loxf.jyadmin.dal.po.ClassQuestion" >
+    update tb_class_question
+    <set >
+      <if test="offerId != null and offerId != ''" >
+        offer_id = #{offerId,jdbcType=VARCHAR},
+      </if>
+      <if test="examName != null and examName != ''" >
+        exam_name = #{examName,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+      <if test="title != null and title != ''" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="pics != null" >
+        pics = #{pics,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="options != null and options != ''" >
+        options = #{options,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null and answer != ''" >
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+      updated_at = now()
+    </set>
+    where question_id = #{questionId,jdbcType=VARCHAR}
+  </update>
+</mapper>

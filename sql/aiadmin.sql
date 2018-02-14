@@ -366,3 +366,79 @@ create table tb_verify_code
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- 事件
+DROP TABLE IF EXISTS `tb_event`;
+CREATE TABLE `tb_event` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `event_code` varchar(50) DEFAULT NULL,
+  `event_key` varchar(100) DEFAULT NULL,
+  `meta_data` varchar(1000) DEFAULT NULL,
+  `status` int(2) DEFAULT NULL COMMENT '1:待处理 3:处理成功 -3:处理失败 ',
+  `remark` varchar(500) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COMMENT='事件表，异步处理事件';
+-- 考试证书
+DROP TABLE IF EXISTS `tb_cust_certify`;
+CREATE TABLE `tb_cust_certify` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `cust_id` varchar(64) NOT NULL,
+  `certify_id` varchar(64) DEFAULT NULL COMMENT '证书ID',
+  `certify_name` varchar(255) DEFAULT NULL COMMENT '证书名称',
+  `pic` varchar(255) DEFAULT NULL COMMENT '证书地址',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS `tb_cust_score`;
+CREATE TABLE `tb_cust_score` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `score_id` varchar(32) NOT NULL,
+  `cust_id` varchar(64) NOT NULL,
+  `offer_id` varchar(64) NOT NULL COMMENT '课程ID',
+  `exam_name` varchar(255) DEFAULT NULL COMMENT '考试名称',
+  `score` int(4) DEFAULT NULL COMMENT '得分',
+  `is_pass` int(2) DEFAULT NULL COMMENT '1：通过 0：未通过',
+  `version` varchar(50) DEFAULT NULL COMMENT '版本，当时的时间戳',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4;
+-- ----------------------------
+-- Table structure for tb_certify_config
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_certify_config`;
+CREATE TABLE `tb_certify_config` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `certify_id` varchar(64) NOT NULL COMMENT '证书ID',
+  `certify_name` varchar(255) DEFAULT NULL,
+  `desc` varchar(100) DEFAULT NULL,
+  `pic` varchar(500) DEFAULT NULL,
+  `privi_arr` varchar(4000) DEFAULT NULL COMMENT '获得证书的条件，json数组，包含获得证书需要达到的条件',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Table structure for tb_class_question
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_class_question`;
+CREATE TABLE `tb_class_question` (
+  `id` bigint(11) NOT NULL AUTO_INCREMENT,
+  `question_id` varchar(64) NOT NULL COMMENT '问题ID',
+  `offer_id` varchar(64) DEFAULT NULL COMMENT '商品ID',
+  `exam_name` varchar(255) DEFAULT NULL COMMENT '考试名称',
+  `seq` int(4) DEFAULT NULL COMMENT '题目顺序',
+  `title` varchar(255) DEFAULT NULL,
+  `type` int(2) DEFAULT NULL COMMENT '1:单选 2：多选',
+  `pics` varchar(255) DEFAULT NULL COMMENT '示例图片，',
+  `score` int(2) DEFAULT NULL COMMENT '分值',
+  `options` varchar(2000) DEFAULT NULL COMMENT '选项，json',
+  `answer` varchar(255) DEFAULT NULL COMMENT '答案，options的数组序号，从0开始，多个选项小逗号隔开',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
