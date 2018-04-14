@@ -22,7 +22,7 @@
         <spring.version>4.3.0.RELEASE</spring.version>
         <jyadmin.version>1.0.0-SNAPSHOT</jyadmin.version>
         <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-        <client.version>1.0.1-SNAPSHOT</client.version>
+        <client.version>1.0.2-SNAPSHOT</client.version>
         <apache.poi.version>3.15</apache.poi.version>
     </properties>
 

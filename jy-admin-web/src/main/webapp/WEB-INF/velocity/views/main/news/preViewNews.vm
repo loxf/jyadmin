@@ -1,0 +1,11 @@
+<div style="margin-top: 10px">
+    <div style="margin: 10px 5px 10px 5px; text-align: center">
+        <label style="bold: true; font-size: 20px">${title}</label>
+    </div>
+    <div style="text-align: center;margin: 10px 5px 10px 5px">
+        <label>${deployTime}</label><label style="margin-left: 10px;color: deeppink">${source}</label>
+    </div>
+    <div style="margin: 10px 10px 10px 10px">
+        ${htmlInfo}
+    </div>
+</div>

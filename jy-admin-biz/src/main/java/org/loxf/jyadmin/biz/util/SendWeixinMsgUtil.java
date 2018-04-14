@@ -208,6 +208,28 @@ public class SendWeixinMsgUtil {
                 openid, data, url));
     }
 
+    /**
+     * 新闻通知
+     * @param openid
+     * @param title
+     * @param desc
+     * @param type
+     * @param deployDate
+     * @param url
+     */
+    public static void sendNewsNotice( String openid, String title, String desc, Date deployDate, Integer type, String url){
+        String NEWS_NOTICE = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_MSG_NEWS_NOTICE").getConfigValue();
+        Map data = new HashMap();
+        String s = (type==1?"一条新闻":"一份面授课程");
+        data.put("first", WeixinSender.createWXKeyWord("亲爱的会员，有" + s + "等待您的查收。", null));
+        data.put("keyword1", WeixinSender.createWXKeyWord(title, "#FF3030"));
+        data.put("keyword2", WeixinSender.createWXKeyWord(desc, null));
+        data.put("keyword3", WeixinSender.createWXKeyWord(DateUtils.formatHms(deployDate), null));
+        data.put("remark", WeixinSender.createWXKeyWord("点击查看新闻详情，分享可得奖学金", null));
+        noticeService().insert("WX", openid, WeixinSender.createWxMsgMap(NEWS_NOTICE,
+                openid, data, url));
+    }
+
     private static NoticeService noticeService(){
         return SpringApplicationContextUtil.getBean(NoticeService.class);
     }

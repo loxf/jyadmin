@@ -442,3 +442,42 @@ CREATE TABLE `tb_class_question` (
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
+
+
+-- 分类界面改造 新闻功能
+drop table `tb_news`;
+
+CREATE TABLE `tb_news`
+ (
+`id`  bigint(11) NOT NULL AUTO_INCREMENT ,
+`title_id`  varchar(64) NOT NULL ,
+`title`  varchar(150) CHARACTER SET utf8mb4 NULL COMMENT '标题' ,
+`keyword`  varchar(500) CHARACTER SET utf8mb4 NULL COMMENT '关键字' ,
+`description`  varchar(500) CHARACTER SET utf8mb4 NULL COMMENT '描述' ,
+`status`  int(2) NULL DEFAULT 0 COMMENT '0：草稿 1：发布' ,
+`type`  int(2) NULL DEFAULT 0 COMMENT '1：新闻 2：面授课程' ,
+`deploy_time`  datetime NULL COMMENT '发布时间' ,
+`source`  varchar(100) CHARACTER SET utf8mb4 NULL COMMENT '来源/作者' ,
+`context_id`  varchar(64) NULL COMMENT '富文本ID' ,
+`push_wx`  int(1) NULL DEFAULT 0 COMMENT '是否推广到微信，0：未推广 1：已推广' ,
+`is_deleted` int(2) unsigned zerofill DEFAULT NULL COMMENT '1:删除 0:正常',
+`created_at`  datetime NULL ON UPDATE CURRENT_TIMESTAMP ,
+`updated_at`  datetime NULL ON UPDATE CURRENT_TIMESTAMP ,
+PRIMARY KEY (`id`),
+UNIQUE INDEX `idx_title_id` (`title_id`) USING BTREE
+)
+COMMENT='新闻'
+;
+CREATE TABLE `tb_news_view` (
+`id`  bigint(11) NOT NULL AUTO_INCREMENT ,
+`title_id`  varchar(64) NULL ,
+`cust_id`  varchar(64) NULL ,
+`read_times`  int(1) NULL DEFAULT 0 COMMENT '阅读量' ,
+`created_at`  datetime NULL ON UPDATE CURRENT_TIMESTAMP ,
+`updated_at`  datetime NULL ON UPDATE CURRENT_TIMESTAMP ,
+PRIMARY KEY (`id`)
+)
+COMMENT='新闻浏览记录';
+
+ALTER TABLE `tb_news_view`
+ADD UNIQUE INDEX `idx_title_cust` (`cust_id`(32), `title_id`(32)) USING BTREE ;

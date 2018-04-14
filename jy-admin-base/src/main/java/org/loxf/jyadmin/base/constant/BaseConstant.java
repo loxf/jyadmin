@@ -90,6 +90,8 @@ public class BaseConstant {
     public static String BE_VIP_URL = "/confirmOrder?type=VIP&id=OFFER001&otherId=OFFER002";
     // 升级SVIP
     public static String BE_SVIP_URL = "/confirmOrder?type=VIP&id=OFFER002";
+    // 新闻详情
+    public static String NEWS_DETAIL_URL =  "/newsDetail?id=%s";
 
     // 微信菜单
     // 创建
