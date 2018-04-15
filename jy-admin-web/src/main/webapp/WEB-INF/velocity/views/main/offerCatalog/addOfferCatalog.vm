@@ -7,7 +7,7 @@
     <div class="layui-form-item">
         <label class="layui-form-label">分类名称</label>
         <div class="layui-input-block">
-            <input type="text" name="catalogName" lay-verify="catalogName" autocomplete="off" placeholder="请输入分类名称（建议20字以内）"
+            <input type="text" name="catalogName" lay-verify="catalogName" autocomplete="off" placeholder="请输入分类名称（建议6字以内）"
                    class="layui-input">
         </div>
     </div>
@@ -72,8 +72,8 @@
         catalogName: function(value){
             if(value.length < 2){
                 return '分类名称至少2个字';
-            } else if(value.length >20){
-                return '分类名称超过20个字';
+            } else if(value.length >7){
+                return '分类名称超过7个字';
             }
         }
     });

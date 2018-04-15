@@ -209,7 +209,7 @@ public class SendWeixinMsgUtil {
     }
 
     /**
-     * 新闻通知
+     * TODO 新闻通知
      * @param openid
      * @param title
      * @param desc
