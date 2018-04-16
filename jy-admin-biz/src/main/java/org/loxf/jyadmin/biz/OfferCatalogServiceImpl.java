@@ -33,11 +33,13 @@ public class OfferCatalogServiceImpl implements OfferCatalogService {
 
     @Override
     @Transactional
-    public BaseResult<String> addCatalog(String catalogName, String picUrl) {
+    public BaseResult<String> addCatalog(OfferCatalogDto offerCatalogDto) {
         OfferCatalog offerCatalog = new OfferCatalog();
-        offerCatalog.setCatalogName(catalogName);
-        offerCatalog.setPic(picUrl);
+        BeanUtils.copyProperties(offerCatalogDto, offerCatalog);
         offerCatalog.setCatalogId(IdGenerator.generate(prefix));
+        if(offerCatalog.getSort()<0 || offerCatalog.getSort()>9999){
+            offerCatalog.setSort(50);
+        }
         offerCatalogMapper.insert(offerCatalog);
         return new BaseResult<>(offerCatalog.getCatalogId());
     }
@@ -48,6 +50,9 @@ public class OfferCatalogServiceImpl implements OfferCatalogService {
         if(StringUtils.isNotBlank(catalogDto.getCatalogId())) {
             OfferCatalog offerCatalog = new OfferCatalog();
             BeanUtils.copyProperties(catalogDto, offerCatalog);
+            if(offerCatalog.getSort()<0 || offerCatalog.getSort()>9999){
+                offerCatalog.setSort(50);
+            }
             offerCatalogMapper.updateByPrimaryKey(offerCatalog);
             return new BaseResult<>(catalogDto.getCatalogId());
         } else {

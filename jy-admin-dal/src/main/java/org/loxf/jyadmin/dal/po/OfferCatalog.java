@@ -11,6 +11,10 @@ public class OfferCatalog extends BaseModel {
 
     private String indexPic;
 
+    private Integer sort;
+
+    private String buyPrivi;
+
     public String getCatalogId() {
         return catalogId;
     }
@@ -41,5 +45,21 @@ public class OfferCatalog extends BaseModel {
 
     public void setIndexPic(String indexPic) {
         this.indexPic = indexPic;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
+    public String getBuyPrivi() {
+        return buyPrivi;
+    }
+
+    public void setBuyPrivi(String buyPrivi) {
+        this.buyPrivi = buyPrivi;
     }
 }

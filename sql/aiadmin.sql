@@ -481,3 +481,12 @@ COMMENT='新闻浏览记录';
 
 ALTER TABLE `tb_news_view`
 ADD UNIQUE INDEX `idx_title_cust` (`cust_id`(32), `title_id`(32)) USING BTREE ;
+
+ALTER TABLE `tb_offer`
+ADD COLUMN `sort`  int(4) NULL COMMENT '排序，越大越优先，默认50' AFTER `status`;
+
+ALTER TABLE `tb_offer_catalog`
+ADD COLUMN `buy_privi`  varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '购买权限JSON，含级别，价格' AFTER `index_pic`,
+ADD COLUMN `sort`  int(4) NULL COMMENT '排序，越大越优先，默认50' AFTER `buy_privi`;
+
+

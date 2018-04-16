@@ -36,6 +36,8 @@ public class OfferDto extends BaseModel {
 
     private List<OfferDto> relOffers;
 
+    private Integer sort;
+
     public String getOfferId() {
         return offerId;
     }
@@ -154,5 +156,13 @@ public class OfferDto extends BaseModel {
 
     public void setRelOffers(List<OfferDto> relOffers) {
         this.relOffers = relOffers;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }

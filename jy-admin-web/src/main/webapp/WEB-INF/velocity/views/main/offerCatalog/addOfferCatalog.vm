@@ -12,6 +12,13 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">分类排序</label>
+        <div class="layui-input-block">
+            <input type="number" name="sort" lay-verify="sort" autocomplete="off" placeholder="0-9999，序号越大，排序越前"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">分类图片</label>
         <div class="layui-input-inline">
             <a class="layui-btn uploadImg" id="picBtn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=CATALOG'}">
@@ -19,7 +26,7 @@
             <div class="layui-upload-list">
                 <img class="layui-upload-img" style="max-width: 350px;" id="picImg">
             </div>
-            <input type="hidden" name="pic" id="pic">
+            <input type="hidden" name="pic" lay-verify="pic" id="pic">
         </div>
     </div>
     <div class="layui-form-item">
@@ -75,6 +82,18 @@
             } else if(value.length >7){
                 return '分类名称超过7个字';
             }
+        },pic: function(value){
+            if(value.length <=0){
+                return '请上传分类图片';
+            }
+        },sort: function(value){
+            if(!value){
+                return '分类排序必填';
+            } else {
+                if(value<0 || value>9999){
+                    return '排序号码从0~9999';
+                }
+            }
         }
     });
 
@@ -86,6 +105,7 @@
             data : {
                 catalogName:data.field.catalogName,
                 pic:data.field.pic,
+                sort:data.field.sort,
                 indexPic:data.field.indexPic
             },
             dataType:"json",

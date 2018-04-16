@@ -25,6 +25,12 @@ table.render({ //其它参数在此省略
     page: true,
     cols: [[
         {
+            field: 'sort',
+            title: '序号',
+            fixed: true,
+            width: 60
+        },
+        {
             field: 'offerName',
             title: '商品名称',
             fixed: true,

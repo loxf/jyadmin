@@ -32,6 +32,8 @@ public class Offer extends BaseModel{
 
     private Integer status;
 
+    private Integer sort;
+
     public String getOfferId() {
         return offerId;
     }
@@ -136,4 +138,11 @@ public class Offer extends BaseModel{
         this.status = status;
     }
 
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
 }

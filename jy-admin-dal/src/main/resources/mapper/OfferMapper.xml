@@ -16,13 +16,14 @@
     <result column="meta_data" property="metaData" jdbcType="VARCHAR" />
     <result column="html_id" property="htmlId" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
     <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, offer_id, offer_name, offer_desc, catalog_id,
-     offer_type, sale_money, offer_pic, main_media, buy_privi, meta_data, html_id, status, is_deleted, created_at, updated_at
+     offer_type, sale_money, offer_pic, main_media, buy_privi, meta_data, html_id, status, sort, is_deleted, created_at, updated_at
   </sql>
   <select id="selectByOfferId" resultMap="BaseResultMap" parameterType="String" >
     select (select CATALOG_NAME from tb_offer_catalog b where b.CATALOG_id = t.CATALOG_id) as `CATALOG_NAME`, t.*
@@ -54,14 +55,14 @@
     where is_deleted = 0
     <include refid="WHERE_SQL"></include>
     <if test="appType==1">
-      order by created_at desc
+      order by sort desc
     </if>
     <if test="appType==2">
       <if test="offer.sortType==null or offer.sortType==''">
-        order by created_at desc
+        order by sort desc
       </if>
       <if test="offer.sortType!=null and offer.sortType=='HOT'">
-        order by orderNbr desc, created_at desc
+        order by orderNbr desc, sort desc
       </if>
     </if>
     <if test="offer.pager!=null">
@@ -116,13 +117,13 @@
     insert into tb_offer (offer_id, offer_name, offer_desc,
       catalog_id, offer_type, sale_money,
       offer_pic, main_media, buy_privi,
-      meta_data, html_id, status, 
+      meta_data, html_id, sort, status,
       is_deleted, created_at, updated_at
       )
     values (#{offerId,jdbcType=VARCHAR}, #{offerName,jdbcType=VARCHAR}, #{offerDesc,jdbcType=VARCHAR},
       #{catalogId,jdbcType=VARCHAR}, #{offerType,jdbcType=VARCHAR}, #{saleMoney,jdbcType=DECIMAL},
       #{offerPic,jdbcType=DECIMAL}, #{mainMedia,jdbcType=VARCHAR}, #{buyPrivi,jdbcType=VARCHAR},
-      #{metaData,jdbcType=VARCHAR}, #{htmlId,jdbcType=VARCHAR}, 0, 0, now(), now()
+      #{metaData,jdbcType=VARCHAR}, #{htmlId,jdbcType=VARCHAR}, #{sort}, 0, 0, now(), now()
       )
   </insert>
 
@@ -162,6 +163,9 @@
     <if test="htmlId!=null and htmlId!=''">
       html_id = #{htmlId,jdbcType=VARCHAR},
     </if>
+    <if test="sort!=null">
+      sort = #{sort},
+    </if>
       updated_at = now()
     where offer_id = #{offerId,jdbcType=VARCHAR}
   </update>
@@ -182,7 +186,7 @@
 				b.price AS sale_money,b.active_privi AS buy_privi,b.created_at
 		FROM tb_active b WHERE  b.is_deleted = 0
     <if test="name!=null and name!=''"> and b.active_name like concat('%', #{name}, '%')</if>
-	) t ORDER BY created_at DESC
+	) t ORDER BY sort DESC
   </select>
 
   <select id="showOfferByOfferIdAndRelType" resultMap="BaseResultMap">
