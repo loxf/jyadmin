@@ -26,7 +26,7 @@ table.render({ //其它参数在此省略
     cols: [[
         {
             field: 'sort',
-            title: '序号',
+            title: '优先级',
             fixed: true,
             width: 60
         },

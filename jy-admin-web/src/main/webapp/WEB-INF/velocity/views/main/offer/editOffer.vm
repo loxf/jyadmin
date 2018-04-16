@@ -12,6 +12,13 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">优先级</label>
+        <div class="layui-input-block">
+            <input type="number" name="sort" lay-verify="sort" value="${offer.sort}" autocomplete="off" placeholder="0-9999，序号越大，排序越前"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">套餐描述</label>
         <div class="layui-input-block">
             <input type="text" name="offerDesc" value="$!{offer.offerDesc}"  autocomplete="off" placeholder="请输入套餐描述，用于套餐分享"

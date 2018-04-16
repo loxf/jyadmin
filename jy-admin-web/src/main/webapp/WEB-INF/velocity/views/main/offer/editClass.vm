@@ -12,7 +12,7 @@
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">套餐排序</label>
+        <label class="layui-form-label">优先级</label>
         <div class="layui-input-block">
             <input type="number" name="sort" lay-verify="sort" value="$!{offer.sort}" autocomplete="off" placeholder="0-9999，序号越大，排序越前"
                    class="layui-input">
@@ -264,7 +264,7 @@
             }
         },sort: function(value){
             if(!value){
-                return '分类排序必填';
+                return '优先级必填';
             } else {
                 if(value<0 || value>9999){
                     return '排序号码从0~9999';
