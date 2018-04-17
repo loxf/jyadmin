@@ -186,7 +186,7 @@
 				b.price AS sale_money,b.active_privi AS buy_privi,b.created_at
 		FROM tb_active b WHERE  b.is_deleted = 0
     <if test="name!=null and name!=''"> and b.active_name like concat('%', #{name}, '%')</if>
-	) t ORDER BY sort DESC
+	) t ORDER BY created_at DESC
   </select>
 
   <select id="showOfferByOfferIdAndRelType" resultMap="BaseResultMap">
