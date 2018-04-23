@@ -109,7 +109,7 @@ public class CustController extends BaseControl<CustDto> {
             custDto.setMetaData(jsonObject.toJSONString());
             BaseResult baseResult = custService.updateCust(custDto);
             // 如果购买的是VIP，设置用户信息刷新标志
-            jedisUtil.set("REFRESH_CUST_INFO_" + custId, "true", 60);
+            // jedisUtil.set("REFRESH_CUST_INFO_" + custId, "true", 60);
             return baseResult;
         }
         return vipBaseResult;
