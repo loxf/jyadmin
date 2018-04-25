@@ -201,7 +201,7 @@ public class CustCashServiceImpl implements CustCashService {
             throw new BizException("获取账户失败");
         }
         BigDecimal accountBalance = accountBalanceResult.getData();
-        if(custCashDto.getBalance().compareTo(accountBalance)<0) {
+        if(custCashDto.getBalance().compareTo(accountBalance)>0) {
             throw new BizException("账户余额不足");
         }
         String rateStr = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY, "CASH_CMMS_AMT", "0.6").
