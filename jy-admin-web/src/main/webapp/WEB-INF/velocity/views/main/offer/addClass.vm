@@ -192,6 +192,14 @@
                 } else {
                     layer.tips(res.msg);
                 }
+            },sort: function(value){
+                if(!value){
+                    return '优先级必填';
+                } else {
+                    if(value<0 || value>9999){
+                        return '排序号码从0~9999';
+                    }
+                }
             }
         });
     }
@@ -291,6 +299,7 @@
                 offerPic:data.field.offerPic,
                 buyPrivi:JSON.stringify(buyPrivi),
                 metaData:JSON.stringify(metaData),
+                sort:data.field.sort,
                 saleMoney:data.field.saleMoney,
                 offerType:'CLASS',
                 htmlId:htmlId,

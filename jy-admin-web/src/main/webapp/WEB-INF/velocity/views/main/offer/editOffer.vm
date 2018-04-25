@@ -379,6 +379,7 @@
                 offerDesc: data.field.offerDesc,
                 catalogId: data.field.catalogId,
                 offerPic: data.field.offerPic,
+                sort:data.field.sort,
                 buyPrivi: JSON.stringify(buyPrivi),
                 metaData: JSON.stringify(metaData),
                 saleMoney: data.field.saleMoney,
