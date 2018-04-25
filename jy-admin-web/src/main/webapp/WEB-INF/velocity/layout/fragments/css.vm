@@ -1,5 +1,4 @@
 <link rel="shortcut icon" href="${rc.contextPath}/static/favicon.ico">
 <link rel="stylesheet" href="${rc.contextPath}/static/layui-v2.1.5/layui/css/layui.css" >
-<script src="${rc.contextPath}/static/layui-v2.1.5/layui/layui.js"></script>
 <link rel="stylesheet" href="${rc.contextPath}/static/select2/select2.min.css">
 

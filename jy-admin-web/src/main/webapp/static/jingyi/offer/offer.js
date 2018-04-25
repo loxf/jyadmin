@@ -274,7 +274,7 @@ function deleteOffer(data, layEvent, obj) {
 function sendWeiXin(data, layEvent, obj) {
     var metaData = data.metaData;
     var teacherStr = "";
-    if(metaData){
+    if(metaData && data.offerType=='CLASS'){
         var json = JSON.parse(metaData);
         var teacherArr = json.TEACHER;
         if(teacherArr.length>0){
@@ -282,6 +282,8 @@ function sendWeiXin(data, layEvent, obj) {
                 teacherStr += teacherArr[inx].name + " ";
             }
         }
+    } else {
+        teacherStr = "见详情";
     }
     $.ajax({
         type: "POST",
