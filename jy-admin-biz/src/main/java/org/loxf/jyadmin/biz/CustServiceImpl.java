@@ -241,10 +241,10 @@ public class CustServiceImpl implements CustService {
         cust.setRealName(keyword);
         Pager pager = new Pager(page, size);
         cust.setPager(pager);
-        int total = custMapper.count(cust);
+        int total = custMapper.searchCount(cust);
         List<CustDto> dtos = new ArrayList<>();
         if (total > 0) {
-            List<Cust> custList = custMapper.pager(cust);
+            List<Cust> custList = custMapper.searchPager(cust);
             convertCust(custList, dtos);
         }
         int totalPage = total / cust.getPager().getSize() + (total % cust.getPager().getSize() == 0 ? 0 : 1);
