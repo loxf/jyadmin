@@ -7,7 +7,7 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo
         http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
-    <dubbo:application name="ai-admin"/>
+    <dubbo:application name="jingyi-admin"/>
     <dubbo:registry  protocol="zookeeper" timeout="30000" address="${dubbo.server.registry}" file="${app.tmpDir}/output/${app.name}.cache"/>
     <dubbo:protocol name="dubbo" port="${dubbo.server.port}" payload="11557050"/>
     <dubbo:consumer check="false"/>

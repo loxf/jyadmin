@@ -27,6 +27,10 @@ public interface CustMapper {
 
     List<Cust> pager(Cust cust);
 
+    int searchCount(Cust cust);
+
+    List<Cust> searchPager(Cust cust);
+
     List<Cust> queryChildList(@Param("list") List<String> parentId, @Param("start") int start, @Param("size") int size);
 
     int queryChildListCount(@Param("list") List<String> parentId);

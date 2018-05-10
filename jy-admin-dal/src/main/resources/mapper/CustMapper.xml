@@ -103,6 +103,34 @@
     <include refid="WHERE_SQL"/>
   </select>
 
+  <select id="searchPager" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.Cust" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_cust a
+    where is_deleted = 0
+    <include refid="SEARCH_WHERE_SQL"/>
+    order by created_at desc
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+
+  <select id="searchCount" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.Cust" >
+    select count(1)
+    from tb_cust
+    where is_deleted = 0
+    <include refid="SEARCH_WHERE_SQL"/>
+  </select>
+
+  <sql id="SEARCH_WHERE_SQL">
+    and (
+    phone like CONCAT(#{phone},'%') OR
+    email like CONCAT(#{email},'%') OR
+    real_name like CONCAT('%', #{realName},'%') OR
+    nick_name like CONCAT('%', #{nickName},'%')
+    )
+  </sql>
+
   <sql id="WHERE_SQL">
     <if test="nickName!=null and nickName!=''">
       and nick_name like CONCAT('%', #{nickName},'%')

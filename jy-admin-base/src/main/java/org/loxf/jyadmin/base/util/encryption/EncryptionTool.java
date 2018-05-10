@@ -11,12 +11,12 @@ public class EncryptionTool {
     public static void main(String[] args){
         try {
           //  System.out.println(EncryptionKeyUtil.encryption("jdbc:mysql://rr-bp1j4qg613l29n902.mysql.rds.aliyuncs.com:3306/daichong?useUnicode=true&amp;characterEncoding=UTF-8"));
-            String plainText = "jiingyi123..";
+            String plainText = "lhjzss123";
             System.out.println("开始加密："+plainText);
             String enTxt = ConfigTools.encrypt(DEFAULT_PRIVATE_KEY_STRING,plainText);
             System.out.println("加密结果："+enTxt);
             System.out.println("开始解密");
-            System.out.println("解密结果："+ConfigTools.decrypt(DEFAULT_PUBLIC_KEY_STRING,enTxt));
+            System.out.println("解密结果："+ConfigTools.decrypt(DEFAULT_PUBLIC_KEY_STRING, enTxt));
         }catch (Exception e){
 
         }
