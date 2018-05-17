@@ -46,6 +46,8 @@ public class Cust extends BaseModel {
 
     private String metaData;
 
+    private String xcxOpenid;
+
     private String openid;
 
     private String unionid;
@@ -208,6 +210,14 @@ public class Cust extends BaseModel {
 
     public void setMetaData(String metaData) {
         this.metaData = metaData;
+    }
+
+    public String getXcxOpenid() {
+        return xcxOpenid;
+    }
+
+    public void setXcxOpenid(String xcxOpenid) {
+        this.xcxOpenid = xcxOpenid;
     }
 
     public String getOpenid() {

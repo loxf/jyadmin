@@ -276,9 +276,17 @@ public class CustCashServiceImpl implements CustCashService {
         if (custCashMapper.lock(custCashDto.getOrderId()) > 0) {
             try {
                 CustDto custDto = custService.queryCustByCustId(custCashDto.getCustId()).getData();
+                String openId = null, env = null;
+                if(StringUtils.isNotBlank(custDto.getOpenid())){
+                    openId = custDto.getOpenid();
+                    env = "WX";
+                } else if(StringUtils.isNotBlank(custDto.getXcxOpenid())){
+                    openId = custDto.getXcxOpenid();
+                    env = "XCX";
+                }
                 if (custCashDto.getType() == 1) {
                     // 微信提现
-                    remark = WeixinPayUtil.payForWeixin(custDto.getOpenid(), custCashDto.getOrderId(),
+                    remark = WeixinPayUtil.payForWeixin(env, openId, custCashDto.getOrderId(),
                             custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue(),
                             StringUtils.isBlank(SERVER_IP)?"118.31.18.166":SERVER_IP);
                 } else {
@@ -288,7 +296,7 @@ public class CustCashServiceImpl implements CustCashService {
                         return new BaseResult<>(BaseConstant.FAILED, bankDtoBaseResult.getMsg());
                     }
                     CustBankDto custBankDto = bankDtoBaseResult.getData();
-                    remark = WeixinPayUtil.payForBank(custCashDto.getOrderId(), custBankDto.getBankNo(), custBankDto.getUserName(),
+                    remark = WeixinPayUtil.payForBank(env, openId, custBankDto.getBankNo(), custBankDto.getUserName(),
                             custBankDto.getBankCode(),
                             custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue());
                 }
