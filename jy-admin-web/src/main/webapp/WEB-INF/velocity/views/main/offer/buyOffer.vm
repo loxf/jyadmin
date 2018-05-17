@@ -88,12 +88,12 @@
     $(".searchCust").select2({
         ajax: {
             type:'POST',
-            url: contextPath + "/admin/cust/list",
+            url: contextPath + "/admin/cust/search",
             dataType: 'json',
             delay: 250,
             data: function (params) {
                 return {
-                    phone: params.term.trim(), // search term 请求参数 ， 请求框中输入的参数
+                    keyword: params.term.trim(), // search term 请求参数 ， 请求框中输入的参数
                     page: params.page||1,
                     size:20
                 };

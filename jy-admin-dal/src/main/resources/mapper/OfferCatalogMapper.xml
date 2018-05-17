@@ -7,11 +7,13 @@
     <result column="catalog_name" property="catalogName" jdbcType="VARCHAR" />
     <result column="pic" property="pic" jdbcType="VARCHAR" />
     <result column="index_pic" property="indexPic" jdbcType="VARCHAR" />
+    <result column="buy_privi" property="buyPrivi" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
     <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, catalog_id, `catalog_name`, pic, index_pic, created_at, updated_at
+    id, catalog_id, `catalog_name`, pic, index_pic, buy_privi, sort, created_at, updated_at
   </sql>
   <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
     select
@@ -19,7 +21,7 @@
     from tb_offer_catalog
     where 1=1
     <include refid="WHERE_SQL"/>
-    order by id desc
+    order by sort desc
     <if test="pager!=null">
       limit #{pager.start}, #{pager.size}
     </if>
@@ -56,10 +58,10 @@
   </delete>
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
     insert into tb_offer_catalog (catalog_id, `catalog_name`,
-      pic, index_pic, created_at, updated_at
+      pic, index_pic, sort, created_at, updated_at
       )
     values (#{catalogId,jdbcType=VARCHAR}, #{catalogName,jdbcType=VARCHAR},
-      #{pic,jdbcType=VARCHAR}, #{indexPic,jdbcType=VARCHAR}, now(), now()
+      #{pic,jdbcType=VARCHAR}, #{indexPic,jdbcType=VARCHAR}, #{sort}, now(), now()
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="org.loxf.jyadmin.dal.po.OfferCatalog" >
@@ -73,6 +75,12 @@
     </if>
     <if test="indexPic!=null and indexPic!=''">
       index_pic = #{indexPic,jdbcType=VARCHAR},
+    </if>
+    <if test="buyPrivi!=null and buyPrivi!=''">
+      buy_privi = #{buyPrivi,jdbcType=VARCHAR},
+    </if>
+    <if test="sort!=null">
+      sort = #{sort},
     </if>
       updated_at = now()
     where catalog_id = #{catalogId,jdbcType=VARCHAR}

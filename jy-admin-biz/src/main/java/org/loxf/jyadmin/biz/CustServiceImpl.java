@@ -5,6 +5,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
+import org.loxf.jyadmin.base.bean.Pager;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.IdGenerator;
@@ -222,6 +223,33 @@ public class CustServiceImpl implements CustService {
         return new BaseResult<>(custId);
     }
 
+    @Override
+    public PageResult<CustDto> searchPage(String keyword, Integer page, Integer size) {
+        if (StringUtils.isBlank(keyword)) {
+            return new PageResult<>(BaseConstant.FAILED, "入参不能为空");
+        }
+        if(page==null){
+            page = 1;
+        }
+        if(size==null){
+            size = 20;
+        }
+        Cust cust = new Cust();
+        cust.setPhone(keyword);
+        cust.setNickName(keyword);
+        cust.setEmail(keyword);
+        cust.setRealName(keyword);
+        Pager pager = new Pager(page, size);
+        cust.setPager(pager);
+        int total = custMapper.searchCount(cust);
+        List<CustDto> dtos = new ArrayList<>();
+        if (total > 0) {
+            List<Cust> custList = custMapper.searchPager(cust);
+            convertCust(custList, dtos);
+        }
+        int totalPage = total / cust.getPager().getSize() + (total % cust.getPager().getSize() == 0 ? 0 : 1);
+        return new PageResult<CustDto>(totalPage, cust.getPager().getSize(), total, dtos);
+    }
     @Override
     public PageResult<CustDto> pager(CustDto custDto) {
         if (custDto == null) {

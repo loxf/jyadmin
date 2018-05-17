@@ -54,8 +54,8 @@ public class OfferCatalogController extends BaseControl<OfferCatalogDto> {
 
     @RequestMapping("/newOfferCatalog")
     @ResponseBody
-    public BaseResult newOfferCatalog(String catalogName, String pic){
-        return offerCatalogService.addCatalog(catalogName, pic);
+    public BaseResult newOfferCatalog(OfferCatalogDto offerCatalogDto){
+        return offerCatalogService.addCatalog(offerCatalogDto);
     }
 
     @RequestMapping("/editOfferCatalog")

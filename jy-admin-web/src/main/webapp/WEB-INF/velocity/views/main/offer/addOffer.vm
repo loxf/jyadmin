@@ -11,6 +11,13 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">优先级</label>
+        <div class="layui-input-block">
+            <input type="number" name="sort" lay-verify="sort" autocomplete="off" placeholder="0-9999，序号越大，排序越前"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">套餐描述</label>
         <div class="layui-input-block">
             <input type="text" name="offerDesc" autocomplete="off" placeholder="请输入套餐描述，用于套餐分享"
@@ -245,6 +252,14 @@
             if(value<0 || value>100){
                 return '分成比例在0-100之间';
             }
+        },sort: function(value){
+            if(!value){
+                return '优先级必填';
+            } else {
+                if(value<0 || value>9999){
+                    return '排序号码从0~9999';
+                }
+            }
         }
     });
 
@@ -338,6 +353,7 @@
                 offerDesc:data.field.offerDesc,
                 catalogId:data.field.catalogId,
                 offerPic:data.field.offerPic,
+                sort:data.field.sort,
                 buyPrivi:JSON.stringify(buyPrivi),
                 metaData:JSON.stringify(metaData),
                 saleMoney:data.field.saleMoney,

@@ -12,6 +12,7 @@ public interface CustService {
     BaseResult<String> addOldCust(List<CustInfoUpload> custInfoUploads);
     BaseResult<String> updateOldCustRecommend();
     BaseResult<String> addCust(CustDto custDto, UserAccessToken userAccessToken);
+    PageResult<CustDto> searchPage(String keyword, Integer page, Integer size);
     PageResult<CustDto> pager(CustDto custDto);
     BaseResult<CustDto> queryCust(int type, String phoneOrEmail);
     BaseResult bindCust(CustDto custDto);

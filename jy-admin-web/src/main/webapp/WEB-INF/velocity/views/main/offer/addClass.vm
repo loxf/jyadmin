@@ -12,6 +12,13 @@
         </div>
     </div>
     <div class="layui-form-item">
+        <label class="layui-form-label">优先级</label>
+        <div class="layui-input-block">
+            <input type="number" name="sort" lay-verify="sort" autocomplete="off" placeholder="0-9999，序号越大，排序越前"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
         <label class="layui-form-label">商品描述</label>
         <div class="layui-input-block">
             <input type="text" name="offerDesc" autocomplete="off" placeholder="请输入商品描述，用于商品分享"
@@ -185,6 +192,14 @@
                 } else {
                     layer.tips(res.msg);
                 }
+            },sort: function(value){
+                if(!value){
+                    return '优先级必填';
+                } else {
+                    if(value<0 || value>9999){
+                        return '排序号码从0~9999';
+                    }
+                }
             }
         });
     }
@@ -284,6 +299,7 @@
                 offerPic:data.field.offerPic,
                 buyPrivi:JSON.stringify(buyPrivi),
                 metaData:JSON.stringify(metaData),
+                sort:data.field.sort,
                 saleMoney:data.field.saleMoney,
                 offerType:'CLASS',
                 htmlId:htmlId,

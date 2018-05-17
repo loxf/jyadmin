@@ -8,7 +8,7 @@ import org.loxf.jyadmin.client.dto.OfferCatalogDto;
  * @author lenovo
  */
 public interface OfferCatalogService {
-    public BaseResult<String> addCatalog(String catalogName, String picUrl);
+    public BaseResult<String> addCatalog(OfferCatalogDto offerCatalogDto);
     public BaseResult<String> rmCatalog(String catalogId);
     public BaseResult<String> updateCatalog(OfferCatalogDto catalogDto);
     public PageResult<OfferCatalogDto> pager(OfferCatalogDto catalogDto);

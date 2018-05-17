@@ -56,20 +56,18 @@ public class CustController extends BaseControl<CustDto> {
         return custBankService.queryBank(cardId);
     }
 
+    @RequestMapping("/search")
+    @ResponseBody
+    public PageResult search(String keyword, Integer page, Integer size){
+        PageResult pageResult = custService.searchPage(keyword, page, size);
+        return pageResult;
+    }
+
     @RequestMapping("/list")
     @ResponseBody
     public PageResult list(CustDto custDto){
         initRangeDate(custDto);
         PageResult pageResult = custService.pager(custDto);
-        List<JSONObject> infos = new ArrayList<>();
-        List<CustDto> list = pageResult.getData();
-        /*for(CustDto cust : list){
-            BaseResult<JSONObject> baseResult = accountService.queryAccount(cust.getCustId());
-            JSONObject jsonObject = (JSONObject) JSON.toJSON(cust);
-            jsonObject.putAll(baseResult.getData());
-            infos.add(jsonObject);
-        }
-        pageResult.setData(infos);*/
         return pageResult;
     }
 
@@ -109,7 +107,7 @@ public class CustController extends BaseControl<CustDto> {
             custDto.setMetaData(jsonObject.toJSONString());
             BaseResult baseResult = custService.updateCust(custDto);
             // 如果购买的是VIP，设置用户信息刷新标志
-            jedisUtil.set("REFRESH_CUST_INFO_" + custId, "true", 60);
+            // jedisUtil.set("REFRESH_CUST_INFO_" + custId, "true", 60);
             return baseResult;
         }
         return vipBaseResult;

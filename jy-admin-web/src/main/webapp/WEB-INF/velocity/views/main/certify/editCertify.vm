@@ -115,7 +115,7 @@
     form.on('submit(certifyData)', function(data){
         var priviArr = $("#priviArr").val();
         if(!priviArr || !priviArr.join(",")){
-            layer.msg("至少选择一个选项")
+            layer.msg("至少选择一个选项");
             return false;
         }
         $.ajax({

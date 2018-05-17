@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.loxf.jyadmin.dal.dao.NewsMapper" >
+  <resultMap id="BaseResultMap" type="org.loxf.jyadmin.dal.po.News" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="title_id" property="titleId" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="keyword" property="keyword" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="deploy_time" property="deployTime" jdbcType="TIMESTAMP" />
+    <result column="source" property="source" jdbcType="VARCHAR" />
+    <result column="context_id" property="contextId" jdbcType="VARCHAR" />
+    <result column="push_wx" property="pushWx" jdbcType="INTEGER" />
+    <result column="read_times" property="readTimes" jdbcType="INTEGER" />
+    <result column="has_read" property="hasRead" jdbcType="INTEGER" />
+    <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
+    <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
+    <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, title_id, title, keyword, description, status, type, deploy_time, source, context_id,
+    push_wx, created_at, updated_at
+  </sql>
+
+  <select id="selectByTitleId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_news
+    where title_id = #{titleId} and is_deleted = 0
+  </select>
+
+  <update id="deployNewsOrNot" parameterType="java.lang.String" >
+    update tb_news set status = #{oper} ,
+    <if test="oper==1">
+      deploy_time = now(),
+    </if>
+    <if test="oper==0">
+      deploy_time = null,
+    </if>
+      updated_at = now()
+    where title_id = #{titleId} and is_deleted = 0
+  </update>
+
+  <update id="deleteByTitleId" parameterType="java.lang.String" >
+    update tb_news set is_deleted = 1 ,
+    updated_at = now()
+    where title_id = #{titleId} and is_deleted = 0
+  </update>
+
+  <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.News" >
+    insert into tb_news (id, title_id, title, 
+      keyword, description, status, 
+      `type`, deploy_time, source,
+      context_id, push_wx, is_deleted, created_at,
+      updated_at)
+    values (#{id,jdbcType=BIGINT}, #{titleId,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{keyword,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 0,
+      #{type,jdbcType=INTEGER}, #{deployTime,jdbcType=TIMESTAMP}, #{source,jdbcType=VARCHAR}, 
+      #{contextId,jdbcType=VARCHAR}, 0, 0, now(), now())
+  </insert>
+
+  <update id="updateByTitleId" parameterType="org.loxf.jyadmin.dal.po.News" >
+    update tb_news
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="keyword != null" >
+        keyword = #{keyword,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="deployTime != null" >
+        deploy_time = #{deployTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="contextId != null" >
+        context_id = #{contextId,jdbcType=VARCHAR},
+      </if>
+      <if test="pushWx != null" >
+        push_wx = #{pushWx,jdbcType=INTEGER},
+      </if>
+      updated_at = now()
+    </set>
+    where title_id = #{titleId,jdbcType=VARCHAR} and is_deleted = 0
+  </update>
+
+  <select id="list" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.News" >
+    select ifnull((SELECT sum(read_times) from tb_news_view b where b.title_id = a.title_id), 0) as read_times,
+    <if test="currentCustId!=null">
+      ifnull((SELECT read_times from tb_news_view t where t.title_id = a.title_id and t.cust_id = #{currentCustId}), 0) as has_read,
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_news a
+    where is_deleted = 0
+    <include refid="WHERE_SQL"/>
+    order by deploy_time desc
+    <if test="pager!=null">
+      limit #{pager.start}, #{pager.size}
+    </if>
+  </select>
+  <select id="count" resultType="java.lang.Integer" parameterType="org.loxf.jyadmin.dal.po.News" >
+    select count(1)
+    from tb_news
+    where is_deleted = 0
+    <include refid="WHERE_SQL"/>
+  </select>
+
+  <sql id="WHERE_SQL">
+    <if test="title!=null and title!=''">
+      and `title` like CONCAT('%', #{title},'%')
+    </if>
+    <if test="status!=null">
+      and status = #{status,jdbcType=INTEGER}
+    </if>
+    <if test="type!=null">
+      and `type` = #{type,jdbcType=INTEGER}
+    </if>
+    <if test="startDate!=null and startDate!=''">
+      and created_at >= #{startDate}
+    </if>
+    <if test="endDate!=null and endDate!='' ">
+      and created_at &lt; date_add(#{endDate}, INTERVAL 1 DAY)
+    </if>
+  </sql>
+</mapper>

@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.biz;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
@@ -200,6 +201,9 @@ public class CustCashServiceImpl implements CustCashService {
             throw new BizException("获取账户失败");
         }
         BigDecimal accountBalance = accountBalanceResult.getData();
+        if(custCashDto.getBalance().compareTo(accountBalance)>0) {
+            throw new BizException("账户余额不足");
+        }
         String rateStr = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_PAY, "CASH_CMMS_AMT", "0.6").
                 getConfigValue();
         // 手续费 费率
@@ -306,4 +310,5 @@ public class CustCashServiceImpl implements CustCashService {
         }
         return new BaseResult<>(BaseConstant.FAILED, "锁定订单失败");
     }
+
 }

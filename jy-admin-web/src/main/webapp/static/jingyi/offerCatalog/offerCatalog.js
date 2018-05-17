@@ -25,6 +25,11 @@ table.render({ //其它参数在此省略
     page: true,
     cols: [[
         {
+            field: 'sort',
+            title: '优先级',
+            width: 60
+        },
+        {
             field: 'catalogName',
             title: '分类名称',
             width: 200

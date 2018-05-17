@@ -74,6 +74,16 @@ var menu = {
             menuHref: contextPath + '/admin/certify/index.html'
         }
     ],
+    NEWS: [
+        {
+            menuName: '学院新闻',
+            menuHref: contextPath + '/admin/news/index/news.html'
+        },
+        {
+            menuName: '面授课程',
+            menuHref: contextPath + '/admin/news/index/class.html'
+        }
+    ],
     CONFIG: [
         {
             menuName: '微信菜单',
@@ -124,7 +134,7 @@ function getLeftMenu(type) {
 
 function locationMenu() {
     var href = location.href;
-    var arr = ["VIP", "ORDER", "OFFER", "CONFIG", "PRIVI"];
+    var arr = ["VIP", "ORDER", "OFFER", "NEWS", "CONFIG", "PRIVI"];
     for (var i = 0; i < arr.length; i++) {
         var item = arr[i];
         var menuArr = eval("menu." + item);

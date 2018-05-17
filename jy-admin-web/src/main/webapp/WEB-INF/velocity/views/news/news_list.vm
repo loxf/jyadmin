@@ -1,0 +1,58 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+    <legend>搜索条件</legend>
+</fieldset>
+<form class="layui-form" action="">
+    <div class="layui-row layui-form-item">
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">$!{typeDesc}</label>
+            <div class="layui-input-inline">
+                <input type="text" name="title" placeholder="请输入标题" class="layui-input">
+                <input type="hidden" name="type"  id="type" value="$!{newsType}">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <label class="layui-form-label">文章状态</label>
+            <div class="layui-input-inline">
+                <select name="status">
+                    <option value="">全部</option>
+                    <option value="0">草稿</option>
+                    <option value="1">已发布</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg3">
+            <div class="layui-input-inline">
+                <input type="text" name="rangDate" placeholder="创建时间" id="createdAt" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline layui-col-lg2">
+            <button class="layui-btn layui-btn" id="searchList" lay-submit lay-filter="searchForm">查询</button>
+            <input type="button" class="layui-btn" onclick="addNews()" value="新增$!{typeDesc}"/>
+        </div>
+    </div>
+</form>
+<div>
+    <table id="dataTable" lay-filter="userDataTable"></table>
+</div>
+<script type="text/html" id="barTable">
+    <a class="layui-btn layui-btn-mini" lay-event="preView">预览</a>
+    {{#  if(d.status==0){ }}
+    <a class="layui-btn layui-btn-mini" lay-event="editNews">编辑</a>
+    <a class="layui-btn layui-btn-mini" lay-event="deployNews">发布</a>
+    <a class="layui-btn layui-btn-mini" lay-event="deleteNews">删除</a>
+    {{# } else { }}
+    {{# if(d.pushWx==0) { }}
+    <a class="layui-btn layui-btn-mini" lay-event="sendWeiXin">微信推送</a>
+    {{#  } }}
+    <a class="layui-btn layui-btn-mini" lay-event="deployNews">取消发布</a>
+    {{# } }}
+</script>
+<script type="text/html" id="statusTpl">
+    {{#  if(d.status===0){ }}
+    草稿
+    {{#  } else { }}
+    已发布
+    {{#  } }}
+</script>
+<script src="${rc.contextPath}/static/jingyi/common.js"></script>
+<script src="${rc.contextPath}/static/jingyi/news/news.js"></script>

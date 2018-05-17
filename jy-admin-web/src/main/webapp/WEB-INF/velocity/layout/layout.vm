@@ -7,7 +7,38 @@
     <title>静怡雅学文化管理系统</title>
     #parse("/layout/fragments/css.vm")
     #parse("/layout/fragments/js.vm")
+    <script type="text/javascript">
+        var contextPath = '${rc.contextPath}';
+        var basePic = '$request.getAttribute("basePic")';
+        function modifyPw() {
+            var layer = layui.layer
+            layer.open({
+                type: 2
+                ,id: 'modifyPw' //防止重复弹出
+                ,title : '修改密码'
+                ,area: ['550px', '400px']
+                ,content: 'toModifyPassword.html'
+                ,maxmin:false
+                ,shade: 0.3
+            });
+        }
 
+        function logout() {
+            var layer = layui.layer
+            $.ajax({
+                type: "POST",
+                url: contextPath + "/admin/logout.html",
+                dataType:"json",
+                success: function(data) {
+                    if(data.code == 1){
+                        window.location.href= "/";
+                    } else {
+                        layer.msg(data.msg);
+                    }
+                }
+            });
+        }
+    </script>
 </head>
 <body class="layui-layout-body">
 <div class="layui-layout layui-layout-admin">
@@ -21,6 +52,7 @@
             <li class="layui-nav-item"><a href="javascript:getLeftMenu('VIP')">会员管理</a></li>
             <li class="layui-nav-item"><a href="javascript:getLeftMenu('OFFER')">商品/活动</a></li>
             <li class="layui-nav-item"><a href="javascript:getLeftMenu('ORDER')">订单/财务</a></li>
+            <li class="layui-nav-item"><a href="javascript:getLeftMenu('NEWS')">新闻中心</a></li>
             <li class="layui-nav-item">
                 <a href="javascript:;">其它</a>
                 <dl class="layui-nav-child">
@@ -78,39 +110,6 @@
         {{#  } }}
     </li>
     {{#  }); }}
-</script>
-<script type="text/javascript">
-    var contextPath = '${rc.contextPath}';
-    var basePic = '$request.getAttribute("basePic")';
-
-    function modifyPw() {
-        var layer = layui.layer
-        layer.open({
-            type: 2
-            ,id: 'modifyPw' //防止重复弹出
-            ,title : '修改密码'
-            ,area: ['550px', '400px']
-            ,content: 'toModifyPassword.html'
-            ,maxmin:false
-            ,shade: 0.3
-        });
-    }
-
-    function logout() {
-        var layer = layui.layer
-        $.ajax({
-            type: "POST",
-            url:"${rc.contextPath}/admin/logout.html",
-            dataType:"json",
-            success: function(data) {
-                if(data.code == 1){
-                    window.location.href= "/";
-                } else {
-                    layer.msg(data.msg);
-                }
-            }
-        });
-    }
 </script>
 <script src="${rc.contextPath}/static/jingyi/menu/menu.js"></script>
 </body>
