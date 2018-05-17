@@ -194,15 +194,16 @@ public class OrderServiceImpl implements OrderService {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("orderType", orderDto.getOrderType());
             try {
-                if (orderDto.getPayType() == 1) {
-                    // 微信支付
-                    BaseResult<OrderDto> orderDtoBaseResult = WeixinPayUtil.createOrder(openid, ip, orderDto, jsonObject.toJSONString(), JYZX_INDEX_URL);
+                if (orderDto.getPayType() == 1 || orderDto.getPayType() == 5) {
+                    String env = (orderDto.getPayType()==1?"WX":"XCX");
+                    // 微信公众号支付
+                    BaseResult<OrderDto> orderDtoBaseResult = WeixinPayUtil.createOrder(env, openid, ip, orderDto, jsonObject.toJSONString(), JYZX_INDEX_URL);
                     if (orderDtoBaseResult.getCode() == BaseConstant.SUCCESS) {
                         if (orderMapper.insert(order) > 0) {
                             // 插入订单属性
                             insertAttr(order.getOrderId(), orderAttrDtoList);
                             // 获取微信返回
-                            Map result = createWxResult(orderDtoBaseResult.getData().getOutTradeNo());
+                            Map result = createWxResult(orderDtoBaseResult.getData().getOutTradeNo(), env);
                             result.put("orderId", order.getOrderId());
                             return new BaseResult<>(result);
                         } else {
@@ -212,6 +213,7 @@ public class OrderServiceImpl implements OrderService {
                         return new BaseResult<>(BaseConstant.FAILED, orderDtoBaseResult.getMsg());
                     }
                 } else {
+                    // 余额支付 3
                     if (orderMapper.insert(order) > 0) {
                         // 插入订单属性
                         insertAttr(order.getOrderId(), orderAttrDtoList);
@@ -246,9 +248,14 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-    private Map createWxResult(String prepay_id) throws Exception {
+    private Map createWxResult(String prepay_id, String loginType) throws Exception {
         Map<String, String> result = new HashMap();
-        String appId = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_APPID").getConfigValue();
+        String appId = "";
+        if(loginType.equals("WX")) {
+            appId = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_APPID").getConfigValue();
+        } else if(loginType.equals("XCX")){
+            appId = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_XCX_APPID").getConfigValue();
+        }
         String key = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_MCH_KEY").getConfigValue();
         result.put("appId", appId);
         result.put("nonceStr", WXPayUtil.generateNonceStr());

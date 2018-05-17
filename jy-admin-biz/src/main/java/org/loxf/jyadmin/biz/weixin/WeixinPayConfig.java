@@ -14,8 +14,21 @@ import java.security.KeyStore;
 public class WeixinPayConfig implements WXPayConfig {
     private static SSLContext sslContextWeixin;
     private String weixinPkcs8PublicFilePath ;
+    /**
+     * 环境：微信公众号WX 小程序XCX
+     */
+    private String env;
+    public WeixinPayConfig(String env) throws Exception {
+        if(!env.equals("WX")&&!env.equals("XCX")){
+            throw new RuntimeException("微信支付控件初始化失败:" + env);
+        }
+        this.env = env;
+        initCert();
+    }
 
-    public WeixinPayConfig() throws Exception {
+    public WeixinPayConfig()throws Exception {
+        // 默认微信
+        env = "WX";
         initCert();
     }
 
@@ -48,8 +61,11 @@ public class WeixinPayConfig implements WXPayConfig {
 
     @Override
     public String getAppID() {
-        String WX_APPID = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_APPID").getConfigValue();
-        return WX_APPID;
+        if(env.equals("WX")){
+            return ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_APPID").getConfigValue();
+        } else {
+            return ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_XCX_APPID").getConfigValue();
+        }
     }
 
     @Override

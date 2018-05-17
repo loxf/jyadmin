@@ -65,14 +65,15 @@ public class WeixinPayUtil {
     /**
      * 微信统一下单
      *
+     * @param env 环境
      * @param openid
      * @param ip
      * @param orderDto
      * @param attach   JSON透传
      * @throws Exception
      */
-    public static BaseResult<OrderDto> createOrder(String openid, String ip, OrderDto orderDto, String attach, String indexUrl) throws Exception {
-        WeixinPayConfig config = new WeixinPayConfig();
+    public static BaseResult<OrderDto> createOrder(String env, String openid, String ip, OrderDto orderDto, String attach, String indexUrl) throws Exception {
+        WeixinPayConfig config = new WeixinPayConfig(env);
         WXPay wxpay = new WXPay(config);
 
         Map<String, String> data = new HashMap<String, String>();
@@ -80,7 +81,8 @@ public class WeixinPayUtil {
         data.put("body", ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_RUNTIME, "WX_BODYPREFIX").getConfigValue()
                 + "-" + orderDto.getOrderName());// 线上电商，商家名称必须为实际销售商品的商家
         data.put("out_trade_no", orderDto.getOrderId());
-        data.put("device_info", "WX");// 微信支付
+        // 微信支付
+        data.put("device_info", env);
         data.put("fee_type", "CNY");
         data.put("total_fee", orderDto.getOrderMoney().multiply(new BigDecimal(100)).longValue() + "");
         data.put("spbill_create_ip", ip);
@@ -120,8 +122,8 @@ public class WeixinPayUtil {
         }
     }
 
-    public static void queryOrder(String wxOrderId) throws Exception {
-        WeixinPayConfig config = new WeixinPayConfig();
+    public static void queryOrder(String env, String wxOrderId) throws Exception {
+        WeixinPayConfig config = new WeixinPayConfig(env);
         WXPay wxpay = new WXPay(config);
 
         Map<String, String> data = new HashMap<String, String>();
@@ -138,8 +140,8 @@ public class WeixinPayUtil {
     /**
      * 支付到微信
      */
-    public static String payForWeixin(String openid, String orderId, long amount, String serverIp) throws Exception {
-        WeixinPayConfig config = new WeixinPayConfig();
+    public static String payForWeixin(String env, String openid, String orderId, long amount, String serverIp) throws Exception {
+        WeixinPayConfig config = new WeixinPayConfig(env);
         Map<String, String> params = new HashMap();
         params.put("mch_appid", config.getAppID());
         params.put("mchid", config.getMchID());
@@ -198,8 +200,8 @@ public class WeixinPayUtil {
      * @param bankCode
      * @param amount
      */
-    public static String payForBank(String orderId, String bankNo, String username, String bankCode, long amount) throws Exception {
-        WeixinPayConfig config = new WeixinPayConfig();
+    public static String payForBank(String env, String orderId, String bankNo, String username, String bankCode, long amount) throws Exception {
+        WeixinPayConfig config = new WeixinPayConfig(env);
         Map<String, String> params = new HashMap();
         params.put("mch_id", config.getMchID());
         params.put("partner_trade_no", orderId);

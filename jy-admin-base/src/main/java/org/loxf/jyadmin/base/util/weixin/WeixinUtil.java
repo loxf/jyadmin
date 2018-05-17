@@ -9,10 +9,7 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.HttpUtil;
 import org.loxf.jyadmin.base.util.HttpsUtil;
-import org.loxf.jyadmin.base.util.weixin.bean.AccessToken;
-import org.loxf.jyadmin.base.util.weixin.bean.JsTicket;
-import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
-import org.loxf.jyadmin.base.util.weixin.bean.WXUserInfo;
+import org.loxf.jyadmin.base.util.weixin.bean.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +42,14 @@ public class WeixinUtil {
             logger.error("Url decode failed." , e);
         }
         return String.format(BaseConstant.USER_AUTH_CODE_URL, appId, redirectUrl, code);
+    }
+
+    public static String getLoginXcxApi(String xcxId, String xcxAppSecret, String code){
+        return String.format(BaseConstant.LOGIN_XCX_URL, xcxId, xcxAppSecret, code);
+    }
+
+    public static XCXLoginInfo loginByXCXCode(String xcxId, String xcxAppSecret, String code){
+        return (XCXLoginInfo)commonGet(getLoginXcxApi(xcxId, xcxAppSecret, code), XCXLoginInfo.class);
     }
 
     public static String validUserAccessToken(String accessToken, String openid){

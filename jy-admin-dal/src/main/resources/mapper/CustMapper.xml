@@ -24,6 +24,7 @@
     <result column="privilege" property="privilege" jdbcType="VARCHAR" />
     <result column="meta_data" property="metaData" jdbcType="VARCHAR" />
     <result column="openid" property="openid" jdbcType="VARCHAR" />
+    <result column="xcx_openid" property="xcxOpenid" jdbcType="VARCHAR" />
     <result column="unionid" property="unionid" jdbcType="VARCHAR" />
     <result column="is_deleted" property="isDeleted" jdbcType="INTEGER" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
@@ -32,10 +33,11 @@
   <sql id="Base_Column_List" >
     id, cust_id, nick_name, real_name, first_lv_nbr, second_lv_nbr, user_level, phone, email, is_chinese, recommend,
     (select if(tt.is_chinese=1, phone, email) from tb_cust tt where tt.cust_id = a.recommend) as recommend_link,
-    is_agent, sex, country, province, city, address, head_img_url, privilege, meta_data, openid, unionid, is_deleted, created_at, updated_at
+    is_agent, sex, country, province, city, address, head_img_url, privilege, meta_data, openid, xcx_openid,
+    unionid, is_deleted, created_at, updated_at
   </sql>
   <sql id="Simple_Column_List">
-    cust_id, nick_name, real_name, user_level, phone, email, is_agent, is_chinese, openid, unionid, is_deleted, created_at
+    cust_id, nick_name, real_name, user_level, phone, email, is_agent, is_chinese, openid, xcx_openid, unionid, is_deleted, created_at
   </sql>
 
   <select id="selectByOpenid" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -43,6 +45,13 @@
     <include refid="Base_Column_List" />
     from tb_cust a
     where openid = #{openid} and is_deleted = 0
+  </select>
+
+  <select id="selectByUnionid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from tb_cust a
+    where unionid = #{unionid} and is_deleted = 0
   </select>
 
   <select id="selectByCustId" resultMap="BaseResultMap" parameterType="java.lang.String" >
@@ -183,12 +192,13 @@
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.Cust" >
     insert into tb_cust (cust_id, nick_name, real_name, user_level, phone, email, first_lv_nbr, second_lv_nbr, is_chinese, recommend, is_agent,
-    sex, country, province, city, address, head_img_url, privilege, meta_data, openid, unionid, is_deleted, created_at, updated_at)
+    sex, country, province, city, address, head_img_url, privilege, meta_data, openid, xcx_openid, unionid, is_deleted, created_at, updated_at)
     values (#{custId,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},#{realName,jdbcType=VARCHAR},
     #{userLevel}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 0, 0,
     #{isChinese,jdbcType=INTEGER}, #{recommend,jdbcType=VARCHAR}, #{isAgent}, #{sex,jdbcType=INTEGER},
     #{country,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
-    #{headImgUrl,jdbcType=VARCHAR}, #{privilege,jdbcType=VARCHAR}, #{metaData,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR}, 0,
+    #{headImgUrl,jdbcType=VARCHAR}, #{privilege,jdbcType=VARCHAR}, #{metaData,jdbcType=VARCHAR},
+    #{openid,jdbcType=VARCHAR}, #{xcxOpenid,jdbcType=VARCHAR}, #{unionid,jdbcType=VARCHAR}, 0,
     <if test="createdAt!=null">
       #{createdAt},
     </if>
@@ -207,8 +217,8 @@
     #{item.userLevel}, #{item.phone,jdbcType=VARCHAR}, #{item.email,jdbcType=VARCHAR}, 0, 0,
     #{item.isChinese,jdbcType=INTEGER}, #{item.recommend,jdbcType=VARCHAR}, #{item.isAgent}, #{item.sex,jdbcType=INTEGER},
     #{item.country,jdbcType=VARCHAR}, #{item.province,jdbcType=VARCHAR}, #{item.city,jdbcType=VARCHAR}, #{item.address,jdbcType=VARCHAR},
-    #{item.headImgUrl,jdbcType=VARCHAR}, #{item.privilege,jdbcType=VARCHAR}, #{item.metaData,jdbcType=VARCHAR}, #{item.openid,jdbcType=VARCHAR}, #{item.unionid,jdbcType=VARCHAR}, 0,
-    #{item.createdAt}, now())
+    #{item.headImgUrl,jdbcType=VARCHAR}, #{item.privilege,jdbcType=VARCHAR}, #{item.metaData,jdbcType=VARCHAR},
+    #{item.openid,jdbcType=VARCHAR}, #{item.unionid,jdbcType=VARCHAR}, 0, #{item.createdAt}, now())
     </foreach>
   </insert>
 
@@ -260,6 +270,9 @@
     <if test="headImgUrl!=null and headImgUrl!=''">
       head_img_url = #{headImgUrl,jdbcType=VARCHAR},
     </if>
+    <if test="xcxOpenid!=null and xcxOpenid!=''">
+      xcx_openid = #{xcxOpenid,jdbcType=VARCHAR},
+    </if>
     <if test="unionid!=null and unionid!=''">
       unionid = #{unionid,jdbcType=VARCHAR},
     </if>
@@ -273,6 +286,75 @@
     </if>
   </update>
 
+  <sql id="updateCustSQL">
+    <if test="nickName!=null and nickName!=''">
+      nick_name = #{nickName,jdbcType=VARCHAR},
+    </if>
+    <if test="realName!=null and realName!=''">
+      real_name = #{realName,jdbcType=VARCHAR},
+    </if>
+    <if test="userLevel!=null and userLevel!=''">
+      user_level = #{userLevel,jdbcType=VARCHAR},
+    </if>
+    <if test="phone!=null and phone!=''">
+      phone = #{phone,jdbcType=VARCHAR},
+    </if>
+    <if test="email!=null and email!=''">
+      email = #{email,jdbcType=VARCHAR},
+    </if>
+    <if test="isChinese!=null and isChinese!=-1">
+      is_chinese = #{isChinese,jdbcType=INTEGER},
+    </if>
+    <if test="recommend!=null and recommend!=''">
+      recommend = #{recommend,jdbcType=VARCHAR},
+    </if>
+    <if test="isAgent!=null and isAgent!=-1">
+      is_agent = #{isAgent,jdbcType=INTEGER},
+    </if>
+    <if test="sex!=null and sex!=-1">
+      sex = #{sex,jdbcType=INTEGER},
+    </if>
+    <if test="country!=null and country!=''">
+      country = #{country,jdbcType=VARCHAR},
+    </if>
+    <if test="province!=null and province!=''">
+      province = #{province,jdbcType=VARCHAR},
+    </if>
+    <if test="city!=null and city!=''">
+      city = #{city,jdbcType=VARCHAR},
+    </if>
+    <if test="address!=null and address!=''">
+      address = #{address,jdbcType=VARCHAR},
+    </if>
+    <if test="metaData!=null and metaData!=''">
+      meta_data = #{metaData,jdbcType=VARCHAR},
+    </if>
+    <if test="headImgUrl!=null and headImgUrl!=''">
+      head_img_url = #{headImgUrl,jdbcType=VARCHAR},
+    </if>
+    <if test="xcxOpenid!=null and xcxOpenid!=''">
+      xcx_openid = #{xcxOpenid,jdbcType=VARCHAR},
+    </if>
+    <if test="openid!=null and openid!=''">
+      openid = #{openid,jdbcType=VARCHAR},
+    </if>
+  </sql>
+
+  <update id="updateByCustId" parameterType="org.loxf.jyadmin.dal.po.Cust" >
+    update tb_cust
+    set
+    <include refid="updateCustSQL"/>
+    updated_at = now()
+    where 1=1 and cust_id = #{custId}
+  </update>
+
+  <update id="updateByUnionId" parameterType="org.loxf.jyadmin.dal.po.Cust" >
+    update tb_cust
+    set
+    <include refid="updateCustSQL"/>
+    updated_at = now()
+    where 1=1 and unionid = #{unionid,jdbcType=VARCHAR}
+  </update>
 
   <select id="queryChildList" resultMap="BaseResultMap" >
     select
@@ -394,6 +476,9 @@
     </if>
     <if test="openid!=null and openid!=''">
       openid = #{openid,jdbcType=VARCHAR},
+    </if>
+    <if test="xcxOpenid!=null and xcxOpenid!=''">
+      xcx_openid = #{xcxOpenid,jdbcType=VARCHAR},
     </if>
     <if test="unionid!=null and unionid!=''">
       unionid = #{unionid,jdbcType=VARCHAR},

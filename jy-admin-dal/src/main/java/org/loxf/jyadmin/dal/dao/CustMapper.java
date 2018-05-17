@@ -13,7 +13,10 @@ public interface CustMapper {
 
     int insertList(List<Cust> list);
 
+    @Deprecated
     Cust selectByOpenid(String openid);
+
+    Cust selectByUnionid(String unionid);
 
     Cust selectByCustId(String custId);
 
@@ -35,7 +38,12 @@ public interface CustMapper {
 
     int queryChildListCount(@Param("list") List<String> parentId);
 
+    @Deprecated
     int updateByCustIdOrOpenid(Cust record);
+
+    int updateByCustId(Cust record);
+
+    int updateByUnionId(Cust record);
 
     /**
      * @param custId

@@ -3,6 +3,7 @@ package org.loxf.jyadmin.client.service;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
+import org.loxf.jyadmin.base.util.weixin.bean.XCXLoginInfo;
 import org.loxf.jyadmin.client.dto.CustDto;
 import org.loxf.jyadmin.client.tmp.CustInfoUpload;
 
@@ -11,7 +12,15 @@ import java.util.List;
 public interface CustService {
     BaseResult<String> addOldCust(List<CustInfoUpload> custInfoUploads);
     BaseResult<String> updateOldCustRecommend();
+    @Deprecated
     BaseResult<String> addCust(CustDto custDto, UserAccessToken userAccessToken);
+
+    /**
+     * @param custDto
+     * @param loginInfo 登录信息
+     * @return
+     */
+    BaseResult<String> addCust(CustDto custDto, Object loginInfo);
     PageResult<CustDto> searchPage(String keyword, Integer page, Integer size);
     PageResult<CustDto> pager(CustDto custDto);
     BaseResult<CustDto> queryCust(int type, String phoneOrEmail);
@@ -23,8 +32,16 @@ public interface CustService {
      */
     BaseResult<CustDto> queryOldCust(String phoneOrEmail);
     BaseResult<CustDto> queryCustByCustId(String custId);
+    @Deprecated
     BaseResult<CustDto> queryCustByOpenId(String openid);
-    BaseResult refreshCustByOpenId(CustDto custDto, UserAccessToken userAccessToken);
+    BaseResult<CustDto> queryCustByUnionId(String unionid);
+
+    /**
+     * @param custDto
+     * @param loginInfo 登录信息
+     * @return
+     */
+    BaseResult refreshCustByUnionId(CustDto custDto, Object loginInfo);
     BaseResult updateCust(CustDto custDto);
     PageResult<CustDto> queryChildList(int type, String custId, int page, int size);
     BaseResult delCust(String custId);

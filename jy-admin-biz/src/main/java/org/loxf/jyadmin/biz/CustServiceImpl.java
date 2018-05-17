@@ -10,6 +10,7 @@ import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.IdGenerator;
 import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
+import org.loxf.jyadmin.base.util.weixin.bean.XCXLoginInfo;
 import org.loxf.jyadmin.biz.util.BizUtil;
 import org.loxf.jyadmin.biz.util.ConfigUtil;
 import org.loxf.jyadmin.biz.util.SendWeixinMsgUtil;
@@ -43,6 +44,9 @@ public class CustServiceImpl implements CustService {
     private AccountService accountService;
     @Autowired
     private AgentInfoMapper agentInfoMapper;
+    @Autowired
+    private XcxSessionkeyMapper xcxSessionkeyMapper;
+
     @Value("#{configProperties['JYZX.INDEX.URL']}")
     private String JYZX_INDEX_URL;
 
@@ -224,6 +228,45 @@ public class CustServiceImpl implements CustService {
     }
 
     @Override
+    public BaseResult<String> addCust(CustDto custDto, Object loginInfo) {
+        Cust cust = new Cust();
+        BeanUtils.copyProperties(custDto, cust);
+        String custId = IdGenerator.generate(prefix);
+        cust.setCustId(custId);
+        cust.setIsAgent(0);
+        cust.setUserLevel("NONE");
+        int count = custMapper.insert(cust);
+        if (count <= 0) {
+            return new BaseResult<>(BaseConstant.FAILED, "新增客户失败");
+        }
+        // 处理授权信息
+        boolean isWxGZH = false;
+        if(loginInfo instanceof XCXLoginInfo){
+            // 小程序刷新用户信息
+            return refreshXCXLoginInfo((XCXLoginInfo)loginInfo);
+        } else if(loginInfo instanceof UserAccessToken){
+            isWxGZH = true;
+            return refreshUserAccessToken((UserAccessToken)loginInfo);
+        }
+        // 用户账户
+        Account account = new Account();
+        account.setCustId(custId);
+        accountMapper.insert(account);
+
+        // 推荐人
+        if (StringUtils.isNotBlank(custDto.getRecommend())) {
+            updateRecommendChildNbr(custDto.getRecommend(), 1);
+            String bp = ConfigUtil.getConfig(BaseConstant.CONFIG_TYPE_BP, "SUB_BIND_PHONE_BP", "10").getConfigValue();
+            accountService.increase(custDto.getRecommend(), null, new BigDecimal(bp), null, "推荐同学注册得积分", custDto.getCustId());
+        }
+        // 注册通知
+        if(isWxGZH) {
+            SendWeixinMsgUtil.sendRegisterNotice(custDto.getOpenid(), custDto.getNickName(), JYZX_INDEX_URL);
+        }
+        return new BaseResult<>(custId);
+    }
+
+    @Override
     public PageResult<CustDto> searchPage(String keyword, Integer page, Integer size) {
         if (StringUtils.isBlank(keyword)) {
             return new PageResult<>(BaseConstant.FAILED, "入参不能为空");
@@ -322,14 +365,18 @@ public class CustServiceImpl implements CustService {
     }
 
     @Override
-    @Transactional
-    public BaseResult refreshCustByOpenId(CustDto custDto, UserAccessToken userAccessToken) {
-        Cust cust = new Cust();
-        BeanUtils.copyProperties(custDto, cust);
-        int count = custMapper.updateByCustIdOrOpenid(cust);
-        if (count <= 0) {
-            return new BaseResult<>(BaseConstant.FAILED, "更新失败");
+    public BaseResult<CustDto> queryCustByUnionId(String unionid) {
+        Cust cust = custMapper.selectByUnionid(unionid);
+        if (cust == null) {
+            return new BaseResult<>(BaseConstant.FAILED, "会员不存在");
         }
+        CustDto tmp = new CustDto();
+        BeanUtils.copyProperties(cust, tmp);
+        return new BaseResult<>(tmp);
+    }
+
+    @Transactional
+    public BaseResult refreshUserAccessToken(UserAccessToken userAccessToken) {
         // 更新user_token
         WxUserToken wxUserToken = new WxUserToken();
         BeanUtils.copyProperties(userAccessToken, wxUserToken);
@@ -341,6 +388,37 @@ public class CustServiceImpl implements CustService {
             wxUserTokenMapper.insert(wxUserToken);
         }
         return new BaseResult<>();
+    }
+
+    @Transactional
+    public BaseResult refreshXCXLoginInfo(XCXLoginInfo loginInfo){
+        XcxSessionkey xcxSessionkey = new XcxSessionkey();
+        BeanUtils.copyProperties(loginInfo, xcxSessionkey);
+        xcxSessionkey.setSessionKey(loginInfo.getSession_key());
+        if(xcxSessionkeyMapper.selectByCustId(loginInfo.getCustId())!=null) {
+            xcxSessionkeyMapper.updateByCustId(xcxSessionkey);
+        } else {
+            xcxSessionkeyMapper.insert(xcxSessionkey);
+        }
+        return new BaseResult<>();
+    }
+
+    @Override
+    @Transactional
+    public BaseResult refreshCustByUnionId(CustDto custDto, Object loginInfo) {
+        Cust cust = new Cust();
+        BeanUtils.copyProperties(custDto, cust);
+        int count = custMapper.updateByUnionId(cust);
+        if (count <= 0) {
+            return new BaseResult<>(BaseConstant.FAILED, "更新失败");
+        }
+        if(loginInfo instanceof XCXLoginInfo){
+            // 小程序刷新用户信息
+            return refreshXCXLoginInfo((XCXLoginInfo)loginInfo);
+        } else if(loginInfo instanceof UserAccessToken){
+            return refreshUserAccessToken((UserAccessToken)loginInfo);
+        }
+        return new BaseResult(BaseConstant.FAILED, "登录信息不正确");
     }
 
     @Override
