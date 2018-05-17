@@ -8,6 +8,7 @@ public class UserAccessToken implements Serializable {
     private String refresh_token;
     private String openid;
     private String scope;
+    private String unionid;
 
     public String getAccess_token() {
         return access_token;
@@ -47,5 +48,13 @@ public class UserAccessToken implements Serializable {
 
     public void setScope(String scope) {
         this.scope = scope;
+    }
+
+    public String getUnionid() {
+        return unionid;
+    }
+
+    public void setUnionid(String unionid) {
+        this.unionid = unionid;
     }
 }

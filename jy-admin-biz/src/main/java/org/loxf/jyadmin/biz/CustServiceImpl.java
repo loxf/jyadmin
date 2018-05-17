@@ -235,18 +235,23 @@ public class CustServiceImpl implements CustService {
         cust.setCustId(custId);
         cust.setIsAgent(0);
         cust.setUserLevel("NONE");
-        int count = custMapper.insert(cust);
-        if (count <= 0) {
-            return new BaseResult<>(BaseConstant.FAILED, "新增客户失败");
-        }
         // 处理授权信息
         boolean isWxGZH = false;
         if(loginInfo instanceof XCXLoginInfo){
             // 小程序刷新用户信息
+            cust.setXcxOpenid(((XCXLoginInfo) loginInfo).getOpenid());
+            cust.setUnionid(((XCXLoginInfo) loginInfo).getUnionid());
+            ((XCXLoginInfo) loginInfo).setCustId(custId);
             return refreshXCXLoginInfo((XCXLoginInfo)loginInfo);
         } else if(loginInfo instanceof UserAccessToken){
             isWxGZH = true;
+            cust.setXcxOpenid(((UserAccessToken) loginInfo).getOpenid());
+            cust.setUnionid(((UserAccessToken) loginInfo).getUnionid());
             return refreshUserAccessToken((UserAccessToken)loginInfo);
+        }
+        int count = custMapper.insert(cust);
+        if (count <= 0) {
+            return new BaseResult<>(BaseConstant.FAILED, "新增客户失败");
         }
         // 用户账户
         Account account = new Account();
