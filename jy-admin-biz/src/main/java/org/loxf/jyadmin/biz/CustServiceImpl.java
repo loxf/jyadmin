@@ -129,7 +129,7 @@ public class CustServiceImpl implements CustService {
                 Cust recommendCust = custMapper.selectByPhoneOrEmail(1, phone);
                 if(recommendCust!=null) {
                     cust.setRecommend(recommendCust.getCustId());
-                    custMapper.updateByCustIdOrOpenid(cust);
+                    custMapper.updateByCustId(cust);
                 }
             }
             // 更新下级数量
@@ -434,7 +434,7 @@ public class CustServiceImpl implements CustService {
         }
         Cust tmp = new Cust();
         BeanUtils.copyProperties(custDto, tmp);
-        custMapper.updateByCustIdOrOpenid(tmp);
+        custMapper.updateByCustId(tmp);
         return new BaseResult();
     }
 
@@ -454,7 +454,7 @@ public class CustServiceImpl implements CustService {
         tmp.setCustId(custId);
         tmp.setRecommend(recommend);
         // 更新当前客户的推荐人信息
-        custMapper.updateByCustIdOrOpenid(tmp);
+        custMapper.updateByCustId(tmp);
         // 更新推荐人的信息
         updateRecommendChildNbr(recommend, 1);
         return new BaseResult();
@@ -472,7 +472,7 @@ public class CustServiceImpl implements CustService {
         cust.setCustId(custId);
         cust.setUserLevel("NONE");
         cust.setMetaData("");
-        custMapper.updateByCustIdOrOpenid(cust);
+        custMapper.updateByCustId(cust);
         return new BaseResult();
     }
 
@@ -487,7 +487,7 @@ public class CustServiceImpl implements CustService {
         Cust cust = new Cust();
         cust.setCustId(custId);
         cust.setIsAgent(0);
-        custMapper.updateByCustIdOrOpenid(cust);
+        custMapper.updateByCustId(cust);
         return new BaseResult();
     }
 

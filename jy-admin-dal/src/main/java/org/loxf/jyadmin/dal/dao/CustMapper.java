@@ -13,6 +13,11 @@ public interface CustMapper {
 
     int insertList(List<Cust> list);
 
+    /**
+     * TODO 接口废弃，待清除
+     * @param openid
+     * @return
+     */
     @Deprecated
     Cust selectByOpenid(String openid);
 
@@ -38,6 +43,10 @@ public interface CustMapper {
 
     int queryChildListCount(@Param("list") List<String> parentId);
 
+    /**
+     * TODO 接口废弃，待清除
+     * @return
+     */
     @Deprecated
     int updateByCustIdOrOpenid(Cust record);
 

@@ -408,7 +408,7 @@ public class TradeServiceImpl implements TradeService {
         Cust cust = new Cust();
         cust.setUserLevel(vipType);
         cust.setCustId(custId);
-        custMapper.updateByCustIdOrOpenid(cust);
+        custMapper.updateByCustId(cust);
     }
 
     public int getValidDay(String vipType) {
