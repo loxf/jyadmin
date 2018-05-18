@@ -245,7 +245,7 @@ public class CustServiceImpl implements CustService {
             return refreshXCXLoginInfo((XCXLoginInfo)loginInfo);
         } else if(loginInfo instanceof UserAccessToken){
             isWxGZH = true;
-            cust.setXcxOpenid(((UserAccessToken) loginInfo).getOpenid());
+            cust.setOpenid(((UserAccessToken) loginInfo).getOpenid());
             cust.setUnionid(((UserAccessToken) loginInfo).getUnionid());
             return refreshUserAccessToken((UserAccessToken)loginInfo);
         }
