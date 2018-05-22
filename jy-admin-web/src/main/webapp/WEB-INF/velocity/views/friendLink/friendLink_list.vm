@@ -62,6 +62,4 @@
     已发布
     {{#  } }}
 </script>
-
-<script src="${rc.contextPath}/static/jingyi/common.js"></script>
 <script src="${rc.contextPath}/static/jingyi/friendLink/friendLink.js"></script>

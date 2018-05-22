@@ -119,7 +119,7 @@
         </div>
     </div>
     <div class="layui-form-item" id="J_teacherDiv">
-        #if(${metaDataJson} && ${metaDataJson.TEACHER} )
+        #if(${metaDataJson} && ${metaDataJson.TEACHER} && ${metaDataJson.TEACHER.size()} )
         #foreach(${tarcherInfo} in ${metaDataJson.TEACHER})
             <div class="layui-inline"  id="TEARCHE_DIV$velocityCount">
                 <label class="layui-form-label">
@@ -134,8 +134,8 @@
                     <input type="text" name="TEACHER$velocityCount" placeholder="讲师名字"
                         value="$!{tarcherInfo.name}" autocomplete="off" class="layui-input">
                 </div>
-                <div class="layui-input-inline" style="width: 150px;">
-                    <input type="text" name="TITLE$velocityCount" placeholder="头衔"
+                <div class="layui-input-inline" style="width: 300px;">
+                    <input type="text" name="TITLE$velocityCount" placeholder="头衔，多个用逗号隔开"
                         value="$!{tarcherInfo.title}" autocomplete="off" class="layui-input">
                     <input type="hidden" name="TEACHERPIC$velocityCount" value="$!{tarcherInfo.pic}" id="teacherPic$velocityCount">
                 </div>
@@ -159,8 +159,8 @@
                 <div class="layui-input-inline" style="width: 150px;">
                     <input type="text" name="TEACHER1" placeholder="讲师名字" autocomplete="off" class="layui-input">
                 </div>
-                <div class="layui-input-inline" style="width: 150px;">
-                    <input type="text" name="TITLE1" placeholder="头衔" autocomplete="off" class="layui-input">
+                <div class="layui-input-inline" style="width: 300px;">
+                    <input type="text" name="TITLE1" placeholder="头衔，多个用逗号隔开" autocomplete="off" class="layui-input">
                     <input type="hidden" name="TEACHERPIC1" id="teacherPic1">
                 </div>
                 <div class="layui-input-inline" style="width: 50px; height: 50px">
@@ -219,8 +219,8 @@
             ,layer = layui.layer
             ,upload = layui.upload
             ,laytpl = layui.laytpl;
-    #if(${metaDataJson} && ${metaDataJson.TEACHER} )
-        var teacherNbr = ${metaDataJson.TEACHER.size()};// 默认有一个讲师
+    #if(${metaDataJson} && ${metaDataJson.TEACHER} && ${metaDataJson.TEACHER.size()} )
+        var teacherNbr = ${metaDataJson.TEACHER.size()};// 讲师数量
     #else
         var teacherNbr = 1;// 默认有一个讲师
     #end

@@ -41,5 +41,4 @@
     无
     {{#  } }}
 </script>
-<script src="${rc.contextPath}/static/jingyi/common.js"></script>
 <script src="${rc.contextPath}/static/jingyi/offerCatalog/offerCatalog.js"></script>

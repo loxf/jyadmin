@@ -247,6 +247,5 @@
     {{# } }}
 </script>
 <script src="${rc.contextPath}/static/jquery/clipboard.min.js"></script>
-<script src="${rc.contextPath}/static/jingyi/common.js"></script>
 <script src="${rc.contextPath}/static/jingyi/offer/offer.js"></script>
 <script src="${rc.contextPath}/static/jingyi/offer/detailUrlCopy.js"></script>

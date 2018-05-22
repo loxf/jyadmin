@@ -84,5 +84,4 @@
 <script type="text/html" id="valueOptTpl">
     <a class="layui-btn layui-btn-mini" onclick="playMedia('{{ d.configValue }}', '{{ d.type }}')"><i class="layui-icon">&#xe60e;</i>查看</a>
 </script>
-<script src="${rc.contextPath}/static/jingyi/common.js"></script>
 <script src="${rc.contextPath}/static/jingyi/config/config.js"></script>
