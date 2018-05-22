@@ -198,8 +198,8 @@
         <div class="layui-input-inline" style="width: 150px;">
             <input type="text" name="TEACHER{{d.count}}" placeholder="讲师名字" autocomplete="off" class="layui-input">
         </div>
-        <div class="layui-input-inline" style="width: 150px;">
-            <input type="text" name="TITLE{{d.count}}" placeholder="头衔" autocomplete="off" class="layui-input">
+        <div class="layui-input-inline" style="width: 300px;">
+            <input type="text" name="TITLE{{d.count}}" placeholder="头衔，多个用逗号隔开" autocomplete="off" class="layui-input">
             <input type="hidden" name="TEACHERPIC{{d.count}}" id="teacherPic{{d.count}}">
         </div>
         <div class="layui-input-inline" style="width: 50px; height: 50px">
@@ -330,6 +330,7 @@
             var teacherName = eval("data.field.TEACHER" + i);
             if(teacherName){
                 var teacherTitle = eval("data.field.TITLE" + i);
+                teacherTitle = teacherTitle.replaceAll('，', ',');
                 var teacherPic = eval("data.field.TEACHERPIC" + i);
                 teacher.push({name: teacherName, title: teacherTitle, pic: teacherPic});
             }
