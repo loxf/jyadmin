@@ -16,6 +16,8 @@ public class SystemLogDto implements Serializable {
 
     private String position;
 
+    private String platform;
+
     private Date createdAt;
 
     public Long getId() {
@@ -64,6 +66,14 @@ public class SystemLogDto implements Serializable {
 
     public void setPosition(String position) {
         this.position = position == null ? null : position.trim();
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
     public Date getCreatedAt() {

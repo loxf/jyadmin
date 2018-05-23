@@ -8,10 +8,11 @@
     <result column="page" property="page" jdbcType="VARCHAR" />
     <result column="os" property="os" jdbcType="VARCHAR" />
     <result column="position" property="position" jdbcType="VARCHAR" />
+    <result column="platform" property="platform" jdbcType="VARCHAR" />
     <result column="created_at" property="createdAt" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, cust_id, ip, page, os, `position`, created_at
+    id, cust_id, ip, page, os, `position`, platform, created_at
   </sql>
   <select id="selectList" resultMap="BaseResultMap" parameterType="org.loxf.jyadmin.dal.po.SystemLog" >
     select 
@@ -33,13 +34,16 @@
     <if test="position!=null and position!=''">
       `position` = #{position}
     </if>
+    <if test="platform!=null and platform!=''">
+      `platform` = #{platform}
+    </if>
   </select>
 
   <insert id="insert" parameterType="org.loxf.jyadmin.dal.po.SystemLog" >
     insert into tb_system_log (id, cust_id, ip, 
-      page, os, `position`,
+      page, os, `position`, platform,
       created_at)
     values (#{id,jdbcType=BIGINT}, #{custId,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
-      #{page,jdbcType=VARCHAR}, #{os,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, now())
+      #{page,jdbcType=VARCHAR}, #{os,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{platform,jdbcType=VARCHAR}, now())
   </insert>
 </mapper>

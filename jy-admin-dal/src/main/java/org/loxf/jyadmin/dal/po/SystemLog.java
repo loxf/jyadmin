@@ -15,6 +15,8 @@ public class SystemLog {
 
     private String position;
 
+    private String platform;
+
     private Date createdAt;
 
     public Long getId() {
@@ -63,6 +65,14 @@ public class SystemLog {
 
     public void setPosition(String position) {
         this.position = position == null ? null : position.trim();
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
     }
 
     public Date getCreatedAt() {
