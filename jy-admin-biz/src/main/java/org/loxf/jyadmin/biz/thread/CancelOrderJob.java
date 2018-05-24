@@ -1,6 +1,9 @@
 package org.loxf.jyadmin.biz.thread;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.loxf.jyadmin.base.exception.BizException;
+import org.loxf.jyadmin.client.dto.OrderDto;
+import org.loxf.jyadmin.client.service.OrderService;
 import org.loxf.jyadmin.dal.dao.OrderMapper;
 import org.loxf.jyadmin.dal.po.Order;
 import org.slf4j.Logger;
@@ -21,7 +24,7 @@ public class CancelOrderJob extends JOB {
     private int period;
 
     @Autowired
-    private OrderMapper orderMapper;
+    private OrderService orderService;
 
     /**
      * @param expireLockMSecd 锁失效时间
@@ -40,14 +43,20 @@ public class CancelOrderJob extends JOB {
             @Override
             public void run() {
                 // 获取15分钟超时订单
-                List<Order> list = orderMapper.queryTimeoutOrder();
+                List<OrderDto> list = orderService.queryTimeoutOrder().getData();
                 if (CollectionUtils.isNotEmpty(list)) {
-                    for (Order order : list) {
-                        orderMapper.updateByOrderId(order.getOrderId(), null,9, "订单超时关闭");
+                    for (OrderDto order : list) {
+                        try {
+                            orderService.cancleOrder(order.getOrderId(), "订单超时关闭");
+                        } catch (BizException e) {
+                            logger.error("订单超时取消失败：", e);
+                        } catch (Exception e){
+                            logger.error("订单超时取消异常：", e);
+                        }
                     }
                 }
             }
-        }), 5000l, period);
+        }), 5000L, period);
     }
 
 }

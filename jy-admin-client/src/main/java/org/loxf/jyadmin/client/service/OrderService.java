@@ -25,4 +25,6 @@ public interface OrderService {
      */
     BaseResult<Boolean> hasBuy(String custId, int type, String obj);
     BaseResult queryOrderIncrease();
+    BaseResult<List<OrderDto>> queryTimeoutOrder();
+    BaseResult cancleOrder(String orderId, String remark);
 }

@@ -34,6 +34,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.*;
 
+/**
+ * @author hongjia.lhj
+ */
 @Service("orderService")
 public class OrderServiceImpl implements OrderService {
     private static Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
@@ -399,5 +402,45 @@ public class OrderServiceImpl implements OrderService {
     public BaseResult queryOrderIncrease() {
         List<Map> list = orderMapper.queryOrderDistributeByLast7Day();
         return new BaseResult(BizUtil.getDataByDate(list));
+    }
+
+    @Override
+    public BaseResult<List<OrderDto>> queryTimeoutOrder() {
+        List<Order> list = orderMapper.queryTimeoutOrder();
+        List<OrderDto> orderDtos = new ArrayList<>() ;
+        if(CollectionUtils.isNotEmpty(list)){
+            for(Order order : list){
+                OrderDto orderDto = new OrderDto();
+                BeanUtils.copyProperties(order, orderDto);
+                orderDtos.add(orderDto);
+            }
+        }
+        return new BaseResult(orderDtos);
+    }
+
+    @Override
+    @Transactional
+    public BaseResult cancleOrder(String orderId, String remark) {
+        String key = "CANCLE_ORDER_" + orderId;
+        if (jedisUtil.setnx(key, System.currentTimeMillis() + "", 60) > 0) {
+            try {
+                Order orderAgain = orderMapper.selectByOrderId(orderId);
+                if (orderAgain == null) {
+                    return new BaseResult<>(BaseConstant.FAILED, "订单不存在");
+                }
+                if (orderAgain.getStatus() != 1) {
+                    return new BaseResult<>(BaseConstant.FAILED, "当前订单状态不正确");
+                }
+                orderMapper.updateByOrderId(orderId, null,9, remark);
+                return new BaseResult();
+            } catch (Exception e) {
+                logger.error("完成订单失败：", e);
+                throw new BizException("完成订单失败");
+            } finally {
+                jedisUtil.del(key);
+            }
+        } else {
+            return new BaseResult<>(BaseConstant.FAILED, "当前订单正在处理");
+        }
     }
 }
