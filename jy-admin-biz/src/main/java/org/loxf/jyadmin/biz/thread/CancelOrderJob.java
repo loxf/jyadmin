@@ -4,8 +4,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.loxf.jyadmin.base.exception.BizException;
 import org.loxf.jyadmin.client.dto.OrderDto;
 import org.loxf.jyadmin.client.service.OrderService;
-import org.loxf.jyadmin.dal.dao.OrderMapper;
-import org.loxf.jyadmin.dal.po.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +45,7 @@ public class CancelOrderJob extends JOB {
                 if (CollectionUtils.isNotEmpty(list)) {
                     for (OrderDto order : list) {
                         try {
-                            orderService.cancleOrder(order.getOrderId(), "订单超时关闭");
+                            orderService.cancelOrder(order.getOrderId(), "订单超时关闭");
                         } catch (BizException e) {
                             logger.error("订单超时取消失败：", e);
                         } catch (Exception e){

@@ -420,7 +420,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public BaseResult cancleOrder(String orderId, String remark) {
+    public BaseResult cancelOrder(String orderId, String remark) {
         String key = "CANCLE_ORDER_" + orderId;
         if (jedisUtil.setnx(key, System.currentTimeMillis() + "", 60) > 0) {
             try {
