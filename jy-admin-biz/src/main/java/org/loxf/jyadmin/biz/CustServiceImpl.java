@@ -242,12 +242,12 @@ public class CustServiceImpl implements CustService {
             cust.setXcxOpenid(((XCXLoginInfo) loginInfo).getOpenid());
             cust.setUnionid(((XCXLoginInfo) loginInfo).getUnionid());
             ((XCXLoginInfo) loginInfo).setCustId(custId);
-            return refreshXCXLoginInfo((XCXLoginInfo)loginInfo);
+            refreshXCXLoginInfo((XCXLoginInfo)loginInfo);
         } else if(loginInfo instanceof UserAccessToken){
             isWxGZH = true;
             cust.setOpenid(((UserAccessToken) loginInfo).getOpenid());
             cust.setUnionid(((UserAccessToken) loginInfo).getUnionid());
-            return refreshUserAccessToken((UserAccessToken)loginInfo);
+            refreshUserAccessToken((UserAccessToken)loginInfo);
         }
         int count = custMapper.insert(cust);
         if (count <= 0) {
@@ -405,7 +405,7 @@ public class CustServiceImpl implements CustService {
         } else {
             xcxSessionkeyMapper.insert(xcxSessionkey);
         }
-        return new BaseResult<>();
+        return new BaseResult<>(loginInfo.getCustId());
     }
 
     @Override
