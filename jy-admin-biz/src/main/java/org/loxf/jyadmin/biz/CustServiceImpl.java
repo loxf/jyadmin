@@ -432,6 +432,9 @@ public class CustServiceImpl implements CustService {
         if (custDto == null || StringUtils.isBlank(custDto.getCustId())) {
             return new BaseResult<>(BaseConstant.FAILED, "参数不全");
         }
+        if("NONE".equals(custDto.getUserLevel())) {
+            custDto.setUserLevel(null);
+        }
         Cust tmp = new Cust();
         BeanUtils.copyProperties(custDto, tmp);
         custMapper.updateByCustId(tmp);
