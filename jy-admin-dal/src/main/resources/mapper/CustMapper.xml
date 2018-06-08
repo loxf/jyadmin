@@ -486,4 +486,12 @@
     updated_at = now()
     where cust_id = #{custId}
   </update>
+
+  <select id="queryCustWithoutUnion" resultMap="BaseResultMap" >
+    select * from tb_cust where unionid is null and openid is not null;
+  </select>
+
+  <update id="updateUnionidByCustId">
+    update tb_cust set unionid=#{unionid} where cust_id = #{custId}
+  </update>
 </mapper>
