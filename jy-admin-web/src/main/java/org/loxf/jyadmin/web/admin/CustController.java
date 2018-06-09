@@ -99,16 +99,20 @@ public class CustController extends BaseControl<CustDto> {
         BaseResult vipBaseResult = vipInfoService.changeVipLevel(custId, userLevel);
         // 执行修改逻辑
         if(vipBaseResult.getCode()==BaseConstant.SUCCESS) {
-            CustDto custDto = new CustDto();
-            custDto.setCustId(custId);
-            custDto.setUserLevel(userLevel);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("ADMINSET", true);
-            custDto.setMetaData(jsonObject.toJSONString());
-            BaseResult baseResult = custService.updateCust(custDto);
-            // 如果购买的是VIP，设置用户信息刷新标志
-            // jedisUtil.set("REFRESH_CUST_INFO_" + custId, "true", 60);
-            return baseResult;
+            if("NONE".equals(userLevel)){
+                return custService.unvalidVip(custId);
+            } else {
+                CustDto custDto = new CustDto();
+                custDto.setCustId(custId);
+                custDto.setUserLevel(userLevel);
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("ADMINSET", true);
+                custDto.setMetaData(jsonObject.toJSONString());
+                BaseResult baseResult = custService.updateCust(custDto);
+                // 如果购买的是VIP，设置用户信息刷新标志
+                // jedisUtil.set("REFRESH_CUST_INFO_" + custId, "true", 60);
+                return baseResult;
+            }
         }
         return vipBaseResult;
     }
