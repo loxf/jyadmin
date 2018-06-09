@@ -207,7 +207,7 @@
         </div>
         <div class="layui-input-inline" style="width: 180px;">
             <a class="layui-btn uploadImg" id="teacherPic{{d.count}}Btn" lay-data="{url: '${rc.contextPath}/upload/img.html?type=TEARCHER'}">
-                <i class="layui-icon">&#xe62f;</i>上传头像（50*50）
+                <i class="layui-icon">&#xe62f;</i>上传头像（200*200）
             </a>
         </div>
         <br>
