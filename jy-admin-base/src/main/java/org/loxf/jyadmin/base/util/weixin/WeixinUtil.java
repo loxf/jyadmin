@@ -78,6 +78,13 @@ public class WeixinUtil {
         return new BaseResult(result);
     }
 
+    public static BaseResult<String> getBatchUserList(String userListInfo, String access_token) throws Exception {
+        String url = String.format(BaseConstant.WEIXIN_BATCH_QUERY_USERINFO, access_token);
+        String result = HttpsUtil.handlePost(url, userListInfo, null);
+        logger.info(result);
+        return new BaseResult(result);
+    }
+
     public static Map<String, String> signJsTicket(String jsapi_ticket, String url) {
         Map<String, String> ret = new HashMap<String, String>();
         String nonce_str = WXPayUtil.generateNonceStr();

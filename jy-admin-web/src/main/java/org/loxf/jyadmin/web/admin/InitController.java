@@ -1,9 +1,12 @@
 package org.loxf.jyadmin.web.admin;
 
+import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.constant.BaseConstant;
 import org.loxf.jyadmin.base.util.ExcelImportUtil;
+import org.loxf.jyadmin.base.util.JedisUtil;
+import org.loxf.jyadmin.base.util.weixin.WeixinUtil;
 import org.loxf.jyadmin.client.dto.AdminDto;
 import org.loxf.jyadmin.client.service.*;
 import org.loxf.jyadmin.client.tmp.CustCashUpload;
@@ -37,6 +40,8 @@ public class InitController {
     private CompanyIncomeService companyIncomeService;
     @Autowired
     private CustCashService custCashService;
+    @Autowired
+    private JedisUtil jedisUtil;
 
     @RequestMapping("/index")
     public String toIndex(Model model, HttpServletRequest request) {
@@ -111,7 +116,7 @@ public class InitController {
     @RequestMapping("/takeCashInit")
     @ResponseBody
     public BaseResult takeCashInit(HttpServletRequest request,
-                               @RequestParam(value = "file", required = false) MultipartFile file) {
+                                   @RequestParam(value = "file", required = false) MultipartFile file) {
         // 提现初始化
         try {
             List<CustCashUpload> list = ExcelImportUtil.parseUploadDataToList(file.getInputStream(), file.getOriginalFilename(), CustCashUpload.class);
@@ -120,6 +125,13 @@ public class InitController {
             logger.error("上传失败", e);
             return new BaseResult(BaseConstant.FAILED, e.getMessage());
         }
+    }
+
+    @RequestMapping("/initWeixinUnionId")
+    @ResponseBody
+    public BaseResult initWeixinUnionId(HttpServletRequest request) {
+        // 微信用户初始化
+        return custService.refreshCustWithoutUnion();
     }
 
 }

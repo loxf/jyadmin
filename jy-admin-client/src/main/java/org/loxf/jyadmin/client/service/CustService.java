@@ -62,4 +62,5 @@ public interface CustService {
     BaseResult queryCustIncrease();
 
     BaseResult updateOldCustInfo(CustDto custDto);
+    BaseResult<List<CustDto>> refreshCustWithoutUnion();
 }

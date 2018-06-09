@@ -71,4 +71,8 @@ public interface CustMapper {
     List<Cust> queryOldCustDealRecommend();
 
     int updateOldCustInfo(Cust cust);
+
+    List<Cust> queryCustWithoutUnion();
+
+    int updateUnionidByCustId(@Param("custId") String custId, @Param("unionid") String unionid);
 }

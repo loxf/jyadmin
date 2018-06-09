@@ -1,5 +1,6 @@
 package org.loxf.jyadmin.biz;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -7,8 +8,11 @@ import org.loxf.jyadmin.base.bean.BaseResult;
 import org.loxf.jyadmin.base.bean.PageResult;
 import org.loxf.jyadmin.base.bean.Pager;
 import org.loxf.jyadmin.base.constant.BaseConstant;
+import org.loxf.jyadmin.base.exception.BizException;
 import org.loxf.jyadmin.base.util.DateUtils;
 import org.loxf.jyadmin.base.util.IdGenerator;
+import org.loxf.jyadmin.base.util.JedisUtil;
+import org.loxf.jyadmin.base.util.weixin.WeixinUtil;
 import org.loxf.jyadmin.base.util.weixin.bean.UserAccessToken;
 import org.loxf.jyadmin.base.util.weixin.bean.XCXLoginInfo;
 import org.loxf.jyadmin.biz.util.BizUtil;
@@ -46,6 +50,8 @@ public class CustServiceImpl implements CustService {
     private AgentInfoMapper agentInfoMapper;
     @Autowired
     private XcxSessionkeyMapper xcxSessionkeyMapper;
+    @Autowired
+    private JedisUtil jedisUtil;
 
     @Value("#{configProperties['JYZX.INDEX.URL']}")
     private String JYZX_INDEX_URL;
@@ -514,6 +520,55 @@ public class CustServiceImpl implements CustService {
         BeanUtils.copyProperties(custDto, cust);
         custMapper.updateOldCustInfo(cust);
         return new BaseResult();
+    }
+
+    @Override
+    public BaseResult<List<CustDto>> refreshCustWithoutUnion() {
+        List<Cust> custList = custMapper.queryCustWithoutUnion();
+        List<JSONObject> list = new ArrayList<>(custList.size());
+        JSONObject openidMapCustId = new JSONObject();
+        for(Cust cust : custList){
+            JSONObject p = new JSONObject();
+            p.put("openid", cust.getOpenid());
+            p.put("lang", "zh_CN");
+            list.add(p);
+            openidMapCustId.put(cust.getOpenid(), cust.getCustId());
+            if(list.size()==100){
+                batchDeal(list, openidMapCustId);
+                list.clear();
+            }
+        }
+        if(list.size()>0){
+            batchDeal(list, openidMapCustId);
+            list.clear();
+        }
+        return null;
+    }
+
+    private void batchDeal(List<JSONObject> list, JSONObject openidMapCustId){
+        JSONObject param = new JSONObject();
+        param.put("user_list", list);
+        String accessToken = jedisUtil.get(BaseConstant.WX_ACCESS_TOKEN);
+        try {
+            BaseResult<String> baseResult = WeixinUtil.getBatchUserList(param.toJSONString(), accessToken);
+            String data = baseResult.getData();
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            JSONArray user_info_list = jsonObject.getJSONArray("user_info_list");
+            int count = 0;
+            if(CollectionUtils.isNotEmpty(user_info_list)){
+                for(Object o : user_info_list){
+                    String unionid = ((JSONObject)o).getString("unionid");
+                    if(StringUtils.isNotBlank(unionid)){
+                        String openid = ((JSONObject)o).getString("openid");
+                        String custId = openidMapCustId.getString(openid);
+                        int i =custMapper.updateUnionidByCustId(custId, unionid);
+                        count=count+i;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new BizException("初始化失败", e);
+        }
     }
 
     /**
