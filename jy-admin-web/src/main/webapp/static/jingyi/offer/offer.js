@@ -53,6 +53,12 @@ table.render({ //其它参数在此省略
             width: 80
         },
         {
+            field: 'detailUrl',
+            title: '推广链接',
+            width: 150,
+            templet : '#detailUrlTpl'
+        },
+        {
             field: 'buyPrivi',
             title: '权限&价格',
             width: 240,

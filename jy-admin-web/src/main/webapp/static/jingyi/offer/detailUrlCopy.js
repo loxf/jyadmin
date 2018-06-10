@@ -1,4 +1,4 @@
-function getCopyData(offerId, offerType) {
+function getCopyData(offerId, offerType, type) {
     var result = "";
     $.ajax({
         type: "POST",
@@ -6,7 +6,8 @@ function getCopyData(offerId, offerType) {
         url: contextPath + "/admin/offer/getDetailUrl.html",
         data : {
             offerId : offerId,
-            type : offerType
+            offerType : offerType,
+            type : type
         },
         dataType:"json",
         success: function(data) {
@@ -25,7 +26,8 @@ var clipboard = new Clipboard('.copy-btn', {
     text: function(trigger) {
         var offerId = $(trigger).data("offerid");
         var offerType = $(trigger).data("offertype"); /*获取目标对象上挂载的参数test*/
-        var data = getCopyData(offerId, offerType);
+        var type = $(trigger).data("type"); /*获取目标对象上挂载的参数test*/
+        var data = getCopyData(offerId, offerType, type);
         return data;
     }
 });

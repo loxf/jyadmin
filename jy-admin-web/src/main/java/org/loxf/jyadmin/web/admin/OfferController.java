@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URLEncoder;
 import java.util.*;
 
 @Controller
@@ -222,8 +223,8 @@ public class OfferController extends BaseControl<OfferDto> {
 
     @RequestMapping("/getDetailUrl")
     @ResponseBody
-    public BaseResult<String> getDetailUrl(String offerId, String type){
-        return new BaseResult(getUrl(offerId, type));
+    public BaseResult<String> getDetailUrl(String offerId, String offerType, String type){
+        return new BaseResult(getUrl(offerId, offerType, type));
     }
 
     @RequestMapping("/sendWeiXin")
@@ -235,7 +236,7 @@ public class OfferController extends BaseControl<OfferDto> {
             custDto.setPager(new Pager(1, 100000));
             List<CustDto> custDtoList = custService.pager(custDto).getData();
             if (CollectionUtils.isNotEmpty(custDtoList)) {
-                String url = getUrl(offerId, type);
+                String url = getUrl(offerId, type, "GZH");
                 for (CustDto cust : custDtoList) {
                     if (StringUtils.isNotBlank(cust.getOpenid())) {
                         SendWeixinMsgUtil.sendClassOfferNotice(cust.getOpenid(), offerName, addr, teachers, url);
@@ -354,13 +355,29 @@ public class OfferController extends BaseControl<OfferDto> {
         offerDto.setMetaData(metaJSON.toJSONString());
         return offerService.updateOffer(offerDto, null);
     }
-    private String getUrl(String offerId, String type){
-        if(type.equals("ACTIVE")) {
-            return String.format(JYZX_INDEX_URL + BaseConstant.ACTIVE_DETAIL_URL, offerId);
-        } else if(type.equals("OFFER")){
-            return String.format(JYZX_INDEX_URL + BaseConstant.OFFER_DETAIL_URL, offerId);
-        } else if(type.equals("CLASS")){
-            return String.format(JYZX_INDEX_URL + BaseConstant.CLASS_DETAIL_URL, offerId);
+    private String getUrl(String offerId, String offerType, String type){
+        if("GZH".equals(type)) {
+            if (offerType.equals("ACTIVE")) {
+                return String.format(JYZX_INDEX_URL + BaseConstant.ACTIVE_DETAIL_URL, offerId);
+            } else if (offerType.equals("OFFER")) {
+                return String.format(JYZX_INDEX_URL + BaseConstant.OFFER_DETAIL_URL, offerId);
+            } else if (offerType.equals("CLASS")) {
+                return String.format(JYZX_INDEX_URL + BaseConstant.CLASS_DETAIL_URL, offerId);
+            }
+        } else {
+            String xcxUrl = "/pages/index/index?id=,";
+            try {
+                if (offerType.equals("ACTIVE")) {
+                    return xcxUrl + URLEncoder.encode(String.format(JYZX_INDEX_URL + BaseConstant.ACTIVE_DETAIL_URL, offerId), "utf-8");
+                } else if (offerType.equals("OFFER")) {
+                    return xcxUrl + URLEncoder.encode(String.format(JYZX_INDEX_URL + BaseConstant.OFFER_DETAIL_URL, offerId), "utf-8");
+                } else if (offerType.equals("CLASS")) {
+                    return xcxUrl + URLEncoder.encode(String.format(JYZX_INDEX_URL + BaseConstant.CLASS_DETAIL_URL, offerId), "utf-8");
+                }
+            } catch (Exception ex){
+                logger.warn("url编码失败", ex);
+                return "/pages/index/index";
+            }
         }
         return null;
     }

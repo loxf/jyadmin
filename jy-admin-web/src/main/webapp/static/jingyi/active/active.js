@@ -56,6 +56,12 @@ table.render({ //其它参数在此省略
             templet : '#activePriviTpl'
         },
         {
+            field: 'detailUrl',
+            title: '推广链接',
+            width: 150,
+            templet : '#detailUrlTpl'
+        },
+        {
             field: 'maxBp',
             title: '可用积分',
             width: 100,

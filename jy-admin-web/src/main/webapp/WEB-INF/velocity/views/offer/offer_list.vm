@@ -70,11 +70,15 @@
     <a class="layui-btn layui-btn-mini" lay-event="deleteOffer">删除</a>
     {{#  } else { }}
     <a class="layui-btn layui-btn-mini" lay-event="offOffer">下架</a>
-    <a class="layui-btn layui-btn-mini copy-btn" data-offertype="{{d.offerType}}" data-offerid="{{d.offerId}}">复制链接</a>
     <a class="layui-btn layui-btn-mini" lay-event="sendWeiXin">微信推送</a>
     <a class="layui-btn layui-btn-mini" lay-event="buyOffer">代购</a>
     {{#  } }}
     {{#  } }}
+</script>
+
+<script type="text/html" id="detailUrlTpl">
+    <a class="layui-btn layui-btn-mini copy-btn" data-type="GZH" data-offertype="{{d.offerType}}" data-offerid="{{d.offerId}}">公众号</a>
+    <a class="layui-btn layui-btn-mini copy-btn" data-type="XCX" data-offertype="{{d.offerType}}" data-offerid="{{d.offerId}}">小程序</a>
 </script>
 
 <script type="text/html" id="offerTypeTpl">
