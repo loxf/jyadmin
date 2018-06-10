@@ -353,7 +353,7 @@
     set
     <include refid="updateCustSQL"/>
     updated_at = now()
-    where 1=1 and unionid = #{unionid,jdbcType=VARCHAR}
+    where 1=1 and unionid = #{unionid,jdbcType=VARCHAR} and is_deleted = 0
   </update>
 
   <select id="queryChildList" resultMap="BaseResultMap" >
