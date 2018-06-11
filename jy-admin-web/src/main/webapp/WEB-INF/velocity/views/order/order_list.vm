@@ -31,7 +31,8 @@
                 <option value="">支付方式</option>
                 <option value="1">微信支付</option>
                 <option value="3">余额支付</option>
-                <option value="5">线下支付</option>
+                <option value="5">小程序支付</option>
+                <option value="9">线下支付</option>
             </select>
         </div>
     </div>
@@ -93,6 +94,8 @@
     {{#  } else if(d.payType===3){ }}
     余额支付
     {{#  } else if(d.payType===5){ }}
+    小程序支付
+    {{#  } else if(d.payType===9){ }}
     线下支付
     {{#  } else { }}
     未知

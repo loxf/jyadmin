@@ -54,7 +54,7 @@ public class OrderController extends BaseControl<OrderDto> {
         return pageResult;
     }
     /**
-     * 创建管理员订购订单 支付方式，默认5：线下支付 orderType 默认1
+     * 创建管理员订购订单 支付方式，默认9：线下支付 orderType 默认1
      *
      * @param custId
      * @param offerId
