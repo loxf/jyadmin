@@ -89,7 +89,7 @@ public class OrderController extends BaseControl<OrderDto> {
         orderDto.setCustId(custId);
         orderDto.setOrderName(offerDto.getOfferName());
         orderDto.setOrderType(1);
-        orderDto.setPayType(5); // 线下支付
+        orderDto.setPayType(9); // 线下支付
         String privi = offerDto.getBuyPrivi();
         if (StringUtils.isBlank(privi)) {
             return new BaseResult(BaseConstant.FAILED, "当前商品不能直接购买");
