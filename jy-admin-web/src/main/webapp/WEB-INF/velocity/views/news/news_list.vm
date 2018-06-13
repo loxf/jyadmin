@@ -7,7 +7,7 @@
             <label class="layui-form-label">$!{typeDesc}</label>
             <div class="layui-input-inline">
                 <input type="text" name="title" placeholder="请输入标题" class="layui-input">
-                <input type="hidden" name="type"  id="type" value="$!{newsType}">
+                <input type="hidden" name="type" id="type" value="$!{newsType}">
             </div>
         </div>
         <div class="layui-inline layui-col-lg3">
@@ -54,4 +54,14 @@
     已发布
     {{#  } }}
 </script>
+<script type="text/html" id="detailUrlTpl">
+    #if($!{newsType}==1)
+        #set($detailType="NEWS")
+    #else
+        #set($detailType="NEWS_CLASS")
+    #end
+    <a class="layui-btn layui-btn-mini copy-btn" data-type="GZH" data-offertype="$!{detailType}" data-offerid="{{d.titleId}}">公众号</a>
+    <a class="layui-btn layui-btn-mini copy-btn" data-type="XCX" data-offertype="$!{detailType}" data-offerid="{{d.titleId}}">小程序</a>
+</script>
 <script src="${rc.contextPath}/static/jingyi/news/news.js"></script>
+<script src="${rc.contextPath}/static/jingyi/offer/detailUrlCopy.js"></script>

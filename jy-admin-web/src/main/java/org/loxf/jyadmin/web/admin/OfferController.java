@@ -363,6 +363,10 @@ public class OfferController extends BaseControl<OfferDto> {
                 return String.format(JYZX_INDEX_URL + BaseConstant.OFFER_DETAIL_URL, offerId);
             } else if (offerType.equals("CLASS")) {
                 return String.format(JYZX_INDEX_URL + BaseConstant.CLASS_DETAIL_URL, offerId);
+            } else if (offerType.equals("NEWS_CLASS")){
+                return String.format(JYZX_INDEX_URL + BaseConstant.NEWS_DETAIL_URL, offerId);
+            } else if (offerType.equals("NEWS")){
+                return String.format(JYZX_INDEX_URL + BaseConstant.NEWS_DETAIL_URL, offerId);
             }
         } else {
             String xcxUrl = "/pages/index/index?id=,";
@@ -373,6 +377,10 @@ public class OfferController extends BaseControl<OfferDto> {
                     return xcxUrl + URLEncoder.encode(String.format(JYZX_INDEX_URL + BaseConstant.OFFER_DETAIL_URL, offerId), "utf-8");
                 } else if (offerType.equals("CLASS")) {
                     return xcxUrl + URLEncoder.encode(String.format(JYZX_INDEX_URL + BaseConstant.CLASS_DETAIL_URL, offerId), "utf-8");
+                } else if (offerType.equals("NEWS_CLASS")){
+                    return xcxUrl + URLEncoder.encode(String.format(JYZX_INDEX_URL + BaseConstant.NEWS_DETAIL_URL, offerId), "utf-8");
+                } else if (offerType.equals("NEWS")){
+                    return xcxUrl + URLEncoder.encode(String.format(JYZX_INDEX_URL + BaseConstant.NEWS_DETAIL_URL, offerId), "utf-8");
                 }
             } catch (Exception ex){
                 logger.warn("url编码失败", ex);

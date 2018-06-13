@@ -30,6 +30,12 @@ table.render({ //其它参数在此省略
             width: 200
         },
         {
+            field: 'detailUrl',
+            title: '推广链接',
+            width: 150,
+            templet : '#detailUrlTpl'
+        },
+        {
             field: 'status',
             title: '状态',
             width: 80,
