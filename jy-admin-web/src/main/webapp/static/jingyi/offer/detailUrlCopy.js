@@ -25,8 +25,8 @@ function getCopyData(offerId, offerType, type) {
 var clipboard = new Clipboard('.copy-btn', {
     text: function(trigger) {
         var offerId = $(trigger).data("offerid");
-        var offerType = $(trigger).data("offertype"); /*获取目标对象上挂载的参数offerType*/
-        var type = $(trigger).data("type"); /*获取目标对象上挂载的参数type*/
+        var offerType = $(trigger).data("offertype");
+        var type = $(trigger).data("type");
         var data = getCopyData(offerId, offerType, type);
         return data;
     }

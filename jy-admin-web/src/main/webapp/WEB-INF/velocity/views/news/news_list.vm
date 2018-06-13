@@ -64,4 +64,5 @@
     <a class="layui-btn layui-btn-mini copy-btn" data-type="XCX" data-offertype="$!{detailType}" data-offerid="{{d.titleId}}">小程序</a>
 </script>
 <script src="${rc.contextPath}/static/jingyi/news/news.js"></script>
+<script src="${rc.contextPath}/static/jquery/clipboard.min.js"></script>
 <script src="${rc.contextPath}/static/jingyi/offer/detailUrlCopy.js"></script>
