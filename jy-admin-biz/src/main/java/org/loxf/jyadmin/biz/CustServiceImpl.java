@@ -453,6 +453,9 @@ public class CustServiceImpl implements CustService {
         if (StringUtils.isBlank(custId) || StringUtils.isBlank(recommend)) {
             return new BaseResult<>(BaseConstant.FAILED, "参数不全");
         }
+        if(custId.equals(recommend)){
+            return new BaseResult(BaseConstant.FAILED, "推荐人不能为自己");
+        }
         // 获取客户信息
         Cust cust = custMapper.selectByCustId(custId);
         // 原推荐人处理
