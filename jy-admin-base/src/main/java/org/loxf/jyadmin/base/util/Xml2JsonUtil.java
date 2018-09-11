@@ -48,6 +48,12 @@ public class Xml2JsonUtil {
 		try {
 			InputStream is = new ByteArrayInputStream(xmlStr.getBytes("utf-8"));
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+			factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			factory.setXIncludeAware(false);
+			factory.setExpandEntityReferences(false);
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			Document document = builder.parse(is);
 			// 根节点
