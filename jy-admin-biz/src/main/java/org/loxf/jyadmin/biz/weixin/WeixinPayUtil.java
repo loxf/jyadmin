@@ -218,10 +218,9 @@ public class WeixinPayUtil {
         while (true) {
             String resultStr = HttpsUtil.handlePostWithSSL(BaseConstant.WEIXIN_PAY_BANK, queryXml,
                     null, WeixinPayConfig.queryWeixinSSL());
-            logger.info("提现到银行卡-{}", resultStr);
             Map<String, String> resultMap = WXPayUtil.xmlToMap(resultStr);
             if (resultMap.get("return_code").equals("FAIL")) {
-                logger.error("付款到银行异常：" + resultMap.get("return_msg"));
+                logger.error("提现到银行卡失败：" + resultStr + ", 入参：" + queryXml);
                 throw new BizException(resultMap.get("return_msg"));
             }
             String result_code = resultMap.get("result_code");
@@ -233,9 +232,11 @@ public class WeixinPayUtil {
                     result.put("cmms_amt", resultMap.get("cmms_amt")); // 手续费
                     return JSONObject.toJSONString(result);
                 } else {
+                    logger.error("提现到银行卡失败，微信返回信息校验失败：" + resultStr + ", 入参：" + queryXml);
                     throw new BizException("微信返回信息校验失败");
                 }
             } else {
+                logger.error("提现到银行卡失败：" + resultStr + ", 入参：" + queryXml);
                 if (resultMap.get("err_code").equals("INVALID_REQUEST") || resultMap.get("err_code").equals("SYSTEMERROR")
                         || resultMap.get("err_code").equals("FREQUENCY_LIMITED")) {
                     retry++;

@@ -296,7 +296,7 @@ public class CustCashServiceImpl implements CustCashService {
                         return new BaseResult<>(BaseConstant.FAILED, bankDtoBaseResult.getMsg());
                     }
                     CustBankDto custBankDto = bankDtoBaseResult.getData();
-                    remark = WeixinPayUtil.payForBank(env, openId, custBankDto.getBankNo(), custBankDto.getUserName(),
+                    remark = WeixinPayUtil.payForBank(env, custCashDto.getOrderId(), custBankDto.getBankNo(), custBankDto.getUserName(),
                             custBankDto.getBankCode(),
                             custCashDto.getFactBalance().multiply(new BigDecimal(100)).longValue());
                 }
